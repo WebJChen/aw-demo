@@ -1,0 +1,10 @@
+// 自定义 Element Plus 主题变量（按需引入 + importStyle: 'sass' 场景）
+// 这里只负责修改变量，不直接引入组件样式，由 Vite 的 additionalData 注入
+
+@forward "element-plus/theme-chalk/src/common/var.scss" with (
+  $colors: (
+    "primary": (
+      "base": #33b1a3,
+    ),
+  )
+);

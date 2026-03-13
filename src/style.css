@@ -1,0 +1,121 @@
+body {
+    color: #fff
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+    font-weight: 400
+}
+
+ul {
+    list-style: none
+}
+
+/* ul li {
+    float: left
+} */
+
+i {
+    font-style: normal
+}
+
+a,
+a:visited {
+    font-style: normal;
+    text-decoration: none;
+    color: inherit
+}
+
+a:hover {
+    color: inherit
+}
+
+.center {
+    text-align: center
+}
+
+.flle {
+    float: left
+}
+
+.flri {
+    float: right
+}
+
+.w100 {
+    width: 100%
+}
+
+.vw100 {
+    width: 100vw
+}
+
+.h100 {
+    height: 100%
+}
+
+.vh100 {
+    height: 100vh
+}
+
+.fowe4 {
+    font-weight: 400
+}
+
+.fowe7 {
+    font-weight: 700 !important
+}
+
+.fs15.fs15.fs15.fs15 {
+    font-size: 15px
+}
+
+.fs16.fs16.fs16.fs16 {
+    font-size: 16px
+}
+
+.fs18.fs18.fs18.fs18 {
+    font-size: 18px
+}
+
+.fff.fff.fff.fff {
+    color: #fff !important
+}
+
+.bgfff {
+    background-color: #fff
+}
+
+.pointer {
+    cursor: pointer
+}
+
+.no-select {
+    user-select: none
+}
+
+.clicked {
+    color: #2da099;
+    border-bottom: 1px #2da099 solid
+}
+
+.clearfix::after {
+    content: "";
+    display: block;
+    height: 0;
+    clear: both;
+    visibility: hidden;
+}
+
+.clearfix {
+    zoom: 1
+}
