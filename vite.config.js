@@ -26,5 +26,6 @@ export default defineConfig({
     alias: { //配置路径别名
       '@': path.resolve(__dirname, 'src')
     }
-  }
+  },
+  base: '/aw-demo/'
 })
