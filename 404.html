@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Redirecting...</title>
+    <script>
+      // GitHub Pages SPA fallback:
+      // /aw-demo/test -> /aw-demo/?/test
+      (function () {
+        var l = window.location;
+        var repoBase = "/aw-demo/";
+        var path = l.pathname;
+        var normalized = path.indexOf(repoBase) === 0 ? path.slice(repoBase.length - 1) : path;
+        var target =
+          repoBase +
+          "?" +
+          normalized.slice(1).replace(/&/g, "~and~") +
+          (l.search ? "&" + l.search.slice(1).replace(/&/g, "~and~") : "") +
+          l.hash;
+        l.replace(target);
+      })();
+    </script>
+  </head>
+  <body></body>
+</html>

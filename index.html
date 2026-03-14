@@ -4,8 +4,20 @@
     <meta charset="UTF-8" />
     <!-- <link rel="icon" type="image/svg+xml" href="/vite.svg" /> -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script>
+      // GitHub Pages SPA fallback:
+      // /aw-demo/?/test -> /aw-demo/test
+      (function (l) {
+        if (l.search[1] === "/") {
+          var decoded = l.search
+            .slice(1)
+            .replace(/~and~/g, "&");
+          window.history.replaceState(null, null, l.pathname.slice(0, -1) + decoded + l.hash);
+        }
+      })(window.location);
+    </script>
     <title>auswine-demo</title>
-    <script type="module" crossorigin src="/aw-demo/assets/index-Dj2As-td.js"></script>
+    <script type="module" crossorigin src="/aw-demo/assets/index-D0-BhuLt.js"></script>
     <link rel="stylesheet" crossorigin href="/aw-demo/assets/index-D3MgBuZx.css">
   </head>
   <body>
