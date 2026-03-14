@@ -22,7 +22,7 @@ const tags = ['塔斯马尼亚州', '新南威尔士州', '南澳大利亚州', 
             </el-icon>
           </template>
         </el-input>
-        <el-button type="primary" size="large" class="search-btn fs16" @click="onSearch">
+        <el-button type="primary" size="large" class="search-btn fs16">
           <el-icon>
             <Search />
           </el-icon>
