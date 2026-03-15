@@ -1,18 +1,61 @@
 <script setup>
 import { Search } from '@element-plus/icons-vue'
+import { computed, watch } from 'vue'
+import { useRoute } from 'vue-router'
+import { storeToRefs } from 'pinia'
+import { useNavStore } from '@/stores/navStore'
 
 const tags = ['塔斯马尼亚州', '新南威尔士州', '南澳大利亚州', '西澳大利亚州', '维多利亚州', '昆士兰州', '北领地', '首都领地堪培拉']
+const tagSlugMap = {
+  塔斯马尼亚州: 'tasmania',
+  新南威尔士州: 'new-south-wales',
+  南澳大利亚州: 'south-australia',
+  西澳大利亚州: 'western-australia',
+  维多利亚州: 'victoria',
+  昆士兰州: 'queensland',
+  北领地: 'northern-territory',
+  首都领地堪培拉: 'canberra'
+}
+const slugTagMap = Object.fromEntries(Object.entries(tagSlugMap).map(([k, v]) => [v, k]))
+const route = useRoute()
+const navStore = useNavStore()
+const { activeNav } = storeToRefs(navStore)
+
+const tagRoutes = computed(() => tags.map((tag) => ({
+  tag,
+  to: { name: tagSlugMap[tag], params: { subNav: undefined } }
+})))
+
+const handleTagClick = (tag) => {
+  navStore.setActiveNav(tag)
+  navStore.setActiveSubNav('红酒')
+}
+
+watch(() => route.name, (name) => {
+  if (typeof name === 'string' && slugTagMap[name]) {
+    navStore.setActiveNav(slugTagMap[name])
+    return
+  }
+  if (name === 'Home') navStore.setActiveNav(tags[0])
+}, { immediate: true })
 </script>
 
 <template>
   <div class="search-nav">
     <el-card class="search-card" shadow="hover">
       <div class="search-tags">
-        <a v-for="(tag) in tags" :key="tag" class="tag-pill w100 pointer fs18">
+        <RouterLink
+          v-for="item in tagRoutes"
+          :key="item.tag"
+          :to="item.to"
+          class="tag-pill w100 pointer fs18"
+          :class="{ active: activeNav === item.tag }"
+          @click="handleTagClick(item.tag)"
+        >
           <span class="tag-content">
-            {{ tag }}
+            {{ item.tag }}
           </span>
-        </a>
+        </RouterLink>
       </div>
       <div class="search-container">
         <el-input placeholder="搜索全站..." class="search-input" size="large" clearable>

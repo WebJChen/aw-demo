@@ -2,17 +2,39 @@
 import { Location, Phone, Message, ArrowUp, ArrowDown, ChatRound } from '@element-plus/icons-vue'
 import { useDialogStore } from '@/stores/dialogStore';
 
-function onNavClick(event, navName = '') {
-  const textContent = event.currentTarget.textContent.trim();
+const dialogStore = useDialogStore()
+const openComingSoonDialog = () => dialogStore.openDialog('comingSoon')
 
-  const clickedElement = event.currentTarget;
-  const btnsContainer = clickedElement.closest('.btns');
-  const candidates = btnsContainer.querySelectorAll('.ul-css li, i');
+// 暂未实现：后续可替换为完整业务页或独立弹窗
+const showRefundPolicy = () => openComingSoonDialog()
+const showPrivacyPolicy = () => openComingSoonDialog()
+const showTermsandConditionsDialog = () => openComingSoonDialog()
+const showDisclaimerModal = () => openComingSoonDialog()
 
-  comingSoonDialogRef.value.showComingDialog = true;
+// 滚动到页面顶部
+function scrollToTop() {
+  window.scrollTo({
+    top: 0,
+    behavior: 'smooth'
+  })
 }
 
-const dialogStore = useDialogStore()
+function handleHeaderLogoError(event) {
+  const img = event?.target
+  if (!img || img.dataset.fallbackCreated === '1') return
+
+  img.dataset.fallbackCreated = '1'
+  img.style.display = 'none'
+
+  const span = document.createElement('span')
+  span.innerText = 'AusWine'
+  span.className = 'logo-fallback-text'
+  span.style.display = 'inline-block'
+  span.style.height = '100%'
+  span.style.color = '#101010'
+  span.style.fontWeight = '700'
+  img.parentNode?.appendChild(span)
+}
 
 //获取footer的六张图片
 const imgs = ['bgfooter1.jpg', 'bgfooter2.jpg', 'footer1.jpg', 'footer2.jpg', 'footer3.jpg', 'footer4.jpg']
@@ -25,23 +47,13 @@ const getFooterImg = name => new URL(`../assets/img/footer/${name}`, import.meta
       <span class="logo fowe7 no-select pointer">
         <!-- <RouterLink to="/DemoForTTO/trips/freeinfo"> -->
         <RouterLink to="/">
-          <img src="@/assets/img/header_logo.png" alt="AusWine" class="logo-img logo-desktop" onerror="this.onerror=null; this.style.display='none'; 
-                                 const span=document.createElement('span'); 
-                                 span.innerText='AusWine'; 
-                                 span.style.display='inline-block'; 
-                                 span.style.height='100%'; 
-                                 span.style.color='#101010'; 
-                                 span.style.fontWeight='700';
-                                 // 根据屏幕宽度设置响应式样式
-                                 const isMobile = window.innerWidth <= 768;
-                                 span.style.lineHeight=isMobile ? '32px' : '48px'; 
-                                 span.style.fontSize=isMobile ? '18px' : '20px'; 
-                                 this.parentNode.appendChild(span);" />
+          <img src="@/assets/img/header_logo.png" alt="AusWine" class="logo-img logo-desktop"
+            @error="handleHeaderLogoError" />
         </RouterLink>
       </span>
       <span class="btns no-select">
         <ul class="ul-css fs16 clearfix">
-          <li class="pointer" @click="showAboutUsDialog">关于我们</li>
+          <li class="pointer" @click="dialogStore.openDialog('aboutUs')">关于我们</li>
           <li class="pointer dropdown">
             <el-dropdown class="language-dropdown">
               <span class="el-dropdown-link">
@@ -56,11 +68,11 @@ const getFooterImg = name => new URL(`../assets/img/footer/${name}`, import.meta
               </template>
             </el-dropdown>
           </li>
-          <li class="pointer" @click="onNavClick($event)">付款与退款</li>
+          <li class="pointer" @click="dialogStore.openDialog('comingSoon')">付款与退款</li>
           <li class="pointer" @click="dialogStore.openDialog('comingSoon')">用户注册/登录</li>
           <li class="pointer" @click="dialogStore.openDialog('comingSoon')">成为会员</li>
-          <li class="pointer" @click="openJoinUsDialog()">加入我们</li>
-          <li class="pointer" @click="openContactDialog()">联系我们</li>
+          <li class="pointer" @click="dialogStore.openDialog('joinUs')">加入我们</li>
+          <li class="pointer" @click="dialogStore.openDialog('contactUs')">联系我们</li>
         </ul>
       </span>
     </el-header>
@@ -133,22 +145,23 @@ const getFooterImg = name => new URL(`../assets/img/footer/${name}`, import.meta
           </div>
           <div class="nav-links">
             <div class="nav-item">
-              <RouterLink to="/DemoForTTO/service/car" @click="scrollToTop()">
+              <!-- 路由待修改 -->
+              <RouterLink to="/" @click="scrollToTop()">
                 网站首页 <span>Home</span>
               </RouterLink>
             </div>
-            <div class="nav-item" @click="showComingSoonDialog">
+            <div class="nav-item" @click="openComingSoonDialog">
+              <!-- 暂未实现：精品路线详情页 -->
               精品路线 <span>Tourist route</span>
             </div>
             <div class="nav-item">
-              <!-- <RouterLink to="/DemoForTTO/service/ticket" @click="scrollToTop()"> -->
-              <RouterLink to="/DemoForTTO/service/car" @click="scrollToTop()">
+              <RouterLink to="/" @click="scrollToTop()">
                 八大服务 <span>Service</span>
               </RouterLink>
             </div>
-            <div class="nav-item" @click="showAboutUsDialog">关于我们 <span>About
+            <div class="nav-item" @click="dialogStore.openDialog('aboutUs')">关于我们 <span>About
                 us</span></div>
-            <div class="nav-item" @click="openContactDialog">联系我们 <span>Contact us</span></div>
+            <div class="nav-item" @click="dialogStore.openDialog('contactUs')">联系我们 <span>Contact us</span></div>
           </div>
         </div>
 
@@ -160,15 +173,17 @@ const getFooterImg = name => new URL(`../assets/img/footer/${name}`, import.meta
           </div>
           <div class="route-grid">
             <div class="route-item" v-for="(src, idx) in imgs" :key="idx">
-              <img :src="getFooterImg(src)" alt="route" class="route-img" @click="showComingSoonDialog" />
+              <!-- 暂未实现：图片点击跳转对应路线页 -->
+              <img :src="getFooterImg(src)" alt="route" class="route-img" @click="openComingSoonDialog" />
             </div>
           </div>
         </div>
         <div class="web-msg">
           <div class="important-msg">
             <ul>
+              <!-- 暂未实现：以下页脚协议页先用 comingSoon 占位 -->
               <li @click="showRefundPolicy">退款政策</li>
-              <li @click="showDisclaimerModal = true">
+              <li @click="showDisclaimerModal">
                 免责条款
               </li>
               <li @click="showPrivacyPolicy">隐私政策</li>
@@ -218,6 +233,11 @@ const getFooterImg = name => new URL(`../assets/img/footer/${name}`, import.meta
       .logo-img {
         width: 200px;
         vertical-align: middle;
+      }
+
+      :deep(.logo-fallback-text) {
+        line-height: 48px;
+        font-size: 20px;
       }
     }
 
@@ -530,6 +550,11 @@ const getFooterImg = name => new URL(`../assets/img/footer/${name}`, import.meta
       .logo {
         font-size: 20px;
         text-align: left;
+
+        :deep(.logo-fallback-text) {
+          line-height: 40px;
+          font-size: 19px;
+        }
       }
 
       .btns {
@@ -606,6 +631,11 @@ const getFooterImg = name => new URL(`../assets/img/footer/${name}`, import.meta
       .logo {
         font-size: 18px;
         text-align: left;
+
+        :deep(.logo-fallback-text) {
+          line-height: 32px;
+          font-size: 18px;
+        }
       }
 
       .btns {

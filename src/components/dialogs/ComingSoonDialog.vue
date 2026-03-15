@@ -7,7 +7,7 @@ const closeDialog = () => dialogStore.closeDialog('comingSoon')
 </script>
 
 <template>
-  <el-dialog v-model="dialogStore.dialogs.comingSoon.show" title="提示" width="500" align-center>
+  <el-dialog v-model="dialogStore.dialogs.comingSoon.show" title="提示" width="500" align-center :append-to-body="true">
     <span>正在开发中，敬请期待！</span>
     <template #footer>
       <div class="dialog-footer">

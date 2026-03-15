@@ -1,25 +1,131 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
+import { storeToRefs } from 'pinia';
+import { useRoute, useRouter } from 'vue-router';
 import ServiceNav from '../components/ServiceNav.vue';
+import ItemDataDialog from '@/components/dialogs/ItemDataDialog.vue';
+import { useDeviceStore } from '@/stores/deviceStore';
+import { useNavStore } from '@/stores/navStore';
+import defaultImg from '@/assets/img/default.png';
 
 const subNavList = ['红酒', '白葡萄酒', '气泡酒', '威士忌', '其它洋酒', '苹果酒']
+const subNavSlugMap = {
+  红酒: 'red-wine',
+  白葡萄酒: 'white-wine',
+  气泡酒: 'sparkling-wine',
+  威士忌: 'whisky',
+  其它洋酒: 'other-spirits',
+  苹果酒: 'cider'
+}
+const slugSubNavMap = Object.fromEntries(Object.entries(subNavSlugMap).map(([k, v]) => [v, k]))
 
 const dataList = [
   {
     title: '示例数据1',
     img: "",
     enTitle: "Example Data 1",
-    sub: "示例数据1副标题"
+    sub: "示例数据1副标题",
+    itemData: [{
+      "title": "葡萄酒酒庄示例1",
+      "img": "",
+      "enTitle": "",
+      "info": {
+        "name": "文本1",
+        "desc": "描述1",
+        "features": [
+          {
+            "icon": "#22c55e",
+            "title": "地址",
+            "desc": "addr"
+          },
+          {
+            "icon": "#3b82f6",
+            "title": "电话",
+            "desc": "phone"
+          },
+          {
+            "icon": "#f59e0b",
+            "title": "营业时间",
+            "desc": "opening time"
+          }
+        ],
+        "tags": [
+          "tag1",
+          "tag2",
+          "tag3"
+        ]
+      }
+    },]
   }, {
     title: '示例数据2',
     img: "",
     enTitle: "Example Data 2",
-    sub: "示例数据2副标题"
+    sub: "示例数据2副标题", itemData: [{
+      "title": "葡萄酒酒庄示例2",
+      "img": "",
+      "enTitle": "",
+      "info": {
+        "name": "文本2",
+        "desc": "描述2",
+        "features": [
+          {
+            "icon": "#22c55e",
+            "title": "地址",
+            "desc": "addr"
+          },
+          {
+            "icon": "#3b82f6",
+            "title": "电话",
+            "desc": "phone"
+          },
+          {
+            "icon": "#f59e0b",
+            "title": "营业时间",
+            "desc": "opening time"
+          }
+        ],
+        "tags": [
+          "tag1",
+          "tag2",
+          "tag3"
+        ]
+      }
+    },]
   }, {
     title: '示例数据3',
     img: "",
     enTitle: "Example Data 3",
-    sub: "示例数据3副标题"
+    sub: "示例数据3副标题", itemData: [{
+      "title": "葡萄酒酒庄示例3",
+      "img": "",
+      "enTitle": "",
+      "info": {
+        "name": "文本3",
+        "desc": "描述3",
+        "features": [
+          {
+            "icon": "#22c55e",
+            "title": "地址",
+            "desc": "addr"
+          },
+          {
+            "icon": "#3b82f6",
+            "title": "电话",
+            "desc": "phone"
+          },
+          {
+            "icon": "#f59e0b",
+            "title": "营业时间",
+            "desc": "opening time"
+          }
+        ],
+        "tags": [
+          "tag1",
+          "tag2",
+          "tag3"
+        ]
+      }
+    },]
   },
 ]
 
@@ -29,23 +135,30 @@ const currentPage = ref(1)
 const scrollPage = ref(1)
 const loadMoad = ref(false)
 const isLoading = ref(false)
-const windowWidth = ref(window.innerWidth)
+const deviceStore = useDeviceStore()
+const { isPhone, isPortrait } = storeToRefs(deviceStore)
+const navStore = useNavStore()
+const { activeSubNav, activeNav } = storeToRefs(navStore)
+const route = useRoute()
+const router = useRouter()
+const regionRouteNames = ['tasmania', 'new-south-wales', 'south-australia', 'western-australia', 'victoria', 'queensland', 'northern-territory', 'canberra']
+const itemDialogVisible = ref(false)
+const selectedItem = ref(null)
+
 // 每页显示的数量
 const eachPageCount = computed(() => {
-  if (windowWidth.value <= 768) {
-    if (window.matchMedia('(orientation: portrait)').matches) {
+  if (isPhone.value) {
+    if (isPortrait.value) {
       return 3
     } else {
       return 2
     }
-  } else if (windowWidth.value <= 1024) {
-    return 12
   } else {
     return 12
   }
 })
 
-const totalPages = ref(Math.max(1, Math.ceil(dataList.length / eachPageCount.value)))
+const totalPages = computed(() => Math.max(1, Math.ceil(dataList.length / eachPageCount.value)))
 
 // 更新页码
 function updateScrollPage() {
@@ -63,7 +176,7 @@ function updateScrollPage() {
   const gridTop = rect.top + window.pageYOffset
   const scrollOffset = window.scrollY - gridTop
   if (scrollOffset <= 0) {
-    mobileScrollPage.value = 1
+    scrollPage.value = 1
     return
   }
   const totalHeight = grid.scrollHeight
@@ -80,6 +193,73 @@ function updateScrollPage() {
 function checkHasMoreData() {
   loadMoad.value = (currentPage.value * eachPageCount.value) < dataList.length
 }
+
+const handleSubNavClick = (subItem) => {
+  navStore.setActiveSubNav(subItem)
+  if (typeof route.name === 'string' && regionRouteNames.includes(route.name)) {
+    router.replace({
+      name: route.name,
+      params: {
+        ...route.params,
+        subNav: subNavSlugMap[subItem]
+      }
+    })
+  }
+}
+
+const handleWindowScroll = () => {
+  updateScrollPage()
+  navStore.saveScrollYThrottled(window.scrollY)
+}
+
+const openItemDialog = (item) => {
+  selectedItem.value = item || null
+  itemDialogVisible.value = true
+}
+
+const applySubNavFromRoute = () => {
+  const routeName = typeof route.name === 'string' ? route.name : ''
+  const routeSubNav = typeof route.params.subNav === 'string' ? route.params.subNav : ''
+
+  if (routeSubNav && slugSubNavMap[routeSubNav]) {
+    navStore.setActiveSubNav(slugSubNavMap[routeSubNav])
+    return
+  }
+
+  if (routeName === 'Home') {
+    navStore.setActiveNav('塔斯马尼亚州')
+    navStore.setActiveSubNav(subNavList[0])
+    return
+  }
+
+  if (routeName && regionRouteNames.includes(routeName)) {
+    navStore.setActiveSubNav(subNavList[0])
+    return
+  }
+
+  if (activeSubNav.value && subNavList.includes(activeSubNav.value)) return
+  navStore.setActiveSubNav(subNavList[0])
+}
+
+onMounted(() => {
+  deviceStore.startListen()
+  applySubNavFromRoute()
+  window.addEventListener('scroll', handleWindowScroll, { passive: true })
+  requestAnimationFrame(() => {
+    window.scrollTo({ top: navStore.scrollY, behavior: 'auto' })
+    updateScrollPage()
+  })
+})
+
+watch(() => [route.name, route.params.subNav], () => {
+  applySubNavFromRoute()
+})
+
+onUnmounted(() => {
+  deviceStore.stopListen()
+  window.removeEventListener('scroll', handleWindowScroll)
+  navStore.flushScrollY()
+})
 </script>
 
 <template>
@@ -90,7 +270,8 @@ function checkHasMoreData() {
     <div class="subnav-box center">
       <!-- 横向Tab列表 -->
       <ul class="subnav-list">
-        <li v-for="(subItem, idx) in subNavList" :key="idx" class="subnav-item w100">
+        <li v-for="(subItem, idx) in subNavList" :key="idx" class="subnav-item w100"
+          :class="{ active: activeSubNav === subItem }" @click="handleSubNavClick(subItem)">
           {{ subItem }}
         </li>
       </ul>
@@ -98,8 +279,9 @@ function checkHasMoreData() {
 
     <!-- 信息列表 -->
     <div ref="gridRef" class="info-list">
-      <div v-for="(data, idx) in dataList" :key="idx" class="info-item pointer">
-        <img src="@/assets/img/default.png" :alt="data.title" class="w100">
+      <div v-for="(data, idx) in dataList" :key="idx" class="info-item pointer"
+        @click="openItemDialog(data)" :data-title="data.title">
+        <img :src="data.img || defaultImg" :alt="data.title" class="w100">
         <div class="info-title fs16" :title="data.title">{{ data.title }}</div>
         <div v-if="data.enTitle" class="info-sub" :title="data.enTitle">{{ data.enTitle }}</div>
       </div>
@@ -111,6 +293,13 @@ function checkHasMoreData() {
           totalPages }} 页</div>
       </div>
     </div>
+    <ItemDataDialog
+      v-model:visible="itemDialogVisible"
+      :title="selectedItem?.title || ''"
+      :en-title="selectedItem?.enTitle || ''"
+      :banner="selectedItem?.img || defaultImg"
+      :item-data="selectedItem?.itemData || []"
+    />
   </div>
 </template>
 
@@ -247,7 +436,7 @@ function checkHasMoreData() {
     .custom-pagination--fixed {
       position: fixed;
       bottom: 60px;
-      left: 50%;
+      left: calc(50% + (100vw - 100%) / 2);
       transform: translateX(-50%);
       z-index: 100;
       padding: 10px 20px;

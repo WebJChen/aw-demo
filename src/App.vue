@@ -1,19 +1,19 @@
 <script setup>
 import ElevatorNav from '@/components/ElevatorNav.vue'
-import { Teleport } from 'vue';
 import ComingSoonDialog from './components/dialogs/ComingSoonDialog.vue';
+import AboutUsDialog from './components/dialogs/AboutUsDialog.vue';
+import JoinUsDialog from './components/dialogs/JoinUsDialog.vue';
+import ContactUsDialog from './components/dialogs/ContactUsDialog.vue';
 
 </script>
 
 <template>
   <RouterView />
-  <!-- eslint-disable-next-line vue/no-multiple-template-root -->
   <ElevatorNav />
-
-  <!-- eslint-disable-next-line vue/no-multiple-template-root -->
-  <Teleport to="body">
-    <ComingSoonDialog />
-  </Teleport>
+  <ComingSoonDialog />
+  <AboutUsDialog />
+  <JoinUsDialog />
+  <ContactUsDialog />
 </template>
 
 <style scoped lang="scss">
