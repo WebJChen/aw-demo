@@ -5,11 +5,10 @@ import { useDialogStore } from '@/stores/dialogStore';
 const dialogStore = useDialogStore()
 const openComingSoonDialog = () => dialogStore.openDialog('comingSoon')
 
-// 暂未实现：后续可替换为完整业务页或独立弹窗
-const showRefundPolicy = () => openComingSoonDialog()
-const showPrivacyPolicy = () => openComingSoonDialog()
-const showTermsandConditionsDialog = () => openComingSoonDialog()
-const showDisclaimerModal = () => openComingSoonDialog()
+const showRefundPolicy = () => dialogStore.openDialog('refundPolicy')
+const showPrivacyPolicy = () => dialogStore.openDialog('privacyPolicy')
+const showTermsandConditionsDialog = () => dialogStore.openDialog('termsAndConditions')
+const showDisclaimerModal = () => dialogStore.openDialog('disclaimer')
 
 // 滚动到页面顶部
 function scrollToTop() {
@@ -131,7 +130,6 @@ const getFooterImg = name => new URL(`../assets/img/footer/${name}`, import.meta
             <div class="title-underline"></div>
           </div>
           <div class="news-content">
-            <!-- 伊朗波鲁埃新建攀岩建筑项目，由"新浪潮"建筑公司承建，位于伊朗最高峰前，项目总投资约500万美元，预计明年完工。 -->
             2025塔斯马尼亚亮点：1月杜松子酒节狂欢，4-9月惠灵顿山追极光，每周六萨拉曼卡市集淘宝。
           </div>
           <div class="news-date">{{ new Date().toLocaleDateString() }}</div>
@@ -150,7 +148,7 @@ const getFooterImg = name => new URL(`../assets/img/footer/${name}`, import.meta
                 网站首页 <span>Home</span>
               </RouterLink>
             </div>
-            <div class="nav-item" @click="openComingSoonDialog">
+            <div class="nav-item" @click="dialogStore.openDialog('comingSoon')">
               <!-- 暂未实现：精品路线详情页 -->
               精品路线 <span>Tourist route</span>
             </div>
@@ -171,17 +169,16 @@ const getFooterImg = name => new URL(`../assets/img/footer/${name}`, import.meta
             <h3>精品度假路线</h3>
             <div class="title-underline"></div>
           </div>
-          <div class="route-grid">
-            <div class="route-item" v-for="(src, idx) in imgs" :key="idx">
-              <!-- 暂未实现：图片点击跳转对应路线页 -->
-              <img :src="getFooterImg(src)" alt="route" class="route-img" @click="openComingSoonDialog" />
+          <div class="footer-pics">
+            <div class="footer-p-item" v-for="(src, idx) in imgs" :key="idx">
+              <img :src="getFooterImg(src)" alt="pic" class="footer-img"
+                @click="dialogStore.openDialog('comingSoon')" />
             </div>
           </div>
         </div>
         <div class="web-msg">
           <div class="important-msg">
             <ul>
-              <!-- 暂未实现：以下页脚协议页先用 comingSoon 占位 -->
               <li @click="showRefundPolicy">退款政策</li>
               <li @click="showDisclaimerModal">
                 免责条款
@@ -347,7 +344,7 @@ const getFooterImg = name => new URL(`../assets/img/footer/${name}`, import.meta
             margin-bottom: 20px;
           }
 
-          .route-grid {
+          .footer-pics {
             flex: 1;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -460,17 +457,17 @@ const getFooterImg = name => new URL(`../assets/img/footer/${name}`, import.meta
           }
         }
 
-        .route-grid {
+        .footer-pics {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
           gap: 10px;
 
-          .route-item {
+          .footer-p-item {
             display: flex;
             justify-content: center;
             align-items: center;
 
-            .route-img {
+            .footer-img {
               width: 88px;
               height: 88px;
               object-fit: cover;
@@ -604,7 +601,7 @@ const getFooterImg = name => new URL(`../assets/img/footer/${name}`, import.meta
         margin-bottom: 50px;
       }
 
-      .route-grid {
+      .footer-pics {
         grid-template-columns: repeat(3, 1fr);
       }
 
@@ -685,10 +682,10 @@ const getFooterImg = name => new URL(`../assets/img/footer/${name}`, import.meta
         margin-bottom: 50px;
       }
 
-      .route-grid {
+      .footer-pics {
         grid-template-columns: repeat(3, 1fr);
 
-        .route-img {
+        .footer-img {
           width: 72px;
           height: 72px;
         }
@@ -841,11 +838,11 @@ const getFooterImg = name => new URL(`../assets/img/footer/${name}`, import.meta
             }
           }
 
-          .route-grid {
+          .footer-pics {
             gap: 6px;
             padding-top: 12px;
 
-            .route-img {
+            .footer-img {
               width: 60px;
               height: 60px;
             }
@@ -982,11 +979,11 @@ const getFooterImg = name => new URL(`../assets/img/footer/${name}`, import.meta
           }
         }
 
-        .route-grid {
+        .footer-pics {
           gap: 4px;
           padding-top: 8px;
 
-          .route-img {
+          .footer-img {
             width: 50px;
             height: 50px;
           }

@@ -1,42 +1,70 @@
 <script setup>
 import { Search } from '@element-plus/icons-vue'
-import { computed, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { computed, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useNavStore } from '@/stores/navStore'
+import itemJson from '@/data/item.json'
 
-const tags = ['塔斯马尼亚州', '新南威尔士州', '南澳大利亚州', '西澳大利亚州', '维多利亚州', '昆士兰州', '北领地', '首都领地堪培拉']
-const tagSlugMap = {
-  塔斯马尼亚州: 'tasmania',
-  新南威尔士州: 'new-south-wales',
-  南澳大利亚州: 'south-australia',
-  西澳大利亚州: 'western-australia',
-  维多利亚州: 'victoria',
-  昆士兰州: 'queensland',
-  北领地: 'northern-territory',
-  首都领地堪培拉: 'canberra'
-}
-const slugTagMap = Object.fromEntries(Object.entries(tagSlugMap).map(([k, v]) => [v, k]))
 const route = useRoute()
+const router = useRouter()
 const navStore = useNavStore()
 const { activeNav } = storeToRefs(navStore)
+const keyword = ref('')
 
-const tagRoutes = computed(() => tags.map((tag) => ({
-  tag,
-  to: { name: tagSlugMap[tag], params: { subNav: undefined } }
+const syncKeywordFromRoute = () => {
+  keyword.value = typeof route.query.s === 'string' ? route.query.s : ''
+}
+
+const navItems = computed(() => itemJson.map((item) => ({
+  tag: item.navName,
+  slug: item.path,
+  available: item.available !== false,
+  // 大导航点击后默认进入该地区第一个可用子导航，避免 URL 停留在仅地区层级
+  firstSubNavPath: item.subNavList?.find((subNav) => subNav?.isShow !== false)?.subNavPath
 })))
 
-const handleTagClick = (tag) => {
-  navStore.setActiveNav(tag)
-  navStore.setActiveSubNav('红酒')
+const slugTagMap = computed(() => Object.fromEntries(navItems.value.map((item) => [item.slug, item.tag])))
+
+const tagRoutes = computed(() => navItems.value.map((item) => ({
+  ...item,
+  href: router.resolve({
+    name: item.slug,
+    params: { subNav: item.firstSubNavPath }
+  }).href
+})))
+
+const handleTagClick = (item, event) => {
+  // 禁用项仅展示样式，不允许新开页面
+  if (!item.available) {
+    event.preventDefault()
+  }
+}
+
+const openSearchPage = () => {
+  const s = keyword.value.trim()
+  if (!s) return
+  const href = router.resolve({
+    name: 'SearchResults',
+    query: { s }
+  }).href
+  window.open(href, '_blank', 'noopener,noreferrer')
+}
+
+const onSearchEnter = () => {
+  openSearchPage()
 }
 
 watch(() => route.name, (name) => {
-  if (typeof name === 'string' && slugTagMap[name]) {
-    navStore.setActiveNav(slugTagMap[name])
+  if (typeof name === 'string' && slugTagMap.value[name]) {
+    navStore.setActiveNav(slugTagMap.value[name])
     return
   }
-  if (name === 'Home') navStore.setActiveNav(tags[0])
+  if (name === 'Home') navStore.setActiveNav(navItems.value[0]?.tag || '塔斯马尼亚州')
+}, { immediate: true })
+
+watch(() => route.query.s, () => {
+  syncKeywordFromRoute()
 }, { immediate: true })
 </script>
 
@@ -44,28 +72,24 @@ watch(() => route.name, (name) => {
   <div class="search-nav">
     <el-card class="search-card" shadow="hover">
       <div class="search-tags">
-        <RouterLink
-          v-for="item in tagRoutes"
-          :key="item.tag"
-          :to="item.to"
-          class="tag-pill w100 pointer fs18"
-          :class="{ active: activeNav === item.tag }"
-          @click="handleTagClick(item.tag)"
-        >
+        <a v-for="item in tagRoutes" :key="item.tag" :href="item.href" target="_blank" rel="noopener noreferrer"
+          class="tag-pill w100 pointer fs18" :class="{ active: activeNav === item.tag, disabled: !item.available }"
+          @click="handleTagClick(item, $event)">
           <span class="tag-content">
             {{ item.tag }}
           </span>
-        </RouterLink>
+        </a>
       </div>
       <div class="search-container">
-        <el-input placeholder="搜索全站..." class="search-input" size="large" clearable>
+        <el-input v-model="keyword" placeholder="搜索全站..." class="search-input" size="large" clearable
+          @keyup.enter="onSearchEnter">
           <template #prefix>
             <el-icon>
               <Search />
             </el-icon>
           </template>
         </el-input>
-        <el-button type="primary" size="large" class="search-btn fs16">
+        <el-button type="primary" size="large" class="search-btn fs16" @click="openSearchPage">
           <el-icon>
             <Search />
           </el-icon>

@@ -1,9 +1,16 @@
 <script setup>
 import ElevatorNav from '@/components/ElevatorNav.vue'
-import ComingSoonDialog from './components/dialogs/ComingSoonDialog.vue';
-import AboutUsDialog from './components/dialogs/AboutUsDialog.vue';
-import JoinUsDialog from './components/dialogs/JoinUsDialog.vue';
-import ContactUsDialog from './components/dialogs/ContactUsDialog.vue';
+import {
+  ComingSoonDialog,
+  AboutUsDialog,
+  JoinUsDialog,
+  ContactUsDialog,
+  RefundPolicyDialog,
+  DisclaimerDialog,
+  PrivacyPolicyDialog,
+  TermsandConditionsDialog,
+  TipsDialog
+} from './components/dialogs/global';
 
 </script>
 
@@ -14,6 +21,11 @@ import ContactUsDialog from './components/dialogs/ContactUsDialog.vue';
   <AboutUsDialog />
   <JoinUsDialog />
   <ContactUsDialog />
+  <RefundPolicyDialog />
+  <DisclaimerDialog />
+  <PrivacyPolicyDialog />
+  <TermsandConditionsDialog />
+  <TipsDialog />
 </template>
 
 <style scoped lang="scss">

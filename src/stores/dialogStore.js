@@ -8,6 +8,10 @@ export const useDialogStore = defineStore('dialog', () => {
     aboutUs: { show: false },
     joinUs: { show: false },
     contactUs: { show: false },
+    refundPolicy: { show: false },
+    disclaimer: { show: false },
+    privacyPolicy: { show: false },
+    termsAndConditions: { show: false },
   })
 
   const ensureDialogState = (name) => {
@@ -21,14 +25,21 @@ export const useDialogStore = defineStore('dialog', () => {
     ensureDialogState(name)
     dialogs[name].show = true
   }
+
+  // 仅打开目标弹窗，其余弹窗统一关闭（适合全局弹窗互斥场景）
+  const openOnly = (name) => {
+    Object.keys(dialogs).forEach((key) => {
+      ensureDialogState(key)
+      dialogs[key].show = key === name
+    })
+  }
+
   const closeDialog = (name) => {
     ensureDialogState(name)
     dialogs[name].show = false
   }
 
   return {
-    dialogs, openDialog, closeDialog
+    dialogs, openDialog, openOnly, closeDialog
   }
-}, {
-  persist: true
 })
