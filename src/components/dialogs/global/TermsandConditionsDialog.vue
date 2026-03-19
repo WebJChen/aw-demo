@@ -20,20 +20,20 @@ const closeDialog = () => dialogStore.closeDialog('termsAndConditions')
 </script>
 
 <template>
-    <el-dialog v-model="dialogStore.dialogs.termsAndConditions.show" title="AusWine.com服务条款与条件" width="800" max-width="500px"
+    <el-dialog v-model="dialogStore.dialogs.termsAndConditions.show" title="TasTrips.Online服务条款与条件" width="800" max-width="500px"
         :fullscreen="isPhone"
         align-center center :z-index=9500>
         <div class="policy-text">
             <div class="policy-section">
                 <h2>一、接受条款</h2>
-                <div class="policy-info">通过访问、浏览或使用AusWine.com网站及相关服务，即表示你已阅读、理解并同意受本条款与条件的约束。</div>
+                <div class="policy-info">通过访问、浏览或使用TasTrips.Online网站及相关服务，即表示你已阅读、理解并同意受本条款与条件的约束。</div>
             </div>
 
             <div class="policy-section">
                 <h2>二、服务说明</h2>
 
                 <ul>
-                    <li class="policy-paragraph">AusWine.com提供塔斯马尼亚地区旅游咨询、行程规划、票务代订、包车服务及相关旅游配套服务</li>
+                    <li class="policy-paragraph">TasTrips.Online提供塔斯马尼亚地区旅游咨询、行程规划、票务代订、包车服务及相关旅游配套服务</li>
                     <li class="policy-paragraph">所有服务详情以官网最新公布信息为准，我们保留调整服务内容的权利</li>
                 </ul>
             </div>
@@ -67,20 +67,20 @@ const closeDialog = () => dialogStore.closeDialog('termsAndConditions')
             </div>
             <div class="policy-section">
                 <h2>六、责任限制</h2>
-                <h3>因下列原因造成的损失，AusWine.com不承担责任：</h3>
+                <h3>因下列原因造成的损失，TasTrips.Online不承担责任：</h3>
                 <ul>
                     <li class="policy-paragraph">不可抗力事件（自然灾害、疫情、罢工等）</li>
                     <li class="policy-paragraph">用户自身过错或疏忽</li>
                     <li class="policy-paragraph">第三方服务提供商的责任</li>
                     <li class="policy-paragraph">用户未遵守相关指示</li>
                 </ul>
-                <h3>在任何情况下，AusWine.com的赔偿责任不超过相关订单金额</h3>
+                <h3>在任何情况下，TasTrips.Online的赔偿责任不超过相关订单金额</h3>
             </div>
             <div class="policy-section">
                 <h2>七、知识产权与内容授权</h2>
                 <h3>版权归属</h3>
                 <ul>
-                    <li class="policy-paragraph">AusWine.com网站的整体设计、标识、图形及由AusWine.com独立创作的原创文字、图片、视频等内容（“AusWine.com原创内容”），其版权及相关知识产权均归AusWine.com所有
+                    <li class="policy-paragraph">TasTrips.Online网站的整体设计、标识、图形及由TasTrips.Online独立创作的原创文字、图片、视频等内容（“TasTrips.Online原创内容”），其版权及相关知识产权均归TasTrips.Online所有
                     </li>
                 </ul>
                 <h3>第三方内容的引用</h3>
@@ -91,11 +91,11 @@ const closeDialog = () => dialogStore.closeDialog('termsAndConditions')
                 <h3>对你的授权与限制</h3>
                 <ul>
                     <li class="policy-paragraph">
-                        对于AusWine.com原创内容：你可为个人、非商业目的浏览、下载或打印。未经AusWine.com明确书面许可，你不得出于任何商业目的复制、转载、修改或公开发布本站的AusWine.com原创内容</li>
+                        对于TasTrips.Online原创内容：你可为个人、非商业目的浏览、下载或打印。未经TasTrips.Online明确书面许可，你不得出于任何商业目的复制、转载、修改或公开发布本站的TasTrips.Online原创内容</li>
                     <li class="policy-paragraph">对于本站引用的知识共享协议内容：你可根据该等内容原始的《知识共享 署名-相同方式共享 协议》
                         所规定的条款（包括商业使用）进行再利用，但必须遵守该协议规定的署名和相同方式共享等条件</li>
                     <li class="policy-paragraph">
-                        禁止混淆与滥用：在任何情况下，你均不得使用AusWine.com的名称、Logo，或以致使他人误认为你的作品、网站或服务与AusWine.com存在关联、赞助或认可的方式，使用本站的任何内容</li>
+                        禁止混淆与滥用：在任何情况下，你均不得使用TasTrips.Online的名称、Logo，或以致使他人误认为你的作品、网站或服务与TasTrips.Online存在关联、赞助或认可的方式，使用本站的任何内容</li>
                 </ul>
             </div>
             <div class="policy-section">

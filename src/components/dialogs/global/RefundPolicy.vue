@@ -21,13 +21,13 @@ const closeDialog = () => dialogStore.closeDialog('refundPolicy')
 
 <template>
   <!-- <div> -->
-  <el-dialog v-model="dialogStore.dialogs.refundPolicy.show" title="AusWine.com退款政策" width="800" max-width="500px" :fullscreen="isPhone"
+  <el-dialog v-model="dialogStore.dialogs.refundPolicy.show" title="TasTrips.Online退款政策" width="800" max-width="500px" :fullscreen="isPhone"
     align-center center :z-index=9500>
     <div class="policy-text">
       <div class="policy-section">
         <h2>第一章 总则</h2>
         <ul>
-          <li class="policy-paragraph">1.1 AusWine.com始终致力于为客户提供最优质的旅行体验。</li>
+          <li class="policy-paragraph">1.1 TasTrips.Online始终致力于为客户提供最优质的旅行体验。</li>
           <li class="policy-paragraph">1.2 本协议旨在明确预订取消、行程变更等情况下的退款标准，保障客户权益的同时确保服务资源的合理配置。</li>
         </ul>
       </div>
@@ -70,7 +70,7 @@ const closeDialog = () => dialogStore.closeDialog('refundPolicy')
           <!-- <li class="policy-paragraph">官网会员中心在线提交</li> -->
           <li class="policy-paragraph">联系电话：0431 888 888</li>
           <li class="policy-paragraph">咨询邮箱：tto.advisory@gmail.com</li>
-          <li class="policy-paragraph">官方微信公众号：AusWine</li>
+          <li class="policy-paragraph">官方微信公众号：TasTrips.Online</li>
         </ul>
 
         <h3>3.2 所需材料</h3>
@@ -109,7 +109,7 @@ const closeDialog = () => dialogStore.closeDialog('refundPolicy')
       <div class="policy-section">
         <h2>第五章 附则</h2>
         <ul>
-          <li class="policy-paragraph">5.1 本协议最终解释权归AusWine.com所有</li>
+          <li class="policy-paragraph">5.1 本协议最终解释权归TasTrips.Online所有</li>
           <li class="policy-paragraph">5.2 协议更新将于官网公示7天后生效</li>
           <!-- <li class="policy-paragraph">5.3 争议协商不成可提交塔斯马尼亚旅游仲裁委员会解决</li> -->
         </ul>
@@ -117,7 +117,7 @@ const closeDialog = () => dialogStore.closeDialog('refundPolicy')
 
       <div class="tips">
         <div class="policy-info">温馨提示：
-          我们理解行程变化可能给你带来的困扰。建议你根据自身情况购买行程取消险，以获得更全面的保障。AusWine.com始终竭诚为你提供咨询与协助。</div>
+          我们理解行程变化可能给你带来的困扰。建议你根据自身情况购买行程取消险，以获得更全面的保障。TasTrips.Online始终竭诚为你提供咨询与协助。</div>
       </div>
 
       <div class="contact-info">

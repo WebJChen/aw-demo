@@ -20,12 +20,12 @@ const closeDialog = () => dialogStore.closeDialog('privacyPolicy')
 </script>
 
 <template>
-  <el-dialog v-model="dialogStore.dialogs.privacyPolicy.show" title="AusWine.com隐私保护政策" width="800" max-width="500px"
+  <el-dialog v-model="dialogStore.dialogs.privacyPolicy.show" title="TasTrips.Online隐私保护政策" width="800" max-width="500px"
     :fullscreen="isPhone" align-center center :z-index=9500>
     <div class="policy-text">
       <div class="policy-section">
         <h2>隐私保护承诺</h2>
-        <div class="policy-info">AusWine.com深知个人信息的重要性，我们承诺以最严格的标准保护你的隐私权。本政策将清晰说明我们如何收集、使用、存储和保护你的个人信息。</div>
+        <div class="policy-info">TasTrips.Online深知个人信息的重要性，我们承诺以最严格的标准保护你的隐私权。本政策将清晰说明我们如何收集、使用、存储和保护你的个人信息。</div>
       </div>
       <div class="policy-section">
         <h2>第一章 信息收集范围</h2>

@@ -38,6 +38,37 @@ const clearSearchHitState = () => {
   highlighted.forEach((el) => el.classList.remove('search-hit-active'))
 }
 
+const playSearchHitHighlight = (targetEl, fallbackMs = 1800) => {
+  return new Promise((resolve) => {
+    if (!targetEl) {
+      resolve()
+      return
+    }
+
+    clearSearchHitState()
+    targetEl.classList.add('search-hit-active')
+
+    let done = false
+    const cleanup = () => {
+      if (done) return
+      done = true
+      targetEl.removeEventListener('animationend', onAnimationEnd)
+      targetEl.classList.remove('search-hit-active')
+      if (hitClearTimer) {
+        clearTimeout(hitClearTimer)
+        hitClearTimer = null
+      }
+      resolve()
+    }
+
+    const onAnimationEnd = () => cleanup()
+    targetEl.addEventListener('animationend', onAnimationEnd, { once: true })
+
+    // 兜底：动画事件异常时也能继续后续流程
+    hitClearTimer = setTimeout(cleanup, fallbackMs)
+  })
+}
+
 const currentRegionPath = computed(() => {
   const routeName = typeof route.name === 'string' ? route.name : ''
   if (routeName && regionRouteNames.includes(routeName)) return routeName
@@ -136,6 +167,33 @@ const openItemDialog = (item) => {
   itemDialogVisible.value = true
 }
 
+const notifySearchHitDone = () => {
+  if (typeof window === 'undefined') return
+  window.dispatchEvent(new CustomEvent('auswine:search-hit-done'))
+}
+
+const isDialogBlockingScroll = () => {
+  if (typeof document === 'undefined') return false
+  return document.body.classList.contains('el-popup-parent--hidden')
+}
+
+const waitForSearchTargetReady = (hitKey, maxFrames = 180) => {
+  return new Promise((resolve) => {
+    let frame = 0
+    const check = () => {
+      const targetEl = gridRef.value?.querySelector?.(`[data-hit-key="${hitKey}"]`) || null
+      const ready = targetEl && !isDialogBlockingScroll()
+      if (ready || frame >= maxFrames) {
+        resolve(targetEl)
+        return
+      }
+      frame += 1
+      requestAnimationFrame(check)
+    }
+    requestAnimationFrame(check)
+  })
+}
+
 const handleSearchTargetFocus = async () => {
   const routeHit = typeof route.query.hit === 'string' ? route.query.hit : ''
   const persisted = readSearchTarget()
@@ -150,21 +208,14 @@ const handleSearchTargetFocus = async () => {
   if (targetIndex < 0) return
 
   await nextTick()
-  const targetEl = gridRef.value?.querySelector?.(`[data-hit-key="${targetHit}"]`)
+  const targetEl = await waitForSearchTargetReady(targetHit)
   if (!targetEl) return
 
-  clearSearchHitState()
   targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' })
   void targetEl.offsetWidth
-  targetEl.classList.add('search-hit-active')
-  hitClearTimer = setTimeout(() => {
-    targetEl.classList.remove('search-hit-active')
-    hitClearTimer = null
-  }, 1800)
-
-  setTimeout(() => {
-    openItemDialog(dataList.value[targetIndex])
-  }, 620)
+  await playSearchHitHighlight(targetEl)
+  openItemDialog(dataList.value[targetIndex])
+  notifySearchHitDone()
 
   handledSearchHit.value = targetHit
   if (persisted || routeHit) {

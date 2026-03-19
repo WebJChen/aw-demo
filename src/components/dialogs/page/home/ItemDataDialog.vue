@@ -88,7 +88,7 @@ const hasSource = computed(() => wineInfo.value.source.length > 0)
             本页信息来源：{{ wineInfo.source[0].desc }}
           </template>
           <template v-else>
-            本页信息来源：AusWine资料整理
+            本页信息来源：TasTrips.Online资料整理
           </template>
         </div>
       </div>

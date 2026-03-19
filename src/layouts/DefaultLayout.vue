@@ -26,7 +26,7 @@ function handleHeaderLogoError(event) {
   img.style.display = 'none'
 
   const span = document.createElement('span')
-  span.innerText = 'AusWine'
+  span.innerText = 'TasTrips.Online'
   span.className = 'logo-fallback-text'
   span.style.display = 'inline-block'
   span.style.height = '100%'
@@ -46,7 +46,7 @@ const getFooterImg = name => new URL(`../assets/img/footer/${name}`, import.meta
       <span class="logo fowe7 no-select pointer">
         <!-- <RouterLink to="/DemoForTTO/trips/freeinfo"> -->
         <RouterLink to="/">
-          <img src="@/assets/img/header_logo.png" alt="AusWine" class="logo-img logo-desktop"
+          <img src="@/assets/img/header_logo.png" alt="TasTrips.Online" class="logo-img logo-desktop"
             @error="handleHeaderLogoError" />
         </RouterLink>
       </span>
@@ -83,7 +83,7 @@ const getFooterImg = name => new URL(`../assets/img/footer/${name}`, import.meta
         <!-- 关于我们 -->
         <div class="footer-section">
           <div class="logo-section">
-            <div class="company-name"><img src="@/assets/img/header_logo.png" alt="AusWine"
+            <div class="company-name"><img src="@/assets/img/header_logo.png" alt="TasTrips.Online"
                 class="logo-img logo-desktop" />
             </div>
           </div>
@@ -187,8 +187,8 @@ const getFooterImg = name => new URL(`../assets/img/footer/${name}`, import.meta
               <li @click="showTermsandConditionsDialog">条款与条件</li>
             </ul>
           </div>
-          <div class="declaration center">AusWine由TASMANIA TRIPS PTY LTD（塔斯马尼亚旅行有限公司）运营</div>
-          <div class="copyright center">© 2025 AusWine 保留所有权利。</div>
+          <div class="declaration center">TasTrips.Online由TASMANIA TRIPS PTY LTD（塔斯马尼亚旅行有限公司）运营</div>
+          <div class="copyright center">© 2025 TasTrips.Online 保留所有权利。</div>
         </div>
       </div>
     </el-footer>
