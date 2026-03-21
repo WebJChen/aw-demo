@@ -8,6 +8,7 @@ import { useNavStore } from '@/stores/navStore';
 import defaultImg from '@/assets/img/default.png';
 import itemJson from '@/data/item.json';
 import { readSearchTarget, saveSearchTarget } from '@/utils/searchUtils'
+import CategoryDetailPanel from '@/views/CategoryDetailPanel.vue'
 
 const regionRouteNames = itemJson.map((region) => region.path)
 
@@ -306,6 +307,7 @@ onUnmounted(() => {
 </script>
 
 <template>
+  <CategoryDetailPanel />
   <div class="subnav-box center">
     <ul class="subnav-list">
       <li v-for="(subItem, idx) in subNavList" :key="idx" class="subnav-item w100"
@@ -340,6 +342,7 @@ onUnmounted(() => {
 .subnav-box {
   width: 90%;
   padding: 0 20px;
+  margin-top: 40px;
 
   .subnav-list {
     display: flex;
@@ -466,7 +469,7 @@ onUnmounted(() => {
     bottom: 60px;
     left: calc(50% + (100vw - 100%) / 2);
     transform: translateX(-50%);
-    z-index: 100;
+    z-index: 1000;
     padding: 10px 20px;
     background: rgba(255, 255, 255, 0.95);
     border-radius: 8px;

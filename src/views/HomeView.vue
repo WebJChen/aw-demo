@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import ServiceNav from '@/components/ServiceNav.vue'
 
 const isSearching = ref(false)
+const isLoading = ref(false)
 </script>
 
 <template>
@@ -16,14 +17,14 @@ const isSearching = ref(false)
 
 <style scoped lang="scss">
 .content-box {
+  display: flex;
   height: auto;
   color: #101010;
-  display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   gap: 20px;
-  margin-top: 90px;
+  margin-top: 35px;
 }
 
 @media (max-width: 768px) {
