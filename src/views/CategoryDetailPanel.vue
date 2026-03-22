@@ -154,8 +154,8 @@ const nextPage = () => {
               <span class="item-en-title">{{ item.enTitle }}</span>
             </div>
             <div class="item-body">
-              <p class="item-route">{{ item.tripData?.route }}</p>
-              <p class="item-desc">{{ item.tripData?.desc }}</p>
+              <p class="item-info-title">{{ item.itemData?.dialogInfoTitle }}</p>
+              <p class="item-desc">{{ item.itemData?.desc }}</p>
             </div>
           </div>
         </div>
@@ -295,7 +295,7 @@ const nextPage = () => {
           }
 
           .item-body {
-            .item-route {
+            .item-info-title {
               font-size: 13px;
               color: #666;
               margin: 0 0 8px 0;
@@ -396,7 +396,7 @@ const nextPage = () => {
             }
 
             .item-body {
-              .item-route {
+              .item-info-title {
                 font-size: 14px;
               }
 
@@ -471,7 +471,7 @@ const nextPage = () => {
             }
 
             .item-body {
-              .item-route {
+              .item-info-title {
                 font-size: 15px;
                 margin-bottom: 10px;
               }
@@ -552,7 +552,7 @@ const nextPage = () => {
             }
 
             .item-body {
-              .item-route {
+              .item-info-title {
                 font-size: 14px;
               }
 

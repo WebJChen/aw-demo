@@ -6,7 +6,7 @@ import { ItemDataDialog } from '@/components/dialogs/page/home';
 import { useDeviceStore } from '@/stores/deviceStore';
 import { useNavStore } from '@/stores/navStore';
 import defaultImg from '@/assets/img/default.png';
-import itemJson from '@/data/item.json';
+import itemJson from '@/data/wine.json';
 import { readSearchTarget, saveSearchTarget } from '@/utils/searchUtils'
 import CategoryDetailPanel from '@/views/CategoryDetailPanel.vue'
 

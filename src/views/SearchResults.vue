@@ -2,6 +2,7 @@
 import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import itemJson from '@/data/item.json'
+import wineJson from '@/data/wine.json'
 import {
   buildSearchIndex,
   scoreRow,
@@ -17,7 +18,7 @@ const pageSize = 10
 const currentPage = ref(1)
 
 const keyword = computed(() => (typeof route.query.s === 'string' ? route.query.s.trim() : ''))
-const indexRows = buildSearchIndex(itemJson)
+const indexRows = [...buildSearchIndex(itemJson, 'item'), ...buildSearchIndex(wineJson, 'wine')]
 
 const allResults = computed(() => {
   if (!keyword.value) return []
@@ -43,7 +44,8 @@ const allResults = computed(() => {
       snippet: extractSnippet(scoreData.snippet || summaryRaw || row.title, keyword.value),
       itemIndex: row.itemIndex,
       itemTitle: row.title,
-      matchField: scoreData.matchField
+      matchField: scoreData.matchField,
+      sourceType: row.sourceType
     })
   }
 
@@ -108,7 +110,7 @@ const openResult = (result) => {
           <div class="result-meta">
             <span class="meta-tag">{{ result.sectionTag }}</span>
             <span class="meta-sub">{{ result.groupName }}</span>
-            <span v-if="result.matchField" class="meta-sub">匹配字段：{{ result.matchField }}</span>
+            <span class="meta-source" :class="result.sourceType">{{ result.sourceType === 'wine' ? '酒' : '酒庄' }}</span>
           </div>
 
           <h3 class="result-title">
@@ -235,6 +237,23 @@ const openResult = (result) => {
   padding: 4px 10px;
   border-radius: 999px;
   font-weight: 500;
+}
+
+.meta-source {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+  font-size: 11px;
+}
+
+.meta-source.wine {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.meta-source.item {
+  background: #dbeafe;
+  color: #1e40af;
 }
 
 .result-title {

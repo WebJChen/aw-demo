@@ -44,11 +44,10 @@ const handleTagClick = (item, event) => {
 const openSearchPage = () => {
   const s = keyword.value.trim()
   if (!s) return
-  const href = router.resolve({
+  router.push({
     name: 'SearchResults',
     query: { s }
-  }).href
-  window.open(href, '_blank', 'noopener,noreferrer')
+  })
 }
 
 const onSearchEnter = () => {

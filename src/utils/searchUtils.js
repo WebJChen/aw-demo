@@ -28,7 +28,7 @@ const flattenInfoText = (info) => {
   return parts.join(' ')
 }
 
-const buildSearchIndex = (itemJson) => {
+const buildSearchIndex = (itemJson, sourceType = 'item') => {
   const rows = []
 
   for (const region of itemJson || []) {
@@ -49,7 +49,7 @@ const buildSearchIndex = (itemJson) => {
         const fullText = [navName, subNavName, title, enTitle, subTitle, infoText].join(' ')
 
         rows.push({
-          id: `${regionPath}__${subNavPath}__${itemIndex}`,
+          id: `${sourceType}__${regionPath}__${subNavPath}__${itemIndex}`,
           navName,
           regionPath,
           subNavName,
@@ -61,7 +61,8 @@ const buildSearchIndex = (itemJson) => {
           fullText,
           image: item?.img || '',
           item,
-          itemIndex
+          itemIndex,
+          sourceType
         })
       })
     }

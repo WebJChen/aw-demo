@@ -19,9 +19,9 @@ const dialogVisible = computed({
 
 const sourceDialogVisible = ref(false)
 
-const getDefaultWineInfo = (title = '酒款详情') => ({
+const getDefaultWineInfo = (title = '酒款详情', desc = '') => ({
   name: title || '酒款详情',
-  desc: `关于${title || '该酒款'}的详细信息，正在持续完善中。`,
+  desc: `关于${desc || '该酒款'}的详细信息，正在持续完善中。`,
   features: [
     { icon: '#22c55e', title: '产地信息', desc: '酒庄与产区信息整理中' },
     { icon: '#3b82f6', title: '联系方式', desc: '联系方式与预约方式整理中' },
@@ -34,11 +34,12 @@ const getDefaultWineInfo = (title = '酒款详情') => ({
 const itemDetail = computed(() => props.itemData?.[0] || {})
 
 const wineInfo = computed(() => {
-  const info = itemDetail.value?.info
-  if (!info || typeof info !== 'object') return getDefaultWineInfo(props.title)
+  // 尝试获取不同数据结构的信息
+  const info = itemDetail.value?.info || itemDetail.value?.wineData || itemDetail.value?.itemData
+  if (!info || typeof info !== 'object') return getDefaultWineInfo(props.title, itemDetail.value?.wineData?.desc || itemDetail.value?.itemData?.desc || '')
 
   return {
-    name: info.name || itemDetail.value?.title || props.title || '酒款详情',
+    name: info.name || info.dialogInfoTitle || itemDetail.value?.title || props.title || '酒款详情',
     desc: info.desc || `关于${props.title || '该酒款'}的详细信息，正在持续完善中。`,
     features: Array.isArray(info.features) ? info.features : [],
     tags: Array.isArray(info.tags) ? info.tags : [],
@@ -95,8 +96,8 @@ const hasSource = computed(() => wineInfo.value.source.length > 0)
     </template>
   </el-dialog>
 
-  <el-dialog v-model="sourceDialogVisible" :z-index="9999" :append-to-body="true" title="信息参考来源" align-center width="80%"
-    class="source-dia">
+  <el-dialog v-model="sourceDialogVisible" :z-index="9999" :append-to-body="true" title="信息参考来源" align-center
+    width="80%" class="source-dia">
     <el-table :data="wineInfo.source" border>
       <el-table-column prop="title" label="条目/文章标题" width="200" />
       <el-table-column prop="desc" label="来源名称" width="200" />
