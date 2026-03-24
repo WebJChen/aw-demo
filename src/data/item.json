@@ -2,22 +2,22 @@
   {
     "id": 1,
     "navName": "塔斯马尼亚州",
+    "capital": "霍巴特",
     "available": true,
     "path": "tasmania",
     "subNavList": [
       {
-        "subNavName": "红酒",
-        "subNavPath": "red-wine",
+        "subNavName": "葡萄酒类",
+        "subNavPath": "wine",
         "isShow": true,
         "itemData": [
           {
-            "title": "塔州红酒示例1",
+            "title": "塔州葡萄酒酒庄示例111",
             "img": "",
             "enTitle": "Tasmania Red Wine Example 1",
-            "subTitle": "塔州红酒示例数据1副标题",
             "info": {
-              "name": "塔州红酒文本1",
-              "desc": "塔州红酒描述1",
+              "name": "塔州葡萄酒酒庄文本1",
+              "desc": "塔州葡萄酒酒庄描述1",
               "features": [
                 {
                   "icon": "#22c55e",
@@ -2603,84 +2603,6 @@
                 "tag3"
               ]
             }
-          }
-        ]
-      },
-      {
-        "subNavName": "白葡萄酒",
-        "subNavPath": "white-wine",
-        "isShow": true,
-        "itemData": [
-          {
-            "title": "塔州白葡萄酒示例1",
-            "img": "",
-            "enTitle": "Tasmania White Wine Example 1",
-            "subTitle": "塔州白葡萄酒示例数据1副标题",
-            "info": {
-              "name": "塔州白葡萄酒文本1",
-              "desc": "塔州白葡萄酒描述1",
-              "features": [
-                {
-                  "icon": "#22c55e",
-                  "title": "地址",
-                  "desc": "addr"
-                },
-                {
-                  "icon": "#3b82f6",
-                  "title": "电话",
-                  "desc": "phone"
-                },
-                {
-                  "icon": "#f59e0b",
-                  "title": "营业时间",
-                  "desc": "opening time"
-                }
-              ],
-              "tags": [
-                "tag1",
-                "tag2",
-                "tag3"
-              ]
-            }
-          }
-        ]
-      },
-      {
-        "subNavName": "气泡酒",
-        "subNavPath": "sparkling-wine",
-        "isShow": true,
-        "itemData": [
-          {
-            "title": "塔州气泡酒示例1",
-            "img": "",
-            "enTitle": "Tasmania Sparkling Wine Example 1",
-            "subTitle": "塔州气泡酒示例数据1副标题",
-            "info": {
-              "name": "塔州气泡酒文本1",
-              "desc": "塔州气泡酒描述1",
-              "features": [
-                {
-                  "icon": "#22c55e",
-                  "title": "地址",
-                  "desc": "addr"
-                },
-                {
-                  "icon": "#3b82f6",
-                  "title": "电话",
-                  "desc": "phone"
-                },
-                {
-                  "icon": "#f59e0b",
-                  "title": "营业时间",
-                  "desc": "opening time"
-                }
-              ],
-              "tags": [
-                "tag1",
-                "tag2",
-                "tag3"
-              ]
-            }
           },
           {
             "title": "Jansz Tasmania",
@@ -2774,22 +2696,83 @@
                 "tag3"
               ]
             }
+          },
+          {
+            "title": "Trial Bay Estate",
+            "img": "",
+            "enTitle": "Trial Bay Estate",
+            "itemData": {
+              "dialogInfoTitle": "Trial Bay Estate",
+              "desc": "描述1",
+              "features": [
+                {
+                  "icon": "#22c55e",
+                  "title": "文本1",
+                  "desc": "描述1"
+                },
+                {
+                  "icon": "#3b82f6",
+                  "title": "文本2",
+                  "desc": "描述2"
+                },
+                {
+                  "icon": "#f59e0b",
+                  "title": "文本3",
+                  "desc": "描述3"
+                }
+              ],
+              "tags": [
+                "tag1",
+                "tag2",
+                "tag3"
+              ]
+            }
           }
         ]
       },
       {
-        "subNavName": "威士忌",
-        "subNavPath": "whisky",
+        "subNavName": "洋酒类",
+        "subNavPath": "Spirits",
         "isShow": true,
         "itemData": [
           {
-            "title": "塔州威士忌示例1",
+            "title": "塔州洋酒酒庄示例1",
             "img": "",
-            "enTitle": "Tasmania Whisky Example 1",
-            "subTitle": "塔州威士忌示例数据1副标题",
+            "enTitle": "Tasmania Spirits Example 1",
             "info": {
-              "name": "塔州威士忌文本1",
-              "desc": "塔州威士忌描述1",
+              "name": "塔州洋酒酒庄文本1",
+              "desc": "塔州洋酒酒庄描述1",
+              "features": [
+                {
+                  "icon": "#22c55e",
+                  "title": "地址",
+                  "desc": "addr"
+                },
+                {
+                  "icon": "#3b82f6",
+                  "title": "电话",
+                  "desc": "phone"
+                },
+                {
+                  "icon": "#f59e0b",
+                  "title": "营业时间",
+                  "desc": "opening time"
+                }
+              ],
+              "tags": [
+                "tag1",
+                "tag2",
+                "tag3"
+              ]
+            }
+          },
+          {
+            "title": "Hunnington Distillery",
+            "img": "",
+            "enTitle": "Hunnington Distillery",
+            "info": {
+              "name": "Hunnington Distillery",
+              "desc": "描述1",
               "features": [
                 {
                   "icon": "#22c55e",
@@ -2817,18 +2800,17 @@
         ]
       },
       {
-        "subNavName": "其它洋酒",
+        "subNavName": "其它酒类",
         "subNavPath": "other-spirits",
         "isShow": true,
         "itemData": [
           {
-            "title": "塔州其它洋酒示例1",
+            "title": "塔州其它洋酒酒庄示例1",
             "img": "",
             "enTitle": "Tasmania Other Spirits Example 1",
-            "subTitle": "塔州其它洋酒示例数据1副标题",
             "info": {
-              "name": "塔州其它洋酒文本1",
-              "desc": "塔州其它洋酒描述1",
+              "name": "塔州其它洋酒酒庄文本1",
+              "desc": "塔州其它洋酒酒庄描述1",
               "features": [
                 {
                   "icon": "#22c55e",
@@ -4068,160 +4050,28 @@
             }
           }
         ]
-      },
-      {
-        "subNavName": "苹果酒",
-        "subNavPath": "cider",
-        "isShow": true,
-        "itemData": [
-          {
-            "title": "塔州苹果酒示例1",
-            "img": "",
-            "enTitle": "Tasmania Cider Example 1",
-            "subTitle": "塔州苹果酒示例数据1副标题",
-            "info": {
-              "name": "塔州苹果酒文本1",
-              "desc": "塔州苹果酒描述1",
-              "features": [
-                {
-                  "icon": "#22c55e",
-                  "title": "地址",
-                  "desc": "addr"
-                },
-                {
-                  "icon": "#3b82f6",
-                  "title": "电话",
-                  "desc": "phone"
-                },
-                {
-                  "icon": "#f59e0b",
-                  "title": "营业时间",
-                  "desc": "opening time"
-                }
-              ],
-              "tags": [
-                "tag1",
-                "tag2",
-                "tag3"
-              ]
-            }
-          },
-          {
-            "title": "Red Brick Road Ciderhouse（苹果酒厂）",
-            "img": "",
-            "enTitle": "Tasmania Red Wine Example",
-            "itemData": {
-              "dialogInfoTitle": "Red Brick Road Ciderhouse",
-              "desc": "描述1",
-              "features": [
-                {
-                  "icon": "#22c55e",
-                  "title": "文本1",
-                  "desc": "描述1"
-                },
-                {
-                  "icon": "#3b82f6",
-                  "title": "文本2",
-                  "desc": "描述2"
-                },
-                {
-                  "icon": "#f59e0b",
-                  "title": "文本3",
-                  "desc": "描述3"
-                }
-              ],
-              "tags": [
-                "tag1",
-                "tag2",
-                "tag3"
-              ]
-            }
-          },
-          {
-            "title": "Frank's Cider(苹果酒厂)",
-            "img": "",
-            "enTitle": "Tasmania Red Wine Example",
-            "itemData": {
-              "dialogInfoTitle": "文本1",
-              "desc": "描述1",
-              "features": [
-                {
-                  "icon": "#22c55e",
-                  "title": "地址",
-                  "desc": "待补充"
-                },
-                {
-                  "icon": "#3b82f6",
-                  "title": "联系方式",
-                  "desc": "待补充"
-                },
-                {
-                  "icon": "#f59e0b",
-                  "title": "营业时间",
-                  "desc": "待补充"
-                }
-              ],
-              "tags": [
-                "tag1",
-                "tag2",
-                "tag3"
-              ]
-            }
-          },
-          {
-            "title": "Pagan Cider(苹果酒厂)",
-            "img": "",
-            "enTitle": "Tasmania Red Wine Example",
-            "itemData": {
-              "dialogInfoTitle": "文本1",
-              "desc": "描述1",
-              "features": [
-                {
-                  "icon": "#22c55e",
-                  "title": "地址",
-                  "desc": "待补充"
-                },
-                {
-                  "icon": "#3b82f6",
-                  "title": "联系方式",
-                  "desc": "待补充"
-                },
-                {
-                  "icon": "#f59e0b",
-                  "title": "营业时间",
-                  "desc": "待补充"
-                }
-              ],
-              "tags": [
-                "tag1",
-                "tag2",
-                "tag3"
-              ]
-            }
-          }
-        ]
       }
     ]
   },
   {
     "id": 2,
     "navName": "新南威尔士州",
+    "capital": "悉尼",
     "available": true,
     "path": "new-south-wales",
     "subNavList": [
       {
-        "subNavName": "红酒",
-        "subNavPath": "red-wine",
+        "subNavName": "葡萄酒类",
+        "subNavPath": "wine",
         "isShow": true,
         "itemData": [
           {
-            "title": "新南威尔士州红酒示例1",
+            "title": "新南威尔士州葡萄酒酒庄示例1",
             "img": "",
-            "enTitle": "New South Wales Red Wine Example 1",
-            "subTitle": "新南威尔士州红酒示例数据1副标题",
+            "enTitle": "New South Wales Wine Example 1",
             "info": {
-              "name": "新南威尔士州红酒文本1",
-              "desc": "新南威尔士州红酒描述1",
+              "name": "新南威尔士州葡萄酒酒庄文本1",
+              "desc": "新南威尔士州葡萄酒酒庄描述1",
               "features": [
                 {
                   "icon": "#22c55e",
@@ -4249,18 +4099,17 @@
         ]
       },
       {
-        "subNavName": "白葡萄酒",
-        "subNavPath": "white-wine",
+        "subNavName": "洋酒类",
+        "subNavPath": "Spirits",
         "isShow": true,
         "itemData": [
           {
-            "title": "新南威尔士州白葡萄酒示例1",
+            "title": "新南威尔士州洋酒酒庄示例1",
             "img": "",
-            "enTitle": "New South Wales White Wine Example 1",
-            "subTitle": "新南威尔士州白葡萄酒示例数据1副标题",
+            "enTitle": "New South Wales Spirits Example 1",
             "info": {
-              "name": "新南威尔士州白葡萄酒文本1",
-              "desc": "新南威尔士州白葡萄酒描述1",
+              "name": "新南威尔士州洋酒酒庄文本1",
+              "desc": "新南威尔士州洋酒酒庄描述1",
               "features": [
                 {
                   "icon": "#22c55e",
@@ -4288,135 +4137,17 @@
         ]
       },
       {
-        "subNavName": "气泡酒",
-        "subNavPath": "sparkling-wine",
-        "isShow": true,
-        "itemData": [
-          {
-            "title": "新南威尔士州气泡酒示例1",
-            "img": "",
-            "enTitle": "New South Wales Sparkling Wine Example 1",
-            "subTitle": "新南威尔士州气泡酒示例数据1副标题",
-            "info": {
-              "name": "新南威尔士州气泡酒文本1",
-              "desc": "新南威尔士州气泡酒描述1",
-              "features": [
-                {
-                  "icon": "#22c55e",
-                  "title": "地址",
-                  "desc": "addr"
-                },
-                {
-                  "icon": "#3b82f6",
-                  "title": "电话",
-                  "desc": "phone"
-                },
-                {
-                  "icon": "#f59e0b",
-                  "title": "营业时间",
-                  "desc": "opening time"
-                }
-              ],
-              "tags": [
-                "tag1",
-                "tag2",
-                "tag3"
-              ]
-            }
-          }
-        ]
-      },
-      {
-        "subNavName": "威士忌",
-        "subNavPath": "whisky",
-        "isShow": true,
-        "itemData": [
-          {
-            "title": "新南威尔士州威士忌示例1",
-            "img": "",
-            "enTitle": "New South Wales Whisky Example 1",
-            "subTitle": "新南威尔士州威士忌示例数据1副标题",
-            "info": {
-              "name": "新南威尔士州威士忌文本1",
-              "desc": "新南威尔士州威士忌描述1",
-              "features": [
-                {
-                  "icon": "#22c55e",
-                  "title": "地址",
-                  "desc": "addr"
-                },
-                {
-                  "icon": "#3b82f6",
-                  "title": "电话",
-                  "desc": "phone"
-                },
-                {
-                  "icon": "#f59e0b",
-                  "title": "营业时间",
-                  "desc": "opening time"
-                }
-              ],
-              "tags": [
-                "tag1",
-                "tag2",
-                "tag3"
-              ]
-            }
-          }
-        ]
-      },
-      {
-        "subNavName": "其它洋酒",
+        "subNavName": "其它酒类",
         "subNavPath": "other-spirits",
         "isShow": true,
         "itemData": [
           {
-            "title": "新南威尔士州其它洋酒示例1",
+            "title": "新南威尔士州其它洋酒酒庄示例1",
             "img": "",
             "enTitle": "New South Wales Other Spirits Example 1",
-            "subTitle": "新南威尔士州其它洋酒示例数据1副标题",
             "info": {
-              "name": "新南威尔士州其它洋酒文本1",
-              "desc": "新南威尔士州其它洋酒描述1",
-              "features": [
-                {
-                  "icon": "#22c55e",
-                  "title": "地址",
-                  "desc": "addr"
-                },
-                {
-                  "icon": "#3b82f6",
-                  "title": "电话",
-                  "desc": "phone"
-                },
-                {
-                  "icon": "#f59e0b",
-                  "title": "营业时间",
-                  "desc": "opening time"
-                }
-              ],
-              "tags": [
-                "tag1",
-                "tag2",
-                "tag3"
-              ]
-            }
-          }
-        ]
-      },
-      {
-        "subNavName": "苹果酒",
-        "subNavPath": "cider",
-        "isShow": true,
-        "itemData": [
-          {
-            "title": "新南威尔士州苹果酒示例1",
-            "img": "",
-            "enTitle": "New South Wales Cider Example 1",
-            "subTitle": "新南威尔士州苹果酒示例数据1副标题",
-            "info": {
-              "name": "新南威尔士州苹果酒文本1",
-              "desc": "新南威尔士州苹果酒描述1",
+              "name": "新南威尔士州其它洋酒酒庄文本1",
+              "desc": "新南威尔士州其它洋酒酒庄描述1",
               "features": [
                 {
                   "icon": "#22c55e",
@@ -4448,22 +4179,22 @@
   {
     "id": 3,
     "navName": "南澳大利亚州",
+    "capital": "阿德雷德",
     "available": true,
     "path": "south-australia",
     "subNavList": [
       {
-        "subNavName": "红酒",
-        "subNavPath": "red-wine",
+        "subNavName": "葡萄酒类",
+        "subNavPath": "wine",
         "isShow": true,
         "itemData": [
           {
-            "title": "南澳大利亚州红酒示例1",
+            "title": "南澳大利亚州葡萄酒酒庄示例1",
             "img": "",
-            "enTitle": "South Australia Red Wine Example 1",
-            "subTitle": "南澳大利亚州红酒示例数据1副标题",
+            "enTitle": "South Australia Wine Example 1",
             "info": {
-              "name": "南澳大利亚州红酒文本1",
-              "desc": "南澳大利亚州红酒描述1",
+              "name": "南澳大利亚州葡萄酒酒庄文本1",
+              "desc": "南澳大利亚州葡萄酒酒庄描述1",
               "features": [
                 {
                   "icon": "#22c55e",
@@ -4491,18 +4222,17 @@
         ]
       },
       {
-        "subNavName": "白葡萄酒",
-        "subNavPath": "white-wine",
+        "subNavName": "洋酒类",
+        "subNavPath": "spirits",
         "isShow": true,
         "itemData": [
           {
-            "title": "南澳大利亚州白葡萄酒示例1",
+            "title": "南澳大利亚州洋酒酒庄示例1",
             "img": "",
-            "enTitle": "South Australia White Wine Example 1",
-            "subTitle": "南澳大利亚州白葡萄酒示例数据1副标题",
+            "enTitle": "South Australia Spirits Example 1",
             "info": {
-              "name": "南澳大利亚州白葡萄酒文本1",
-              "desc": "南澳大利亚州白葡萄酒描述1",
+              "name": "南澳大利亚州洋酒酒庄文本1",
+              "desc": "南澳大利亚州洋酒酒庄描述1",
               "features": [
                 {
                   "icon": "#22c55e",
@@ -4530,135 +4260,17 @@
         ]
       },
       {
-        "subNavName": "气泡酒",
-        "subNavPath": "sparkling-wine",
-        "isShow": true,
-        "itemData": [
-          {
-            "title": "南澳大利亚州气泡酒示例1",
-            "img": "",
-            "enTitle": "South Australia Sparkling Wine Example 1",
-            "subTitle": "南澳大利亚州气泡酒示例数据1副标题",
-            "info": {
-              "name": "南澳大利亚州气泡酒文本1",
-              "desc": "南澳大利亚州气泡酒描述1",
-              "features": [
-                {
-                  "icon": "#22c55e",
-                  "title": "地址",
-                  "desc": "addr"
-                },
-                {
-                  "icon": "#3b82f6",
-                  "title": "电话",
-                  "desc": "phone"
-                },
-                {
-                  "icon": "#f59e0b",
-                  "title": "营业时间",
-                  "desc": "opening time"
-                }
-              ],
-              "tags": [
-                "tag1",
-                "tag2",
-                "tag3"
-              ]
-            }
-          }
-        ]
-      },
-      {
-        "subNavName": "威士忌",
-        "subNavPath": "whisky",
-        "isShow": true,
-        "itemData": [
-          {
-            "title": "南澳大利亚州威士忌示例1",
-            "img": "",
-            "enTitle": "South Australia Whisky Example 1",
-            "subTitle": "南澳大利亚州威士忌示例数据1副标题",
-            "info": {
-              "name": "南澳大利亚州威士忌文本1",
-              "desc": "南澳大利亚州威士忌描述1",
-              "features": [
-                {
-                  "icon": "#22c55e",
-                  "title": "地址",
-                  "desc": "addr"
-                },
-                {
-                  "icon": "#3b82f6",
-                  "title": "电话",
-                  "desc": "phone"
-                },
-                {
-                  "icon": "#f59e0b",
-                  "title": "营业时间",
-                  "desc": "opening time"
-                }
-              ],
-              "tags": [
-                "tag1",
-                "tag2",
-                "tag3"
-              ]
-            }
-          }
-        ]
-      },
-      {
-        "subNavName": "其它洋酒",
+        "subNavName": "其它酒类",
         "subNavPath": "other-spirits",
         "isShow": true,
         "itemData": [
           {
-            "title": "南澳大利亚州其它洋酒示例1",
+            "title": "南澳大利亚州其它洋酒酒庄示例1",
             "img": "",
             "enTitle": "South Australia Other Spirits Example 1",
-            "subTitle": "南澳大利亚州其它洋酒示例数据1副标题",
             "info": {
-              "name": "南澳大利亚州其它洋酒文本1",
-              "desc": "南澳大利亚州其它洋酒描述1",
-              "features": [
-                {
-                  "icon": "#22c55e",
-                  "title": "地址",
-                  "desc": "addr"
-                },
-                {
-                  "icon": "#3b82f6",
-                  "title": "电话",
-                  "desc": "phone"
-                },
-                {
-                  "icon": "#f59e0b",
-                  "title": "营业时间",
-                  "desc": "opening time"
-                }
-              ],
-              "tags": [
-                "tag1",
-                "tag2",
-                "tag3"
-              ]
-            }
-          }
-        ]
-      },
-      {
-        "subNavName": "苹果酒",
-        "subNavPath": "cider",
-        "isShow": true,
-        "itemData": [
-          {
-            "title": "南澳大利亚州苹果酒示例1",
-            "img": "",
-            "enTitle": "South Australia Cider Example 1",
-            "subTitle": "南澳大利亚州苹果酒示例数据1副标题",
-            "info": {
-              "name": "南澳大利亚州苹果酒文本1",
-              "desc": "南澳大利亚州苹果酒描述1",
+              "name": "南澳大利亚州其它洋酒酒庄文本1",
+              "desc": "南澳大利亚州其它洋酒酒庄描述1",
               "features": [
                 {
                   "icon": "#22c55e",
@@ -4690,6 +4302,7 @@
   {
     "id": 4,
     "navName": "西澳大利亚州",
+    "capital": "珀斯",
     "available": true,
     "path": "western-australia",
     "subNavList": [
@@ -4702,7 +4315,6 @@
             "title": "西澳大利亚州红酒示例1",
             "img": "",
             "enTitle": "Western Australia Red Wine Example 1",
-            "subTitle": "西澳大利亚州红酒示例数据1副标题",
             "info": {
               "name": "西澳大利亚州红酒文本1",
               "desc": "西澳大利亚州红酒描述1",
@@ -4741,7 +4353,6 @@
             "title": "西澳大利亚州白葡萄酒示例1",
             "img": "",
             "enTitle": "Western Australia White Wine Example 1",
-            "subTitle": "西澳大利亚州白葡萄酒示例数据1副标题",
             "info": {
               "name": "西澳大利亚州白葡萄酒文本1",
               "desc": "西澳大利亚州白葡萄酒描述1",
@@ -4780,7 +4391,6 @@
             "title": "西澳大利亚州气泡酒示例1",
             "img": "",
             "enTitle": "Western Australia Sparkling Wine Example 1",
-            "subTitle": "西澳大利亚州气泡酒示例数据1副标题",
             "info": {
               "name": "西澳大利亚州气泡酒文本1",
               "desc": "西澳大利亚州气泡酒描述1",
@@ -4819,7 +4429,6 @@
             "title": "西澳大利亚州威士忌示例1",
             "img": "",
             "enTitle": "Western Australia Whisky Example 1",
-            "subTitle": "西澳大利亚州威士忌示例数据1副标题",
             "info": {
               "name": "西澳大利亚州威士忌文本1",
               "desc": "西澳大利亚州威士忌描述1",
@@ -4858,7 +4467,6 @@
             "title": "西澳大利亚州其它洋酒示例1",
             "img": "",
             "enTitle": "Western Australia Other Spirits Example 1",
-            "subTitle": "西澳大利亚州其它洋酒示例数据1副标题",
             "info": {
               "name": "西澳大利亚州其它洋酒文本1",
               "desc": "西澳大利亚州其它洋酒描述1",
@@ -4897,7 +4505,6 @@
             "title": "西澳大利亚州苹果酒示例1",
             "img": "",
             "enTitle": "Western Australia Cider Example 1",
-            "subTitle": "西澳大利亚州苹果酒示例数据1副标题",
             "info": {
               "name": "西澳大利亚州苹果酒文本1",
               "desc": "西澳大利亚州苹果酒描述1",
@@ -4932,22 +4539,22 @@
   {
     "id": 5,
     "navName": "维多利亚州",
+    "capital": "墨尔本",
     "available": true,
     "path": "victoria",
     "subNavList": [
       {
-        "subNavName": "红酒",
-        "subNavPath": "red-wine",
+        "subNavName": "葡萄酒类",
+        "subNavPath": "wine",
         "isShow": true,
         "itemData": [
           {
-            "title": "维多利亚州红酒示例1",
+            "title": "维多利亚州葡萄酒酒庄示例1",
             "img": "",
-            "enTitle": "Victoria Red Wine Example 1",
-            "subTitle": "维多利亚州红酒示例数据1副标题",
+            "enTitle": "Victoria Wine Example 1",
             "info": {
-              "name": "维多利亚州红酒文本1",
-              "desc": "维多利亚州红酒描述1",
+              "name": "维多利亚州葡萄酒酒庄文本1",
+              "desc": "维多利亚州葡萄酒酒庄描述1",
               "features": [
                 {
                   "icon": "#22c55e",
@@ -4975,18 +4582,17 @@
         ]
       },
       {
-        "subNavName": "白葡萄酒",
-        "subNavPath": "white-wine",
+        "subNavName": "洋酒类",
+        "subNavPath": "spirit",
         "isShow": true,
         "itemData": [
           {
-            "title": "维多利亚州白葡萄酒示例1",
+            "title": "维多利亚州洋酒酒庄示例1",
             "img": "",
-            "enTitle": "Victoria White Wine Example 1",
-            "subTitle": "维多利亚州白葡萄酒示例数据1副标题",
+            "enTitle": "Victoria Spirit Example 1",
             "info": {
-              "name": "维多利亚州白葡萄酒文本1",
-              "desc": "维多利亚州白葡萄酒描述1",
+              "name": "维多利亚州洋酒酒庄文本1",
+              "desc": "维多利亚州洋酒酒庄描述1",
               "features": [
                 {
                   "icon": "#22c55e",
@@ -5014,135 +4620,17 @@
         ]
       },
       {
-        "subNavName": "气泡酒",
-        "subNavPath": "sparkling-wine",
-        "isShow": true,
-        "itemData": [
-          {
-            "title": "维多利亚州气泡酒示例1",
-            "img": "",
-            "enTitle": "Victoria Sparkling Wine Example 1",
-            "subTitle": "维多利亚州气泡酒示例数据1副标题",
-            "info": {
-              "name": "维多利亚州气泡酒文本1",
-              "desc": "维多利亚州气泡酒描述1",
-              "features": [
-                {
-                  "icon": "#22c55e",
-                  "title": "地址",
-                  "desc": "addr"
-                },
-                {
-                  "icon": "#3b82f6",
-                  "title": "电话",
-                  "desc": "phone"
-                },
-                {
-                  "icon": "#f59e0b",
-                  "title": "营业时间",
-                  "desc": "opening time"
-                }
-              ],
-              "tags": [
-                "tag1",
-                "tag2",
-                "tag3"
-              ]
-            }
-          }
-        ]
-      },
-      {
-        "subNavName": "威士忌",
-        "subNavPath": "whisky",
-        "isShow": true,
-        "itemData": [
-          {
-            "title": "维多利亚州威士忌示例1",
-            "img": "",
-            "enTitle": "Victoria Whisky Example 1",
-            "subTitle": "维多利亚州威士忌示例数据1副标题",
-            "info": {
-              "name": "维多利亚州威士忌文本1",
-              "desc": "维多利亚州威士忌描述1",
-              "features": [
-                {
-                  "icon": "#22c55e",
-                  "title": "地址",
-                  "desc": "addr"
-                },
-                {
-                  "icon": "#3b82f6",
-                  "title": "电话",
-                  "desc": "phone"
-                },
-                {
-                  "icon": "#f59e0b",
-                  "title": "营业时间",
-                  "desc": "opening time"
-                }
-              ],
-              "tags": [
-                "tag1",
-                "tag2",
-                "tag3"
-              ]
-            }
-          }
-        ]
-      },
-      {
-        "subNavName": "其它洋酒",
+        "subNavName": "其它酒类",
         "subNavPath": "other-spirits",
         "isShow": true,
         "itemData": [
           {
-            "title": "维多利亚州其它洋酒示例1",
+            "title": "维多利亚州其它洋酒酒庄示例1",
             "img": "",
             "enTitle": "Other Spirits Example Title",
-            "subTitle": "维多利亚州其它洋酒示例数据1副标题",
             "info": {
-              "name": "维多利亚州其它洋酒文本1",
-              "desc": "维多利亚州其它洋酒描述1",
-              "features": [
-                {
-                  "icon": "#22c55e",
-                  "title": "地址",
-                  "desc": "addr"
-                },
-                {
-                  "icon": "#3b82f6",
-                  "title": "电话",
-                  "desc": "phone"
-                },
-                {
-                  "icon": "#f59e0b",
-                  "title": "营业时间",
-                  "desc": "opening time"
-                }
-              ],
-              "tags": [
-                "tag1",
-                "tag2",
-                "tag3"
-              ]
-            }
-          }
-        ]
-      },
-      {
-        "subNavName": "苹果酒",
-        "subNavPath": "cider",
-        "isShow": true,
-        "itemData": [
-          {
-            "title": "维多利亚州苹果酒示例1",
-            "img": "",
-            "enTitle": "Other Spirits Example Title",
-            "subTitle": "维多利亚州苹果酒示例数据1副标题",
-            "info": {
-              "name": "维多利亚州苹果酒文本1",
-              "desc": "维多利亚州苹果酒描述1",
+              "name": "维多利亚州其它洋酒酒庄文本1",
+              "desc": "维多利亚州其它洋酒酒庄描述1",
               "features": [
                 {
                   "icon": "#22c55e",
@@ -5174,22 +4662,22 @@
   {
     "id": 6,
     "navName": "昆士兰州",
+    "capital": "布里斯班",
     "available": true,
     "path": "queensland",
     "subNavList": [
       {
-        "subNavName": "红酒",
-        "subNavPath": "red-wine",
+        "subNavName": "葡萄酒类",
+        "subNavPath": "wine",
         "isShow": true,
         "itemData": [
           {
-            "title": "昆士兰州红酒示例1",
+            "title": "昆士兰州葡萄酒酒庄示例1",
             "img": "",
-            "enTitle": "Queensland Red Wine Example 1",
-            "subTitle": "昆士兰州红酒示例数据1副标题",
+            "enTitle": "Queensland Wine Example 1",
             "info": {
-              "name": "昆士兰州红酒文本1",
-              "desc": "昆士兰州红酒描述1",
+              "name": "昆士兰州葡萄酒酒庄文本1",
+              "desc": "昆士兰州葡萄酒酒庄描述1",
               "features": [
                 {
                   "icon": "#22c55e",
@@ -5217,18 +4705,17 @@
         ]
       },
       {
-        "subNavName": "白葡萄酒",
-        "subNavPath": "white-wine",
+        "subNavName": "洋酒类",
+        "subNavPath": "spirit",
         "isShow": true,
         "itemData": [
           {
-            "title": "昆士兰州白葡萄酒示例1",
+            "title": "昆士兰州洋酒酒庄示例1",
             "img": "",
-            "enTitle": "Queensland White Wine Example 1",
-            "subTitle": "昆士兰州白葡萄酒示例数据1副标题",
+            "enTitle": "Queensland Spirit Example 1",
             "info": {
-              "name": "昆士兰州白葡萄酒文本1",
-              "desc": "昆士兰州白葡萄酒描述1",
+              "name": "昆士兰州洋酒酒庄文本1",
+              "desc": "昆士兰州洋酒酒庄描述1",
               "features": [
                 {
                   "icon": "#22c55e",
@@ -5256,135 +4743,17 @@
         ]
       },
       {
-        "subNavName": "气泡酒",
-        "subNavPath": "sparkling-wine",
-        "isShow": true,
-        "itemData": [
-          {
-            "title": "昆士兰州气泡酒示例1",
-            "img": "",
-            "enTitle": "Queensland Sparkling Wine Example 1",
-            "subTitle": "昆士兰州气泡酒示例数据1副标题",
-            "info": {
-              "name": "昆士兰州气泡酒文本1",
-              "desc": "昆士兰州气泡酒描述1",
-              "features": [
-                {
-                  "icon": "#22c55e",
-                  "title": "地址",
-                  "desc": "addr"
-                },
-                {
-                  "icon": "#3b82f6",
-                  "title": "电话",
-                  "desc": "phone"
-                },
-                {
-                  "icon": "#f59e0b",
-                  "title": "营业时间",
-                  "desc": "opening time"
-                }
-              ],
-              "tags": [
-                "tag1",
-                "tag2",
-                "tag3"
-              ]
-            }
-          }
-        ]
-      },
-      {
-        "subNavName": "威士忌",
-        "subNavPath": "whisky",
-        "isShow": true,
-        "itemData": [
-          {
-            "title": "昆士兰州威士忌示例1",
-            "img": "",
-            "enTitle": "Queensland Whisky Example 1",
-            "subTitle": "昆士兰州威士忌示例数据1副标题",
-            "info": {
-              "name": "昆士兰州威士忌文本1",
-              "desc": "昆士兰州威士忌描述1",
-              "features": [
-                {
-                  "icon": "#22c55e",
-                  "title": "地址",
-                  "desc": "addr"
-                },
-                {
-                  "icon": "#3b82f6",
-                  "title": "电话",
-                  "desc": "phone"
-                },
-                {
-                  "icon": "#f59e0b",
-                  "title": "营业时间",
-                  "desc": "opening time"
-                }
-              ],
-              "tags": [
-                "tag1",
-                "tag2",
-                "tag3"
-              ]
-            }
-          }
-        ]
-      },
-      {
-        "subNavName": "其它洋酒",
+        "subNavName": "其它酒类",
         "subNavPath": "other-spirits",
         "isShow": true,
         "itemData": [
           {
-            "title": "昆士兰州其它洋酒示例1",
+            "title": "昆士兰州其它洋酒酒庄示例1",
             "img": "",
             "enTitle": "Queensland Other Spirits Example 1",
-            "subTitle": "昆士兰州其它洋酒示例数据1副标题",
             "info": {
-              "name": "昆士兰州其它洋酒文本1",
-              "desc": "昆士兰州其它洋酒描述1",
-              "features": [
-                {
-                  "icon": "#22c55e",
-                  "title": "地址",
-                  "desc": "addr"
-                },
-                {
-                  "icon": "#3b82f6",
-                  "title": "电话",
-                  "desc": "phone"
-                },
-                {
-                  "icon": "#f59e0b",
-                  "title": "营业时间",
-                  "desc": "opening time"
-                }
-              ],
-              "tags": [
-                "tag1",
-                "tag2",
-                "tag3"
-              ]
-            }
-          }
-        ]
-      },
-      {
-        "subNavName": "苹果酒",
-        "subNavPath": "cider",
-        "isShow": true,
-        "itemData": [
-          {
-            "title": "昆士兰州苹果酒示例1",
-            "img": "",
-            "enTitle": "Queensland Cider Example 1",
-            "subTitle": "昆士兰州苹果酒示例数据1副标题",
-            "info": {
-              "name": "昆士兰州苹果酒文本1",
-              "desc": "昆士兰州苹果酒描述1",
+              "name": "昆士兰州其它洋酒酒庄文本1",
+              "desc": "昆士兰州其它洋酒酒庄描述1",
               "features": [
                 {
                   "icon": "#22c55e",
@@ -5416,22 +4785,22 @@
   {
     "id": 7,
     "navName": "北领地",
+    "capital": "达尔文",
     "available": true,
     "path": "northern-territory",
     "subNavList": [
       {
-        "subNavName": "红酒",
-        "subNavPath": "red-wine",
+        "subNavName": "葡萄酒类",
+        "subNavPath": "wine",
         "isShow": true,
         "itemData": [
           {
-            "title": "北领地红酒示例111111",
+            "title": "北领地示例111111",
             "img": "../assets/img/dialog_test.jpg",
-            "enTitle": "Northern Territory Red Wine Example 1",
-            "subTitle": "北领地红酒示例数据1副标题",
+            "enTitle": "Northern Territory Wine Example 1",
             "info": {
-              "name": "北领地红酒文本1",
-              "desc": "北领地红酒描述1",
+              "name": "北领地葡萄酒酒庄文本1",
+              "desc": "北领地葡萄酒酒庄描述1",
               "features": [
                 {
                   "icon": "#22c55e",
@@ -5459,18 +4828,17 @@
         ]
       },
       {
-        "subNavName": "白葡萄酒",
-        "subNavPath": "white-wine",
+        "subNavName": "洋酒类",
+        "subNavPath": "spirit",
         "isShow": true,
         "itemData": [
           {
-            "title": "北领地白葡萄酒示例1",
+            "title": "北领地洋酒酒庄示例1",
             "img": "",
-            "enTitle": "Northern Territory White Wine Example 1",
-            "subTitle": "北领地白葡萄酒示例数据1副标题",
+            "enTitle": "Northern Territory Spirit Example 1",
             "info": {
-              "name": "北领地白葡萄酒文本1",
-              "desc": "北领地白葡萄酒描述1",
+              "name": "北领地洋酒酒庄文本1",
+              "desc": "北领地洋酒酒庄描述1",
               "features": [
                 {
                   "icon": "#22c55e",
@@ -5498,135 +4866,17 @@
         ]
       },
       {
-        "subNavName": "气泡酒",
-        "subNavPath": "sparkling-wine",
-        "isShow": true,
-        "itemData": [
-          {
-            "title": "北领地气泡酒示例1",
-            "img": "",
-            "enTitle": "Northern Territory Sparkling Wine Example 1",
-            "subTitle": "北领地气泡酒示例数据1副标题",
-            "info": {
-              "name": "北领地气泡酒文本1",
-              "desc": "北领地气泡酒描述1",
-              "features": [
-                {
-                  "icon": "#22c55e",
-                  "title": "地址",
-                  "desc": "addr"
-                },
-                {
-                  "icon": "#3b82f6",
-                  "title": "电话",
-                  "desc": "phone"
-                },
-                {
-                  "icon": "#f59e0b",
-                  "title": "营业时间",
-                  "desc": "opening time"
-                }
-              ],
-              "tags": [
-                "tag1",
-                "tag2",
-                "tag3"
-              ]
-            }
-          }
-        ]
-      },
-      {
-        "subNavName": "威士忌",
-        "subNavPath": "whisky",
-        "isShow": true,
-        "itemData": [
-          {
-            "title": "北领地威士忌示例1",
-            "img": "",
-            "enTitle": "Northern Territory Whisky Example 1",
-            "subTitle": "北领地威士忌示例数据1副标题",
-            "info": {
-              "name": "北领地威士忌文本1",
-              "desc": "北领地威士忌描述1",
-              "features": [
-                {
-                  "icon": "#22c55e",
-                  "title": "地址",
-                  "desc": "addr"
-                },
-                {
-                  "icon": "#3b82f6",
-                  "title": "电话",
-                  "desc": "phone"
-                },
-                {
-                  "icon": "#f59e0b",
-                  "title": "营业时间",
-                  "desc": "opening time"
-                }
-              ],
-              "tags": [
-                "tag1",
-                "tag2",
-                "tag3"
-              ]
-            }
-          }
-        ]
-      },
-      {
-        "subNavName": "其它洋酒",
+        "subNavName": "其它酒类",
         "subNavPath": "other-spirits",
         "isShow": true,
         "itemData": [
           {
-            "title": "北领地其它洋酒示例1",
+            "title": "北领地其它洋酒酒庄示例1",
             "img": "",
             "enTitle": "Northern Territory Other Spirits Example 1",
-            "subTitle": "北领地其它洋酒示例数据1副标题",
             "info": {
-              "name": "北领地其它洋酒文本1",
-              "desc": "北领地其它洋酒描述1",
-              "features": [
-                {
-                  "icon": "#22c55e",
-                  "title": "地址",
-                  "desc": "addr"
-                },
-                {
-                  "icon": "#3b82f6",
-                  "title": "电话",
-                  "desc": "phone"
-                },
-                {
-                  "icon": "#f59e0b",
-                  "title": "营业时间",
-                  "desc": "opening time"
-                }
-              ],
-              "tags": [
-                "tag1",
-                "tag2",
-                "tag3"
-              ]
-            }
-          }
-        ]
-      },
-      {
-        "subNavName": "苹果酒",
-        "subNavPath": "cider",
-        "isShow": true,
-        "itemData": [
-          {
-            "title": "北领地苹果酒示例1",
-            "img": "",
-            "enTitle": "Northern Territory Cider Example 1",
-            "subTitle": "北领地苹果酒示例数据1副标题",
-            "info": {
-              "name": "北领地苹果酒文本1",
-              "desc": "北领地苹果酒描述1",
+              "name": "北领地其它洋酒酒庄文本1",
+              "desc": "北领地其它洋酒酒庄描述1",
               "features": [
                 {
                   "icon": "#22c55e",
@@ -5656,24 +4906,24 @@
     ]
   },
   {
-    "id": 7,
-    "navName": "堪培拉",
+    "id": 8,
+    "navName": "澳洲首都领地",
+    "capital": "堪培拉",
     "available": true,
     "path": "canberra",
     "subNavList": [
       {
-        "subNavName": "红酒",
-        "subNavPath": "red-wine",
+        "subNavName": "葡萄酒类",
+        "subNavPath": "wine",
         "isShow": true,
         "itemData": [
           {
-            "title": "堪培拉红酒示例1",
+            "title": "堪培拉葡萄酒酒庄示例1",
             "img": "",
-            "enTitle": "Canberra Red Wine Example 1",
-            "subTitle": "堪培拉红酒示例数据1副标题",
+            "enTitle": "Canberra Wine Example 1",
             "info": {
-              "name": "堪培拉红酒文本1",
-              "desc": "堪培拉红酒描述1",
+              "name": "堪培拉葡萄酒酒庄文本1",
+              "desc": "堪培拉葡萄酒酒庄描述1",
               "features": [
                 {
                   "icon": "#22c55e",
@@ -5701,96 +4951,17 @@
         ]
       },
       {
-        "subNavName": "白葡萄酒",
-        "subNavPath": "white-wine",
+        "subNavName": "洋酒类",
+        "subNavPath": "spirit",
         "isShow": true,
         "itemData": [
           {
-            "title": "堪培拉白葡萄酒示例1",
+            "title": "堪培拉洋酒酒庄示例1",
             "img": "",
-            "enTitle": "Canberra White Wine Example 1",
-            "subTitle": "堪培拉白葡萄酒示例数据1副标题",
+            "enTitle": "Canberra Spirits Example 1",
             "info": {
-              "name": "堪培拉白葡萄酒文本1",
-              "desc": "堪培拉白葡萄酒描述1",
-              "features": [
-                {
-                  "icon": "#22c55e",
-                  "title": "地址",
-                  "desc": "addr"
-                },
-                {
-                  "icon": "#3b82f6",
-                  "title": "电话",
-                  "desc": "phone"
-                },
-                {
-                  "icon": "#f59e0b",
-                  "title": "营业时间",
-                  "desc": "opening time"
-                }
-              ],
-              "tags": [
-                "tag1",
-                "tag2",
-                "tag3"
-              ]
-            }
-          }
-        ]
-      },
-      {
-        "subNavName": "气泡酒",
-        "subNavPath": "sparkling-wine",
-        "isShow": true,
-        "itemData": [
-          {
-            "title": "堪培拉气泡酒示例1",
-            "img": "",
-            "enTitle": "Canberra Sparkling Wine Example 1",
-            "subTitle": "堪培拉气泡酒示例数据1副标题",
-            "info": {
-              "name": "堪培拉气泡酒文本1",
-              "desc": "堪培拉气泡酒描述1",
-              "features": [
-                {
-                  "icon": "#22c55e",
-                  "title": "地址",
-                  "desc": "addr"
-                },
-                {
-                  "icon": "#3b82f6",
-                  "title": "电话",
-                  "desc": "phone"
-                },
-                {
-                  "icon": "#f59e0b",
-                  "title": "营业时间",
-                  "desc": "opening time"
-                }
-              ],
-              "tags": [
-                "tag1",
-                "tag2",
-                "tag3"
-              ]
-            }
-          }
-        ]
-      },
-      {
-        "subNavName": "威士忌",
-        "subNavPath": "whisky",
-        "isShow": true,
-        "itemData": [
-          {
-            "title": "堪培拉威士忌示例1",
-            "img": "",
-            "enTitle": "Canberra Whisky Example 1",
-            "subTitle": "堪培拉威士忌示例数据1副标题",
-            "info": {
-              "name": "堪培拉威士忌文本1",
-              "desc": "堪培拉威士忌描述1",
+              "name": "堪培拉洋酒酒庄文本1",
+              "desc": "堪培拉洋酒酒庄描述1",
               "features": [
                 {
                   "icon": "#22c55e",
@@ -5826,49 +4997,9 @@
             "title": "堪培拉其它洋酒示例1",
             "img": "",
             "enTitle": "Canberra Other Spirits Example 1",
-            "subTitle": "堪培拉其它洋酒示例数据1副标题",
             "info": {
               "name": "堪培拉其它洋酒文本1",
               "desc": "堪培拉其它洋酒描述1",
-              "features": [
-                {
-                  "icon": "#22c55e",
-                  "title": "地址",
-                  "desc": "addr"
-                },
-                {
-                  "icon": "#3b82f6",
-                  "title": "电话",
-                  "desc": "phone"
-                },
-                {
-                  "icon": "#f59e0b",
-                  "title": "营业时间",
-                  "desc": "opening time"
-                }
-              ],
-              "tags": [
-                "tag1",
-                "tag2",
-                "tag3"
-              ]
-            }
-          }
-        ]
-      },
-      {
-        "subNavName": "苹果酒",
-        "subNavPath": "cider",
-        "isShow": true,
-        "itemData": [
-          {
-            "title": "堪培拉苹果酒示例1",
-            "img": "",
-            "enTitle": "Canberra Cider Example 1",
-            "subTitle": "堪培拉苹果酒示例数据1副标题",
-            "info": {
-              "name": "堪培拉苹果酒文本1",
-              "desc": "堪培拉苹果酒描述1",
               "features": [
                 {
                   "icon": "#22c55e",

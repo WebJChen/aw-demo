@@ -20,6 +20,7 @@ const navItems = computed(() => itemJson.map((item) => ({
   tag: item.navName,
   slug: item.path,
   available: item.available !== false,
+  capital: item.capital,
   // 大导航点击后默认进入该地区第一个可用子导航，避免 URL 停留在仅地区层级
   firstSubNavPath: item.subNavList?.find((subNav) => subNav?.isShow !== false)?.subNavPath
 })))
@@ -72,10 +73,11 @@ watch(() => route.query.s, () => {
     <el-card class="search-card" shadow="hover">
       <div class="search-tags">
         <a v-for="item in tagRoutes" :key="item.tag" :href="item.href" target="_blank" rel="noopener noreferrer"
-          class="tag-pill w100 pointer fs18" :class="{ active: activeNav === item.tag, disabled: !item.available }"
+          class="tag-pill w100 pointer" :class="{ active: activeNav === item.tag, disabled: !item.available }"
           @click="handleTagClick(item, $event)">
           <span class="tag-content">
             {{ item.tag }}
+            <span v-if="item.capital" class="small-text fs16">(首府：{{ item.capital }})</span>
           </span>
         </a>
       </div>
@@ -130,7 +132,7 @@ watch(() => route.query.s, () => {
         display: flex;
         border-radius: 10px;
         transition: all 0.2s ease;
-        height: 75px;
+        height: 85px;
         padding: 8px 10px;
         align-items: center;
         justify-content: center;
@@ -157,7 +159,9 @@ watch(() => route.query.s, () => {
         }
 
         .small-text {
+          display: block;
           line-height: 1.2;
+          margin-top: 4px;
         }
       }
 

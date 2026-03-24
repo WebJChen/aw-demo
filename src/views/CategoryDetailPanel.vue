@@ -14,6 +14,7 @@ const itemDialogVisible = ref(false)
 const selectedItem = ref(null)
 const currentPage = ref(1)
 const itemsPerPage = 15 // 5行 x 3列 = 15个
+const activeSubNav = ref('葡萄酒类') // 默认选中葡萄酒类
 
 // 响应式断点
 const windowWidth = ref(typeof window !== 'undefined' ? window.innerWidth : 1200)
@@ -48,7 +49,23 @@ const allItems = computed(() => {
   const category = itemJson.find(item => item.navName === activeNav.value)
   if (category && category.subNavList) {
     category.subNavList.forEach(subNav => {
-      if (subNav.itemData) {
+      // 根据当前选中的子导航过滤数据
+      let shouldInclude = false
+      switch (activeSubNav.value) {
+        case '葡萄酒类':
+          shouldInclude = subNav.subNavName.includes('葡萄酒')
+          break
+        case '洋酒类':
+          shouldInclude = subNav.subNavName.includes('洋酒')
+          break
+        case '其它酒类':
+          shouldInclude = !subNav.subNavName.includes('葡萄酒') && !subNav.subNavName.includes('红酒') && !subNav.subNavName.includes('白酒') && !subNav.subNavName.includes('洋酒') && !subNav.subNavName.includes('威士忌') && !subNav.subNavName.includes('白兰地') && !subNav.subNavName.includes('伏特加')
+          break
+        default:
+          shouldInclude = true
+      }
+
+      if (shouldInclude && subNav.itemData) {
         subNav.itemData.forEach(item => {
           items.push({
             ...item,
@@ -129,16 +146,30 @@ const nextPage = () => {
     currentPage.value++
   }
 }
+
+const handleSubNavClick = (subNav) => {
+  activeSubNav.value = subNav
+  resetPage() // 切换子导航时重置页码
+}
 </script>
 
 <template>
   <div class="category-detail-panel w100">
     <div class="toggle-btn pointer" @click="toggleExpand">
-      <span class="toggle-text">{{ isExpanded ? '收起详情' : '展开详情' }}</span>
+      <span class="toggle-text">{{ isExpanded ? '点击收起' : '点击展开本州全部相关类别酒庄' }}</span>
       <el-icon class="toggle-icon" :class="{ 'rotate': isExpanded }">
         <ArrowDown v-if="!isExpanded" />
         <ArrowUp v-else />
       </el-icon>
+    </div>
+
+    <!-- 酒类子导航 -->
+    <div v-if="isExpanded" class="alcohol-subnav">
+      <div class="subnav-item" :class="{ 'active': activeSubNav === '葡萄酒类' }" @click="handleSubNavClick('葡萄酒类')">葡萄酒类
+      </div>
+      <div class="subnav-item" :class="{ 'active': activeSubNav === '洋酒类' }" @click="handleSubNavClick('洋酒类')">洋酒类</div>
+      <div class="subnav-item" :class="{ 'active': activeSubNav === '其它酒类' }" @click="handleSubNavClick('其它酒类')">其它酒类
+      </div>
     </div>
 
     <div class="category-content" :class="{ 'expanded': isExpanded }">
@@ -225,6 +256,43 @@ const nextPage = () => {
 
       &.rotate {
         transform: rotate(180deg);
+      }
+    }
+  }
+
+  .alcohol-subnav {
+    display: flex;
+    gap: 0;
+    margin-top: 12px;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+    .subnav-item {
+      flex: 1;
+      padding: 10px 20px;
+      text-align: center;
+      background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
+      color: #666;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border-right: 1px solid #e0e0e0;
+
+      &:last-child {
+        border-right: none;
+      }
+
+      &:hover {
+        background: linear-gradient(180deg, #e6f7f6 0%, #d4f1ef 100%);
+        color: #33b1a3;
+      }
+
+      &.active {
+        background: linear-gradient(180deg, #33b1a3 0%, #279486 100%);
+        color: #fff;
+        box-shadow: 0 2px 4px rgba(51, 177, 163, 0.3);
       }
     }
   }
@@ -370,6 +438,15 @@ const nextPage = () => {
   .category-detail-panel {
     padding: 0 15px;
 
+    .alcohol-subnav {
+      margin-top: 11px;
+
+      .subnav-item {
+        padding: 11px 18px;
+        font-size: 14px;
+      }
+    }
+
     .category-content {
       .category-section {
         padding: 20px;
@@ -434,6 +511,15 @@ const nextPage = () => {
 
       .toggle-icon {
         font-size: 22px;
+      }
+    }
+
+    .alcohol-subnav {
+      margin-top: 10px;
+
+      .subnav-item {
+        padding: 12px 16px;
+        font-size: 15px;
       }
     }
 
@@ -524,6 +610,15 @@ const nextPage = () => {
 
       .toggle-icon {
         font-size: 20px;
+      }
+    }
+
+    .alcohol-subnav {
+      margin-top: 8px;
+
+      .subnav-item {
+        padding: 10px 12px;
+        font-size: 13px;
       }
     }
 
