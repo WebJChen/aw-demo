@@ -2230,37 +2230,6 @@
             }
           },
           {
-            "title": "Nocton Vineyard",
-            "img": "",
-            "enTitle": "Tasmania Red Wine Example",
-            "itemData": {
-              "dialogInfoTitle": "文本1",
-              "desc": "描述1",
-              "features": [
-                {
-                  "icon": "#22c55e",
-                  "title": "地址",
-                  "desc": "待补充"
-                },
-                {
-                  "icon": "#3b82f6",
-                  "title": "联系方式",
-                  "desc": "待补充"
-                },
-                {
-                  "icon": "#f59e0b",
-                  "title": "营业时间",
-                  "desc": "待补充"
-                }
-              ],
-              "tags": [
-                "tag1",
-                "tag2",
-                "tag3"
-              ]
-            }
-          },
-          {
             "title": "Roslyn 1823",
             "img": "",
             "enTitle": "Tasmania Red Wine Example",
@@ -2727,6 +2696,240 @@
                 "tag3"
               ]
             }
+          },
+          {
+            "title": "Cathedral Rock Vineyard",
+            "img": "",
+            "enTitle": "Cathedral Rock Vineyard",
+            "itemData": {
+              "dialogInfoTitle": "Cathedral Rock Vineyard",
+              "desc": "位于塔斯马尼亚Sandfly的家族酒庄，成立于2004年，最初种植黑皮诺，后增加灰皮诺。设有品酒室，欢迎游客品尝其优质葡萄酒。",
+              "features": [
+                {
+                  "icon": "#22c55e",
+                  "title": "地址",
+                  "desc": "675 Sandfly Rd, Sandfly, TAS, Australia"
+                },
+                {
+                  "icon": "#3b82f6",
+                  "title": "联系方式",
+                  "desc": "+61 438 396 769 / andrea.kitto@bigpond.com"
+                },
+                {
+                  "icon": "#f59e0b",
+                  "title": "营业时间",
+                  "desc": "目前关门（具体时间待补充）"
+                }
+              ],
+              "tags": [
+                "Pinot Noir",
+                "Pinot Gris",
+                "Cellar Door",
+                "Family Owned"
+              ]
+            }
+          },
+          {
+            "title": "Nandroya Wines Margate",
+            "img": "",
+            "enTitle": "Nandroya Wines Margate",
+            "itemData": {
+              "dialogInfoTitle": "Nandroya Wines Margate",
+              "desc": "位于塔斯马尼亚Margate的家族酒庄，种植1.5公顷葡萄园，专注于黑皮诺和长相思。品酒室可欣赏Mt Wellington和D'Entrecasteaux海峡全景，采用有机种植并获绿色旅游认证。",
+              "features": [
+                {
+                  "icon": "#22c55e",
+                  "title": "地址",
+                  "desc": "262 Sandfly Rd, Margate, TAS, Australia"
+                },
+                {
+                  "icon": "#3b82f6",
+                  "title": "联系方式",
+                  "desc": "通过网站联系表单（页面未显示电话）"
+                },
+                {
+                  "icon": "#f59e0b",
+                  "title": "营业时间",
+                  "desc": "周五至周日 11am–5pm"
+                }
+              ],
+              "tags": [
+                "Pinot Noir",
+                "Sauvignon Blanc",
+                "Cool Climate",
+                "Cellar Door",
+                "Organic"
+              ]
+            }
+          },
+          {
+            "title": "Nocton Vineyard",
+            "img": "",
+            "enTitle": "Nocton Vineyard",
+            "itemData": {
+              "dialogInfoTitle": "Nocton Vineyard",
+              "desc": "位于塔斯马尼亚煤河谷的家族酒庄，成立于1999年，种植黑皮诺、霞多丽、梅洛、赤霞珠、白诗南等多种葡萄。酿酒师Alain Rousseau秉承传统与现代结合的酿造理念，品酒室每日开放，可俯瞰煤河谷全景。",
+              "features": [
+                {
+                  "icon": "#22c55e",
+                  "title": "地址",
+                  "desc": "373 Colebrook Road, Richmond, Tasmania 7025, Australia"
+                },
+                {
+                  "icon": "#3b82f6",
+                  "title": "联系方式",
+                  "desc": "(03) 6260 2688 / cellardoor@noctonwine.com.au"
+                },
+                {
+                  "icon": "#f59e0b",
+                  "title": "营业时间",
+                  "desc": "每日 10am–4pm（品酒室）"
+                }
+              ],
+              "tags": [
+                "Pinot Noir",
+                "Chardonnay",
+                "Merlot",
+                "Sauvignon Blanc",
+                "Cool Climate",
+                "Cellar Door"
+              ]
+            }
+          },
+          {
+            "title": "Lowestoft",
+            "img": "",
+            "enTitle": "Lowestoft",
+            "itemData": {
+              "dialogInfoTitle": "Lowestoft",
+              "desc": "位于塔斯马尼亚德文特河畔的精品酒庄，隶属于Fogarty Wine Group。拥有塔州最老的黑皮诺葡萄园之一，始建于1986年。首席酿酒师Liam McElhinney带领酒庄获得多项大奖，包括Jimmy Watson Trophy。",
+              "features": [
+                {
+                  "icon": "#22c55e",
+                  "title": "地址",
+                  "desc": "Derwent River, Tasmania（俯瞰MONA博物馆，具体门牌待补充）"
+                },
+                {
+                  "icon": "#3b82f6",
+                  "title": "联系方式",
+                  "desc": "通过Fogarty Wine Group官网联系"
+                },
+                {
+                  "icon": "#f59e0b",
+                  "title": "营业时间",
+                  "desc": "待补充（品酒室需预约）"
+                }
+              ],
+              "tags": [
+                "Pinot Noir",
+                "Chardonnay",
+                "Sparkling",
+                "Burgundy Style",
+                "Fogarty Wine Group"
+              ]
+            }
+          },
+          {
+            "title": "Viridian Wines",
+            "img": "",
+            "enTitle": "Viridian Wines",
+            "itemData": {
+              "dialogInfoTitle": "Viridian Wines",
+              "desc": "位于塔斯马尼亚德文特河谷的家族酒庄，采用环境可持续种植方式，小批量生产单一园葡萄酒。专注于黑皮诺、霞多丽、雷司令和起泡酒，同时也生产无酒精酸葡萄汁。",
+              "features": [
+                {
+                  "icon": "#22c55e",
+                  "title": "地址",
+                  "desc": "Derwent Valley, Tasmania（近霍巴特，具体门牌待补充）"
+                },
+                {
+                  "icon": "#3b82f6",
+                  "title": "联系方式",
+                  "desc": "+61 419 338 131 / hello@viridianwines.com"
+                },
+                {
+                  "icon": "#f59e0b",
+                  "title": "营业时间",
+                  "desc": "需关注开放日（如Open Vineyards Weekend）或预约参观"
+                }
+              ],
+              "tags": [
+                "Pinot Noir",
+                "Chardonnay",
+                "Riesling",
+                "Sparkling",
+                "Single Vineyard",
+                "Sustainable"
+              ]
+            }
+          },
+          {
+            "title": "Mapleton Vineyard",
+            "img": "",
+            "enTitle": "Mapleton Vineyard",
+            "itemData": {
+              "dialogInfoTitle": "Mapleton Vineyard",
+              "desc": "位于塔斯马尼亚煤河谷茶树的家族酒庄，由Laing家族经营。葡萄园种植在朝北的缓坡上，土壤富含白云石，生产雷司令、黑皮诺、霞多丽等凉爽气候葡萄酒。",
+              "features": [
+                {
+                  "icon": "#22c55e",
+                  "title": "地址",
+                  "desc": "890 Middle Tea Tree Road, Tea Tree, Tasmania 7017"
+                },
+                {
+                  "icon": "#3b82f6",
+                  "title": "联系方式",
+                  "desc": "通过网站联系表单"
+                },
+                {
+                  "icon": "#f59e0b",
+                  "title": "营业时间",
+                  "desc": "需预约参观"
+                }
+              ],
+              "tags": [
+                "Pinot Noir",
+                "Riesling",
+                "Chardonnay",
+                "Pinot Rosé",
+                "Cool Climate"
+              ]
+            }
+          },
+          {
+            "title": "Clarence House Wines",
+            "img": "",
+            "enTitle": "Clarence House Wines",
+            "itemData": {
+              "dialogInfoTitle": "Clarence House Wines",
+              "desc": "位于塔斯马尼亚Clarence历史庄园内的精品酒庄，葡萄园种植于Meehan Ranges，采用可持续种植方式。生产黑皮诺、霞多丽、长相思、白皮诺、丹魄、梅洛、赤霞珠等多款葡萄酒。",
+              "features": [
+                {
+                  "icon": "#22c55e",
+                  "title": "地址",
+                  "desc": "Clarence, Tasmania（具体门牌待补充）"
+                },
+                {
+                  "icon": "#3b82f6",
+                  "title": "联系方式",
+                  "desc": "通过网站联系"
+                },
+                {
+                  "icon": "#f59e0b",
+                  "title": "营业时间",
+                  "desc": "需预约"
+                }
+              ],
+              "tags": [
+                "Pinot Noir",
+                "Chardonnay",
+                "Sauvignon Blanc",
+                "Pinot Blanc",
+                "Tempranillo",
+                "Merlot",
+                "Cabernet Sauvignon"
+              ]
+            }
           }
         ]
       },
@@ -2794,6 +2997,40 @@
                 "tag1",
                 "tag2",
                 "tag3"
+              ]
+            }
+          },
+          {
+            "title": "Charles Reuben Estate",
+            "img": "",
+            "enTitle": "Charles Reuben Estate",
+            "itemData": {
+              "dialogInfoTitle": "Charles Reuben Estate",
+              "desc": "位于塔斯马尼亚煤河谷茶树的家族酒庄与小批量蒸馏厂，成立于1989年，生产葡萄酒精品葡萄酒、白兰地、水果白兰地利口酒、金酒和威士忌。提供品酒、酒庄导览和住宿。",
+              "features": [
+                {
+                  "icon": "#22c55e",
+                  "title": "地址",
+                  "desc": "777 Middle Tea Tree Rd, Tea Tree TAS 7017, Australia"
+                },
+                {
+                  "icon": "#3b82f6",
+                  "title": "联系方式",
+                  "desc": "通过官网联系"
+                },
+                {
+                  "icon": "#f59e0b",
+                  "title": "营业时间",
+                  "desc": "需预约品酒和导览；Salamanca Market每周六8:30am-3pm"
+                }
+              ],
+              "tags": [
+                "Brandy",
+                "Gin",
+                "Whisky",
+                "Eau de Vie",
+                "Fruit Brandy",
+                "Accommodation"
               ]
             }
           }
@@ -3987,38 +4224,6 @@
             }
           },
           {
-            "title": "Charles Reuben Estate",
-            "img": "",
-            "enTitle": "Other Spirits Example Title",
-            "itemData": {
-              "dialogInfoTitle": "Turner Stillhouse",
-              "desc": "描述1",
-              "website": "",
-              "features": [
-                {
-                  "icon": "#22c55e",
-                  "title": "地址",
-                  "desc": "待补充"
-                },
-                {
-                  "icon": "#3b82f6",
-                  "title": "联系方式",
-                  "desc": "待补充"
-                },
-                {
-                  "icon": "#f59e0b",
-                  "title": "营业时间",
-                  "desc": "待补充"
-                }
-              ],
-              "tags": [
-                "tag1",
-                "tag2",
-                "tag3"
-              ]
-            }
-          },
-          {
             "title": "Hartzview Vineyard",
             "img": "",
             "enTitle": "Tasmania Red Wine Example",
@@ -4046,6 +4251,40 @@
                 "tag1",
                 "tag2",
                 "tag3"
+              ]
+            }
+          },
+          {
+            "title": "The Albert Brewery",
+            "img": "",
+            "enTitle": "The Albert Brewery",
+            "itemData": {
+              "dialogInfoTitle": "The Albert Brewery",
+              "desc": "位于霍巴特Moonah的精品啤酒厂，专注传统拉格酿造工艺，使用来自德国的Ziemann和Steinecker酿酒设备，生产传统拉格和精酿系列啤酒。",
+              "features": [
+                {
+                  "icon": "#22c55e",
+                  "title": "地址",
+                  "desc": "73-75 Albert Road, Moonah, TAS 7009"
+                },
+                {
+                  "icon": "#3b82f6",
+                  "title": "联系方式",
+                  "desc": "sales@thealbertbrewery.com.au"
+                },
+                {
+                  "icon": "#f59e0b",
+                  "title": "营业时间",
+                  "desc": "待补充（Taproom可预约）"
+                }
+              ],
+              "tags": [
+                "Lager",
+                "Pilsner",
+                "Pale Ale",
+                "Sour",
+                "Craft Beer",
+                "Brewery"
               ]
             }
           }
