@@ -5345,8 +5345,8 @@
   },
   {
     "id": 8,
-    "navName": "澳洲首都领地",
-    "capital": "堪培拉",
+    "navName": "堪培拉",
+    "capital": "首都领地.ACT",
     "available": true,
     "path": "canberra",
     "subNavList": [

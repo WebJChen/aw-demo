@@ -74,11 +74,14 @@ watch(() => route.query.s, () => {
     <el-card class="search-card" shadow="hover">
       <div class="search-tags">
         <a v-for="item in tagRoutes" :key="item.tag" :href="item.href" target="_blank" rel="noopener noreferrer"
-          class="tag-pill w100 pointer" :class="{ active: !isSearchRoute && activeNav === item.tag, disabled: !item.available }"
+          class="tag-pill w100 pointer"
+          :class="{ active: !isSearchRoute && activeNav === item.tag, disabled: !item.available }"
           @click="handleTagClick(item, $event)">
           <span class="tag-content">
             {{ item.tag }}
-            <span v-if="item.capital" class="small-text fs16">(首府：{{ item.capital }})</span>
+            <span v-if="item.capital" class="small-text fs16">
+              ({{ item.tag === '堪培拉' ? '' : '首府：' }}{{ item.capital }})
+            </span>
           </span>
         </a>
       </div>
