@@ -4,6 +4,25 @@ const normalizeForSearch = (value) => String(value || '').toLowerCase().trim().r
 
 const tokenizeForSearch = (value) => normalizeForSearch(value).split(' ').filter(Boolean)
 
+const isAsciiToken = (token) => /^[a-z0-9]+$/i.test(token)
+
+const buildEffectiveQueryTokens = (keyword) => {
+  const rawTokens = tokenizeForSearch(keyword)
+  const compactQuery = normalizeForSearch(keyword).replace(/\s+/g, '')
+
+  // 英文/数字词至少 2 个字符，避免 "r i c h..." 这类输入把单字母当作关键词
+  const filtered = rawTokens.filter((token) => {
+    if (isAsciiToken(token)) return token.length >= 2
+    return token.length >= 1
+  })
+
+  // 兜底：若被过滤后为空，且拼接后的查询长度足够，则按整体词匹配（例如 "r i c h m o n d" -> "richmond"）
+  if (!filtered.length && compactQuery.length >= 2) {
+    return [compactQuery]
+  }
+  return filtered
+}
+
 const flattenInfoText = (info) => {
   if (!info || typeof info !== 'object') return ''
   const parts = []
@@ -28,6 +47,58 @@ const flattenInfoText = (info) => {
   return parts.join(' ')
 }
 
+const flattenWineDataText = (wineData) => {
+  if (!wineData || typeof wineData !== 'object') return ''
+  const parts = []
+  if (typeof wineData.desc === 'string') parts.push(wineData.desc)
+  if (Array.isArray(wineData.features)) {
+    for (const feature of wineData.features) {
+      if (!feature || typeof feature !== 'object') continue
+      if (typeof feature.title === 'string') parts.push(feature.title)
+      if (typeof feature.desc === 'string') parts.push(feature.desc)
+    }
+  }
+  if (Array.isArray(wineData.tags)) {
+    for (const tag of wineData.tags) {
+      if (typeof tag === 'string') parts.push(tag)
+    }
+  }
+  return parts.join(' ')
+}
+
+const extractItemDesc = (item) => {
+  if (typeof item?.desc === 'string' && item.desc.trim()) return item.desc.trim()
+  if (typeof item?.wineData?.desc === 'string' && item.wineData.desc.trim()) return item.wineData.desc.trim()
+  if (typeof item?.itemData?.desc === 'string' && item.itemData.desc.trim()) return item.itemData.desc.trim()
+  if (typeof item?.info?.desc === 'string' && item.info.desc.trim()) return item.info.desc.trim()
+  return ''
+}
+
+const extractItemTags = (item) => {
+  const tags = []
+  if (Array.isArray(item?.tags)) {
+    for (const tag of item.tags) {
+      if (typeof tag === 'string' && tag.trim()) tags.push(tag.trim())
+    }
+  }
+  if (Array.isArray(item?.wineData?.tags)) {
+    for (const tag of item.wineData.tags) {
+      if (typeof tag === 'string' && tag.trim()) tags.push(tag.trim())
+    }
+  }
+  if (Array.isArray(item?.itemData?.tags)) {
+    for (const tag of item.itemData.tags) {
+      if (typeof tag === 'string' && tag.trim()) tags.push(tag.trim())
+    }
+  }
+  if (Array.isArray(item?.info?.tags)) {
+    for (const tag of item.info.tags) {
+      if (typeof tag === 'string' && tag.trim()) tags.push(tag.trim())
+    }
+  }
+  return Array.from(new Set(tags))
+}
+
 const buildSearchIndex = (itemJson, sourceType = 'item') => {
   const rows = []
 
@@ -45,8 +116,10 @@ const buildSearchIndex = (itemJson, sourceType = 'item') => {
         const title = item?.title || ''
         const enTitle = item?.enTitle || ''
         const subTitle = item?.subTitle || ''
-        const infoText = flattenInfoText(item?.info)
-        const fullText = [navName, subNavName, title, enTitle, subTitle, infoText].join(' ')
+        const desc = extractItemDesc(item)
+        const tags = extractItemTags(item)
+        const infoText = [flattenInfoText(item?.info), flattenWineDataText(item?.wineData)].join(' ').trim()
+        const fullText = [navName, subNavName, title, enTitle, subTitle, desc, tags.join(' '), infoText].join(' ')
 
         rows.push({
           id: `${sourceType}__${regionPath}__${subNavPath}__${itemIndex}`,
@@ -57,6 +130,8 @@ const buildSearchIndex = (itemJson, sourceType = 'item') => {
           title,
           enTitle,
           subTitle,
+          desc,
+          tags,
           infoText,
           fullText,
           image: item?.img || '',
@@ -83,16 +158,19 @@ const indexOfTokenSum = (targetText, tokens) =>
 
 const scoreRow = (row, keyword) => {
   const queryNorm = normalizeForSearch(keyword)
-  const queryTokens = tokenizeForSearch(keyword)
-  if (!queryNorm || !queryTokens.length) return { score: 0, matched: false, matchField: '', snippet: '' }
+  const queryTokens = buildEffectiveQueryTokens(keyword)
+  const singleAsciiCharQuery = queryNorm.length === 1 && isAsciiToken(queryNorm)
+  if (!queryNorm || (!queryTokens.length && !singleAsciiCharQuery)) {
+    return { score: 0, matched: false, matchField: '', snippet: '' }
+  }
 
   const fields = [
     { key: 'title', weight: 150, text: row.title || '' },
     { key: 'enTitle', weight: 140, text: row.enTitle || '' },
-    { key: 'subTitle', weight: 120, text: row.subTitle || '' },
+    { key: 'desc', weight: 95, text: row.desc || '' },
+    { key: 'tags', weight: 90, text: Array.isArray(row.tags) ? row.tags.join(' ') : '' },
     { key: 'subNavName', weight: 110, text: row.subNavName || '' },
-    { key: 'navName', weight: 100, text: row.navName || '' },
-    { key: 'infoText', weight: 80, text: row.infoText || '' }
+    { key: 'navName', weight: 100, text: row.navName || '' }
   ]
 
   let bestScore = -1
@@ -104,10 +182,46 @@ const scoreRow = (row, keyword) => {
     const normText = normalizeForSearch(field.text)
     if (!normText) continue
 
-    const exactContains = normText.includes(queryNorm)
+    // 单字母英文兜底：只允许在高权重可见字段里做“单词前缀命中”，避免噪声太大
+    if (singleAsciiCharQuery) {
+      const allowSingleCharFallbackField = field.key === 'title' || field.key === 'enTitle' || field.key === 'tags'
+      if (!allowSingleCharFallbackField) continue
+
+      const words = normText.split(/[^a-z0-9]+/i).filter(Boolean)
+      const prefixHit = words.some((word) => word.startsWith(queryNorm))
+      if (!prefixHit) continue
+
+      matched = true
+      let score = field.weight + 20
+      if (field.key === 'title' || field.key === 'enTitle') score += 20
+
+      if (score > bestScore) {
+        bestScore = score
+        bestField = field.key
+        bestSnippet = field.text
+      }
+      continue
+    }
+
+    const singleAsciiToken = queryTokens.length === 1 && isAsciiToken(queryTokens[0]) && queryTokens[0].length >= 3
+    if (singleAsciiToken) {
+      const asciiCompactText = normText.replace(/[^a-z0-9]+/gi, '')
+      if (!asciiCompactText.includes(queryTokens[0])) continue
+    }
+
+    const exactContains = normText.includes(queryNorm) || normText.replace(/\s+/g, '').includes(queryNorm.replace(/\s+/g, ''))
     const allTokensHit = containsAllTokens(normText, queryTokens)
     const tokenHits = countTokenHits(normText, queryTokens)
-    if (!exactContains && !allTokensHit && tokenHits === 0) continue
+    const tokenHitRatio = queryTokens.length > 0 ? (tokenHits / queryTokens.length) : 0
+
+    // 匹配门槛：
+    // 1) 单词查询必须完整命中（防止少量字母误匹配）
+    // 2) 多词查询允许部分命中，但至少命中 2 个词且命中率 >= 60%
+    const enoughPartialHit =
+      queryTokens.length > 1 &&
+      tokenHits >= 2 &&
+      tokenHitRatio >= 0.6
+    if (!exactContains && !allTokensHit && !enoughPartialHit) continue
 
     matched = true
 
@@ -162,7 +276,10 @@ const getHighlightSegments = (text, keyword) => {
   if (!query) return [{ text: raw, highlight: false }]
 
   const lower = raw.toLowerCase()
-  const tokenList = Array.from(new Set(tokenizeForSearch(query).sort((a, b) => b.length - a.length)))
+  const queryNorm = normalizeForSearch(query)
+  const singleAsciiCharQuery = queryNorm.length === 1 && isAsciiToken(queryNorm)
+  const effectiveTokens = singleAsciiCharQuery ? [queryNorm] : buildEffectiveQueryTokens(query)
+  const tokenList = Array.from(new Set(effectiveTokens.sort((a, b) => b.length - a.length)))
   if (!tokenList.length) return [{ text: raw, highlight: false }]
 
   const marks = []

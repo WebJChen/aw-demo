@@ -2930,6 +2930,105 @@
                 "Cabernet Sauvignon"
               ]
             }
+          },
+          {
+            "title": "Quiet Mutiny",
+            "img": "",
+            "enTitle": "Quiet Mutiny",
+            "itemData": {
+              "dialogInfoTitle": "Quiet Mutiny",
+              "desc": "塔斯马尼亚精品酒庄，生产小批量葡萄酒，包括西拉、黑皮诺、雷司令和黑皮诺桃红。以Charlotte Badger的故事为灵感，注重人与地球的可持续发展。",
+              "features": [
+                {
+                  "icon": "#22c55e",
+                  "title": "地址",
+                  "desc": "待补充"
+                },
+                {
+                  "icon": "#3b82f6",
+                  "title": "联系方式",
+                  "desc": "通过网站联系或邮件订阅"
+                },
+                {
+                  "icon": "#f59e0b",
+                  "title": "营业时间",
+                  "desc": "待补充"
+                }
+              ],
+              "tags": [
+                "Syrah",
+                "Pinot Noir",
+                "Riesling",
+                "Pinot Meunier",
+                "Rosé"
+              ]
+            }
+          },
+          {
+            "title": "Parallax Organic Vineyard",
+            "img": "",
+            "enTitle": "Parallax Organic Vineyard",
+            "itemData": {
+              "dialogInfoTitle": "Parallax Organic Vineyard",
+              "desc": "位于塔斯马尼亚Penna的有机认证酒庄，塔斯马尼亚首家全认证有机葡萄园和酒庄。专注生产黑皮诺和雷司令，采用传统酿造工艺，不使用化学肥料、农药或除草剂，素食友好。",
+              "features": [
+                {
+                  "icon": "#22c55e",
+                  "title": "地址",
+                  "desc": "436 Shark Point Rd, Penna TAS 7171, Australia"
+                },
+                {
+                  "icon": "#3b82f6",
+                  "title": "联系方式",
+                  "desc": "0427 873839 / sales@parallaxvineyard.com.au"
+                },
+                {
+                  "icon": "#f59e0b",
+                  "title": "营业时间",
+                  "desc": "需电话预约"
+                }
+              ],
+              "tags": [
+                "Pinot Noir",
+                "Riesling",
+                "Organic",
+                "Vegan",
+                "Cool Climate"
+              ]
+            }
+          },
+          {
+            "title": "SISU Wines",
+            "img": "",
+            "enTitle": "SISU Wines",
+            "itemData": {
+              "dialogInfoTitle": "SISU Wines",
+              "desc": "位于塔斯马尼亚煤河谷坎帕尼亚的家族酒庄，占地95公顷，采用可持续种植方式。生产黑皮诺、霞多丽、雷司令和西拉，秉承诚实酿造、尊重自然的理念。",
+              "features": [
+                {
+                  "icon": "#22c55e",
+                  "title": "地址",
+                  "desc": "1479 Colebrook Road, Campania TAS 7026"
+                },
+                {
+                  "icon": "#3b82f6",
+                  "title": "联系方式",
+                  "desc": "通过网站联系"
+                },
+                {
+                  "icon": "#f59e0b",
+                  "title": "营业时间",
+                  "desc": "需预约（Cellar Door）"
+                }
+              ],
+              "tags": [
+                "Pinot Noir",
+                "Chardonnay",
+                "Riesling",
+                "Syrah",
+                "Sustainable"
+              ]
+            }
           }
         ]
       },
@@ -3031,6 +3130,73 @@
                 "Eau de Vie",
                 "Fruit Brandy",
                 "Accommodation"
+              ]
+            }
+          },
+          {
+            "title": "Bevs Hobart",
+            "img": "",
+            "enTitle": "Bevs Hobart",
+            "itemData": {
+              "dialogInfoTitle": "Bevs Hobart",
+              "desc": "位于霍巴特CBD的小批量酿酒厂和蒸馏厂，生产自制啤酒、苹果酒和烈酒。店内设有酒吧和活动空间，是本地人休闲聚会的场所。",
+              "features": [
+                {
+                  "icon": "#22c55e",
+                  "title": "地址",
+                  "desc": "189 Elizabeth St, Hobart, TAS 7000"
+                },
+                {
+                  "icon": "#3b82f6",
+                  "title": "联系方式",
+                  "desc": "bevshobart@gmail.com"
+                },
+                {
+                  "icon": "#f59e0b",
+                  "title": "营业时间",
+                  "desc": "待补充"
+                }
+              ],
+              "tags": [
+                "Gin",
+                "Lager",
+                "Pale Ale",
+                "Cider",
+                "Bar",
+                "Brewery"
+              ]
+            }
+          },
+          {
+            "title": "Sullivans Cove",
+            "img": "",
+            "enTitle": "Sullivans Cove",
+            "itemData": {
+              "dialogInfoTitle": "Sullivans Cove",
+              "desc": "世界知名的塔斯马尼亚蒸馏厂，以单一麦芽威士忌闻名，屡获国际大奖。同时生产高品质白兰地（Brandy）。所有产品均为单桶或小批量发行，采用优质橡木桶陈年。",
+              "features": [
+                {
+                  "icon": "#22c55e",
+                  "title": "地址",
+                  "desc": "1/10 Lamb Place, Cambridge, Tasmania, Australia"
+                },
+                {
+                  "icon": "#3b82f6",
+                  "title": "联系方式",
+                  "desc": "通过官网联系"
+                },
+                {
+                  "icon": "#f59e0b",
+                  "title": "营业时间",
+                  "desc": "需预约参观（Distillery Visit）"
+                }
+              ],
+              "tags": [
+                "Whisky",
+                "Single Malt",
+                "Brandy",
+                "Single Cask",
+                "Award Winning"
               ]
             }
           }
@@ -4284,6 +4450,39 @@
                 "Pale Ale",
                 "Sour",
                 "Craft Beer",
+                "Brewery"
+              ]
+            }
+          },
+          {
+            "title": "Bevs Hobart",
+            "img": "",
+            "enTitle": "Bevs Hobart",
+            "itemData": {
+              "dialogInfoTitle": "Bevs Hobart",
+              "desc": "位于霍巴特CBD的小批量酿酒厂和蒸馏厂，生产自制啤酒、苹果酒和烈酒。店内设有酒吧和活动空间，是本地人休闲聚会的场所。",
+              "features": [
+                {
+                  "icon": "#22c55e",
+                  "title": "地址",
+                  "desc": "189 Elizabeth St, Hobart, TAS 7000"
+                },
+                {
+                  "icon": "#3b82f6",
+                  "title": "联系方式",
+                  "desc": "bevshobart@gmail.com"
+                },
+                {
+                  "icon": "#f59e0b",
+                  "title": "营业时间",
+                  "desc": "待补充"
+                }
+              ],
+              "tags": [
+                "Lager",
+                "Pale Ale",
+                "Cider",
+                "Bar",
                 "Brewery"
               ]
             }

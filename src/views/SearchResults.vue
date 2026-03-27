@@ -6,7 +6,6 @@ import wineJson from '@/data/wine.json'
 import {
   buildSearchIndex,
   scoreRow,
-  extractSnippet,
   getHighlightSegments,
   saveSearchTarget
 } from '@/utils/searchUtils'
@@ -28,7 +27,6 @@ const allResults = computed(() => {
     const scoreData = scoreRow(row, keyword.value)
     if (!scoreData.matched) continue
 
-    const summaryRaw = row.subTitle || row.infoText || ''
     rows.push({
       id: row.id,
       score: scoreData.score,
@@ -40,8 +38,8 @@ const allResults = computed(() => {
       groupName: row.subNavName,
       title: row.title,
       enTitle: row.enTitle,
-      summary: summaryRaw,
-      snippet: extractSnippet(scoreData.snippet || summaryRaw || row.title, keyword.value),
+      tags: Array.isArray(row.tags) ? row.tags : [],
+      desc: row.desc || '',
       itemIndex: row.itemIndex,
       itemTitle: row.title,
       matchField: scoreData.matchField,
@@ -81,6 +79,7 @@ const openResult = (result) => {
   saveSearchTarget({
     s: keyword.value,
     hit: result.id,
+    sourceType: result.sourceType,
     pending: true,
     regionPath: result.regionPath,
     subNavPath: result.subNavPath,
@@ -108,8 +107,18 @@ const openResult = (result) => {
       <div v-if="hasResults" class="results-list">
         <article v-for="result in pagedResults" :key="result.id" class="result-card">
           <div class="result-meta">
-            <span class="meta-tag">{{ result.sectionTag }}</span>
-            <span class="meta-sub">{{ result.groupName }}</span>
+            <span class="meta-tag">
+              <span v-for="(seg, idx) in getHighlightSegments(result.sectionTag, keyword)" :key="`m1-${idx}`">
+                <span v-if="seg.highlight" class="result-title-highlight">{{ seg.text }}</span>
+                <span v-else>{{ seg.text }}</span>
+              </span>
+            </span>
+            <span class="meta-sub">
+              <span v-for="(seg, idx) in getHighlightSegments(result.groupName, keyword)" :key="`m2-${idx}`">
+                <span v-if="seg.highlight" class="result-title-highlight">{{ seg.text }}</span>
+                <span v-else>{{ seg.text }}</span>
+              </span>
+            </span>
             <span class="meta-source" :class="result.sourceType">{{ result.sourceType === 'wine' ? '酒' : '酒庄' }}</span>
           </div>
 
@@ -127,19 +136,21 @@ const openResult = (result) => {
             </span>
           </h3>
 
-          <p v-if="result.summary" class="result-summary">
-            <span v-for="(seg, idx) in getHighlightSegments(result.summary, keyword)" :key="`s-${idx}`">
+          <p v-if="result.desc" class="result-desc">
+            <span v-for="(seg, idx) in getHighlightSegments(result.desc, keyword)" :key="`d-${idx}`">
               <span v-if="seg.highlight" class="result-title-highlight">{{ seg.text }}</span>
               <span v-else>{{ seg.text }}</span>
             </span>
           </p>
 
-          <p class="result-snippet">
-            <span v-for="(seg, idx) in getHighlightSegments(result.snippet, keyword)" :key="`n-${idx}`">
-              <span v-if="seg.highlight" class="result-title-highlight">{{ seg.text }}</span>
-              <span v-else>{{ seg.text }}</span>
+          <div v-if="result.tags?.length" class="result-tags">
+            <span v-for="(tag, tagIdx) in result.tags" :key="`tag-${result.id}-${tagIdx}`" class="result-tag">
+              <span v-for="(seg, idx) in getHighlightSegments(tag, keyword)" :key="`tg-${tagIdx}-${idx}`">
+                <span v-if="seg.highlight" class="result-title-highlight">{{ seg.text }}</span>
+                <span v-else>{{ seg.text }}</span>
+              </span>
             </span>
-          </p>
+          </div>
 
           <div class="result-actions">
             <el-button type="primary" text @click="openResult(result)">新窗口打开并定位</el-button>
@@ -273,17 +284,28 @@ const openResult = (result) => {
   font-weight: 700;
 }
 
-.result-summary {
+.result-desc {
   margin: 0;
-  color: #475569;
-  font-size: 15px;
+  color: #334155;
+  font-size: 14px;
+  line-height: 1.7;
 }
 
-.result-snippet {
-  margin: 0;
-  color: #1f2937;
-  font-size: 14px;
-  line-height: 1.6;
+.result-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.result-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: #ecfdf5;
+  color: #166534;
+  font-size: 12px;
+  font-weight: 600;
 }
 
 .result-actions {

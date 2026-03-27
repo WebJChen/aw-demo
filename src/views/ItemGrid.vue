@@ -13,6 +13,7 @@ import CategoryDetailPanel from '@/views/CategoryDetailPanel.vue'
 const regionRouteNames = itemJson.map((region) => region.path)
 
 const gridRef = ref(null)
+const categoryPanelRef = ref(null)
 
 const currentPage = ref(1)
 const scrollPage = ref(1)
@@ -100,7 +101,7 @@ const currentSubNav = computed(() => {
 })
 
 const dataList = computed(() => currentSubNav.value?.itemData || [])
-const buildHitKey = (itemIndex) => `${currentRegionPath.value}__${currentSubNav.value?.subNavPath || ''}__${itemIndex}`
+const buildHitKey = (itemIndex) => `wine__${currentRegionPath.value}__${currentSubNav.value?.subNavPath || ''}__${itemIndex}`
 
 const eachPageCount = computed(() => {
   if (isPhone.value) {
@@ -199,10 +200,33 @@ const handleSearchTargetFocus = async () => {
   const routeHit = typeof route.query.hit === 'string' ? route.query.hit : ''
   const persisted = readSearchTarget()
   const canUsePersistedHit = !routeHit && persisted?.pending === true && typeof persisted?.hit === 'string'
-  const targetHit = routeHit || (canUsePersistedHit ? persisted.hit : '')
+  const rawTargetHit = routeHit || (canUsePersistedHit ? persisted.hit : '')
+  const targetHit = rawTargetHit
+    ? ((rawTargetHit.startsWith('item__') || rawTargetHit.startsWith('wine__')) ? rawTargetHit : `wine__${rawTargetHit}`)
+    : ''
   if (!targetHit || handledSearchHit.value === targetHit) return
 
-  const currentPrefix = `${currentRegionPath.value}__${currentSubNav.value?.subNavPath || ''}__`
+  const targetSourceType = targetHit.split('__')[0]
+  if (targetSourceType === 'item') {
+    await nextTick()
+    const handledByPanel = await categoryPanelRef.value?.focusByHit?.(targetHit)
+    if (!handledByPanel) return
+
+    notifySearchHitDone()
+    handledSearchHit.value = targetHit
+    if (persisted || routeHit) {
+      saveSearchTarget({
+        ...(persisted || {}),
+        hit: targetHit,
+        pending: false,
+        lastHandledHit: targetHit,
+        lastHandledAt: Date.now()
+      })
+    }
+    return
+  }
+
+  const currentPrefix = `wine__${currentRegionPath.value}__${currentSubNav.value?.subNavPath || ''}__`
   if (!targetHit.startsWith(currentPrefix)) return
 
   const targetIndex = dataList.value.findIndex((_, idx) => buildHitKey(idx) === targetHit)
@@ -307,7 +331,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <CategoryDetailPanel />
+  <CategoryDetailPanel ref="categoryPanelRef" />
   <div class="subnav-box center">
     <ul class="subnav-list">
       <li v-for="(subItem, idx) in subNavList" :key="idx" class="subnav-item w100"

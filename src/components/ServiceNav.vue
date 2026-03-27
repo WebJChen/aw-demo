@@ -34,6 +34,7 @@ const tagRoutes = computed(() => navItems.value.map((item) => ({
     params: { subNav: item.firstSubNavPath }
   }).href
 })))
+const isSearchRoute = computed(() => route.name === 'SearchResults')
 
 const handleTagClick = (item, event) => {
   // 禁用项仅展示样式，不允许新开页面
@@ -73,7 +74,7 @@ watch(() => route.query.s, () => {
     <el-card class="search-card" shadow="hover">
       <div class="search-tags">
         <a v-for="item in tagRoutes" :key="item.tag" :href="item.href" target="_blank" rel="noopener noreferrer"
-          class="tag-pill w100 pointer" :class="{ active: activeNav === item.tag, disabled: !item.available }"
+          class="tag-pill w100 pointer" :class="{ active: !isSearchRoute && activeNav === item.tag, disabled: !item.available }"
           @click="handleTagClick(item, $event)">
           <span class="tag-content">
             {{ item.tag }}

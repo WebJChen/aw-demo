@@ -1,40 +1,30 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onUnmounted, nextTick } from 'vue'
 import { ArrowDown, ArrowUp } from '@element-plus/icons-vue'
 import { storeToRefs } from 'pinia'
 import { useNavStore } from '@/stores/navStore'
+import { useDeviceStore } from '@/stores/deviceStore'
 import { ItemDataDialog } from '@/components/dialogs/page/home'
 import defaultImg from '@/assets/img/default.png'
 import itemJson from '@/data/item.json'
 
 const isExpanded = ref(false)
 const navStore = useNavStore()
-const { activeNav } = storeToRefs(navStore)
+const { activeNav, activeCategoryType } = storeToRefs(navStore)
 const itemDialogVisible = ref(false)
 const selectedItem = ref(null)
 const currentPage = ref(1)
-const itemsPerPage = 15 // 5行 x 3列 = 15个
-const activeSubNav = ref('葡萄酒类') // 默认选中葡萄酒类
-
-// 响应式断点
-const windowWidth = ref(typeof window !== 'undefined' ? window.innerWidth : 1200)
-
-const updateWindowWidth = () => {
-  windowWidth.value = window.innerWidth
-}
-
-onMounted(() => {
-  window.addEventListener('resize', updateWindowWidth)
-})
+const panelRef = ref(null)
+let panelHitTimer = null
+const deviceStore = useDeviceStore()
+const { isPhone, isTablet } = storeToRefs(deviceStore)
 
 onUnmounted(() => {
-  window.removeEventListener('resize', updateWindowWidth)
+  clearPanelHitState()
 })
 
 // 判断设备类型
-const isMobile = computed(() => windowWidth.value <= 768)
-const isTablet = computed(() => windowWidth.value > 768 && windowWidth.value <= 1024)
-const isDesktop = computed(() => windowWidth.value > 1024)
+const isDesktop = computed(() => !isPhone.value && !isTablet.value)
 
 // 根据设备类型计算每页显示数量
 const pageSize = computed(() => {
@@ -51,7 +41,7 @@ const allItems = computed(() => {
     category.subNavList.forEach(subNav => {
       // 根据当前选中的子导航过滤数据
       let shouldInclude = false
-      switch (activeSubNav.value) {
+      switch (activeCategoryType.value) {
         case '葡萄酒类':
           shouldInclude = subNav.subNavName.includes('葡萄酒')
           break
@@ -66,10 +56,11 @@ const allItems = computed(() => {
       }
 
       if (shouldInclude && subNav.itemData) {
-        subNav.itemData.forEach(item => {
+        subNav.itemData.forEach((item, itemIndex) => {
           items.push({
             ...item,
-            subNavName: subNav.subNavName
+            subNavName: subNav.subNavName,
+            __hitKey: `item__${category.path}__${subNav.subNavPath}__${itemIndex}`
           })
         })
       }
@@ -109,6 +100,88 @@ const openWineryDetail = (item) => {
   itemDialogVisible.value = true
 }
 
+const clearPanelHitState = () => {
+  if (panelHitTimer) {
+    clearTimeout(panelHitTimer)
+    panelHitTimer = null
+  }
+  const highlighted = panelRef.value?.querySelectorAll?.('.search-hit-active') || []
+  highlighted.forEach((el) => el.classList.remove('search-hit-active'))
+}
+
+const playPanelHitHighlight = (targetEl, fallbackMs = 1800) => {
+  return new Promise((resolve) => {
+    if (!targetEl) {
+      resolve()
+      return
+    }
+    clearPanelHitState()
+    targetEl.classList.add('search-hit-active')
+
+    let done = false
+    const cleanup = () => {
+      if (done) return
+      done = true
+      targetEl.removeEventListener('animationend', onAnimationEnd)
+      targetEl.classList.remove('search-hit-active')
+      if (panelHitTimer) {
+        clearTimeout(panelHitTimer)
+        panelHitTimer = null
+      }
+      resolve()
+    }
+
+    const onAnimationEnd = () => cleanup()
+    targetEl.addEventListener('animationend', onAnimationEnd, { once: true })
+    panelHitTimer = setTimeout(cleanup, fallbackMs)
+  })
+}
+
+const getAlcoholTypeBySubNavName = (subNavName = '') => {
+  if (subNavName.includes('葡萄酒')) return '葡萄酒类'
+  if (subNavName.includes('洋酒')) return '洋酒类'
+  return '其它酒类'
+}
+
+const focusByHit = async (hitKey) => {
+  if (typeof hitKey !== 'string' || !hitKey.startsWith('item__')) return false
+  const [sourceType, regionPath, subNavPath, indexStr] = hitKey.split('__')
+  if (sourceType !== 'item' || !regionPath || !subNavPath) return false
+
+  const region = itemJson.find((item) => item.path === regionPath)
+  if (!region) return false
+  const subNav = region.subNavList?.find((item) => item.subNavPath === subNavPath)
+  if (!subNav) return false
+
+  const targetIndex = Number(indexStr)
+  const targetItem = subNav.itemData?.[targetIndex]
+  if (!targetItem) return false
+
+  isExpanded.value = true
+  navStore.setActiveCategoryType(getAlcoholTypeBySubNavName(subNav.subNavName || ''))
+  await nextTick()
+
+  const allIndex = allItems.value.findIndex((item) => item.__hitKey === hitKey)
+  if (allIndex < 0) return false
+  currentPage.value = Math.floor(allIndex / pageSize.value) + 1
+
+  await nextTick()
+  await new Promise((resolve) => requestAnimationFrame(resolve))
+
+  const targetEl = panelRef.value?.querySelector?.(`[data-winery-hit-key="${hitKey}"]`)
+  if (!targetEl) return false
+
+  targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  void targetEl.offsetWidth
+  await playPanelHitHighlight(targetEl)
+  openWineryDetail(targetItem)
+  return true
+}
+
+defineExpose({
+  focusByHit
+})
+
 const resolveImageUrl = (img) => {
   const raw = typeof img === 'string' ? img.trim() : ''
   if (!raw) return defaultImg
@@ -128,13 +201,6 @@ const resolveImageUrl = (img) => {
   return defaultImg
 }
 
-// 分页导航
-const goToPage = (page) => {
-  if (page >= 1 && page <= totalPages.value) {
-    currentPage.value = page
-  }
-}
-
 const prevPage = () => {
   if (currentPage.value > 1) {
     currentPage.value--
@@ -148,13 +214,13 @@ const nextPage = () => {
 }
 
 const handleSubNavClick = (subNav) => {
-  activeSubNav.value = subNav
+  navStore.setActiveCategoryType(subNav)
   resetPage() // 切换子导航时重置页码
 }
 </script>
 
 <template>
-  <div class="category-detail-panel w100">
+  <div ref="panelRef" class="category-detail-panel w100">
     <div class="toggle-btn pointer" @click="toggleExpand">
       <span class="toggle-text">{{ isExpanded ? '点击收起' : '点击展开本州全部相关类别酒庄' }}</span>
       <el-icon class="toggle-icon" :class="{ 'rotate': isExpanded }">
@@ -165,10 +231,10 @@ const handleSubNavClick = (subNav) => {
 
     <!-- 酒类子导航 -->
     <div v-if="isExpanded" class="alcohol-subnav">
-      <div class="subnav-item" :class="{ 'active': activeSubNav === '葡萄酒类' }" @click="handleSubNavClick('葡萄酒类')">葡萄酒类
+      <div class="subnav-item" :class="{ 'active': activeCategoryType === '葡萄酒类' }" @click="handleSubNavClick('葡萄酒类')">葡萄酒类
       </div>
-      <div class="subnav-item" :class="{ 'active': activeSubNav === '洋酒类' }" @click="handleSubNavClick('洋酒类')">洋酒类</div>
-      <div class="subnav-item" :class="{ 'active': activeSubNav === '其它酒类' }" @click="handleSubNavClick('其它酒类')">其它酒类
+      <div class="subnav-item" :class="{ 'active': activeCategoryType === '洋酒类' }" @click="handleSubNavClick('洋酒类')">洋酒类</div>
+      <div class="subnav-item" :class="{ 'active': activeCategoryType === '其它酒类' }" @click="handleSubNavClick('其它酒类')">其它酒类
       </div>
     </div>
 
@@ -179,6 +245,7 @@ const handleSubNavClick = (subNav) => {
         <!-- 分页内容 -->
         <div class="items-grid">
           <div v-for="(item, index) in paginatedItems" :key="index" class="item-card pointer"
+            :data-winery-hit-key="item.__hitKey"
             @click="openWineryDetail(item)">
             <div class="item-header">
               <span class="item-title">{{ item.title }}</span>
@@ -335,6 +402,7 @@ const handleSubNavClick = (subNav) => {
           background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
           border-radius: 8px;
           padding: 16px;
+          border: 2px solid transparent;
           transition: all 0.3s ease;
           cursor: pointer;
 
@@ -342,6 +410,12 @@ const handleSubNavClick = (subNav) => {
             background: linear-gradient(180deg, #e6f7f6 0%, #d4f1ef 100%);
             transform: translateY(-4px);
             box-shadow: 0 4px 12px rgba(51, 177, 163, 0.2);
+          }
+
+          &.search-hit-active {
+            border-color: #33b1a3;
+            box-shadow: 0 0 0 3px rgba(51, 177, 163, 0.22), 0 10px 26px rgba(51, 177, 163, 0.24);
+            animation: panelHitPulse 1.6s ease;
           }
 
           .item-header {
@@ -430,6 +504,20 @@ const handleSubNavClick = (subNav) => {
         }
       }
     }
+  }
+}
+
+@keyframes panelHitPulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(51, 177, 163, 0.45), 0 8px 18px rgba(51, 177, 163, 0.16);
+  }
+
+  60% {
+    box-shadow: 0 0 0 10px rgba(51, 177, 163, 0.08), 0 14px 30px rgba(51, 177, 163, 0.24);
+  }
+
+  100% {
+    box-shadow: 0 0 0 3px rgba(51, 177, 163, 0.22), 0 10px 26px rgba(51, 177, 163, 0.24);
   }
 }
 

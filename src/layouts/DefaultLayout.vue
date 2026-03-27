@@ -205,6 +205,20 @@ const getFooterImg = name => new URL(`../assets/img/footer/${name}`, import.meta
 .el-dropdown-menu {
   z-index: 3000 !important;
 }
+
+/* 统一处理语言下拉触发器的焦点样式，避免偶发黑框 */
+.el-header .language-dropdown .el-dropdown-link {
+  outline: none;
+  border: 0;
+  box-shadow: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.el-header .language-dropdown .el-dropdown-link:focus,
+.el-header .language-dropdown .el-dropdown-link:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
 </style>
 <style scoped lang="scss">
 .el-container {

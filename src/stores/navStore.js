@@ -4,6 +4,7 @@ import { defineStore } from 'pinia'
 export const useNavStore = defineStore('nav', () => {
   const activeNav = ref('塔斯马尼亚州')
   const activeSubNav = ref('红酒')
+  const activeCategoryType = ref('葡萄酒类')
   const scrollY = ref(0)
 
   let throttleTimer = null
@@ -15,6 +16,10 @@ export const useNavStore = defineStore('nav', () => {
 
   const setActiveSubNav = (subNav) => {
     activeSubNav.value = subNav || ''
+  }
+
+  const setActiveCategoryType = (categoryType) => {
+    activeCategoryType.value = categoryType || '葡萄酒类'
   }
 
   const setScrollY = (value) => {
@@ -49,9 +54,11 @@ export const useNavStore = defineStore('nav', () => {
   return {
     activeNav,
     activeSubNav,
+    activeCategoryType,
     scrollY,
     setActiveNav,
     setActiveSubNav,
+    setActiveCategoryType,
     setScrollY,
     saveScrollYThrottled,
     flushScrollY
