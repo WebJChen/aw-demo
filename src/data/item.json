@@ -3029,6 +3029,41 @@
                 "Sustainable"
               ]
             }
+          },
+          {
+            "title": "Torch Bearer Wines",
+            "img": "",
+            "enTitle": "Torch Bearer Wines",
+            "itemData": {
+              "dialogInfoTitle": "Torch Bearer Wines",
+              "desc": "位于塔斯马尼亚茶树的生物动力法酒庄，自1993年种植葡萄。生产黑皮诺、霞多丽、长相思、雷司令、起泡酒等自然葡萄酒，注重生态再生和社区责任。",
+              "features": [
+                {
+                  "icon": "#22c55e",
+                  "title": "地址",
+                  "desc": "1013-1015 Tea Tree Road, Tea Tree, TAS 7017, Australia"
+                },
+                {
+                  "icon": "#3b82f6",
+                  "title": "联系方式",
+                  "desc": "+61 469 440 995 / contact@torchbearerwine.com"
+                },
+                {
+                  "icon": "#f59e0b",
+                  "title": "营业时间",
+                  "desc": "需预约参观"
+                }
+              ],
+              "tags": [
+                "Pinot Noir",
+                "Chardonnay",
+                "Sauvignon Blanc",
+                "Riesling",
+                "Sparkling",
+                "Biodynamic",
+                "Natural Wine"
+              ]
+            }
           }
         ]
       },
