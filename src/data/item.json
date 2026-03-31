@@ -3064,6 +3064,40 @@
                 "Natural Wine"
               ]
             }
+          },
+          {
+            "title": "GlenAyr Wines",
+            "img": "",
+            "enTitle": "GlenAyr Wines",
+            "itemData": {
+              "dialogInfoTitle": "GlenAyr Wines",
+              "desc": "位于塔斯马尼亚煤河谷Richmond的家族酒庄，成立于1975年，是该地区第二个建立的葡萄园。拥有该地区最古老的葡萄藤，小批量生产精品葡萄酒，包括黑皮诺、西拉、赤霞珠、霞多丽和传统法起泡酒。",
+              "features": [
+                {
+                  "icon": "#22c55e",
+                  "title": "地址",
+                  "desc": "70 Back Tea Tree Road, Richmond, Tasmania 7025"
+                },
+                {
+                  "icon": "#3b82f6",
+                  "title": "联系方式",
+                  "desc": "通过官网联系表单"
+                },
+                {
+                  "icon": "#f59e0b",
+                  "title": "营业时间",
+                  "desc": "农场办公室可直接购买，具体时间需电话咨询"
+                }
+              ],
+              "tags": [
+                "Pinot Noir",
+                "Shiraz",
+                "Cabernet Sauvignon",
+                "Chardonnay",
+                "Sparkling",
+                "Old Vines"
+              ]
+            }
           }
         ]
       },
@@ -4566,6 +4600,221 @@
                 "tag1",
                 "tag2",
                 "tag3"
+              ]
+            }
+          },
+          {
+            "title": "Jubilee Vineyard Estate",
+            "img": "",
+            "enTitle": "Jubilee Vineyard Estate",
+            "itemData": {
+              "dialogInfoTitle": "Jubilee Vineyard Estate",
+              "desc": "位于新南威尔士州Hawkesbury地区Ebenezer的家族酒庄，历史可追溯至1821年。生产红葡萄酒、白葡萄酒、起泡酒及加强型葡萄酒，采用手工酿造工艺。",
+              "features": [
+                {
+                  "icon": "#22c55e",
+                  "title": "地址",
+                  "desc": "519 Tizzana Road, Ebenezer NSW"
+                },
+                {
+                  "icon": "#3b82f6",
+                  "title": "联系方式",
+                  "desc": "0473 535 325 / wine@jubileevineyard.com.au"
+                },
+                {
+                  "icon": "#f59e0b",
+                  "title": "营业时间",
+                  "desc": "周六、周日 12:00pm–5:00pm，其他时间需预约"
+                }
+              ],
+              "tags": [
+                "Chambourcin",
+                "Shiraz",
+                "Cabernet Sauvignon",
+                "Sauvignon Blanc",
+                "Riesling",
+                "Pinot Gris",
+                "Sparkling",
+                "Fortified"
+              ]
+            }
+          },
+          {
+            "title": "Habitat Vineyard",
+            "img": "",
+            "enTitle": "Habitat Vineyard",
+            "itemData": {
+              "dialogInfoTitle": "Habitat Vineyard",
+              "desc": "位于新南威尔士州奥兰治产区Mt Canobolas的有机和生物动力法认证酒庄，成立于1989年，海拔1100米。生产霞多丽、西拉、赤霞珠、梅洛、黑皮诺等凉爽气候葡萄酒。",
+              "features": [
+                {
+                  "icon": "#22c55e",
+                  "title": "地址",
+                  "desc": "329 Old Canobolas Road, Nashdale, NSW 2800, Australia"
+                },
+                {
+                  "icon": "#3b82f6",
+                  "title": "联系方式",
+                  "desc": "02-5301-6231 / sales@habitat-vineyard.com.au"
+                },
+                {
+                  "icon": "#f59e0b",
+                  "title": "营业时间",
+                  "desc": "需预约参观"
+                }
+              ],
+              "tags": [
+                "Chardonnay",
+                "Shiraz",
+                "Cabernet Sauvignon",
+                "Merlot",
+                "Pinot Noir",
+                "Organic",
+                "Biodynamic",
+                "Cool Climate"
+              ]
+            }
+          },
+          {
+            "title": "Dryridge Estate",
+            "img": "",
+            "enTitle": "Dryridge Estate",
+            "itemData": {
+              "dialogInfoTitle": "Dryridge Estate",
+              "desc": "位于新南威尔士州蓝山Megalong Valley的精品酒庄，拥有品酒室、住宿和婚礼场地。生产雷司令、维蒙蒂诺、霞多丽、灰皮诺、桑娇维塞、西拉、黑皮诺、丹魄及普罗塞克起泡酒。",
+              "features": [
+                {
+                  "icon": "#22c55e",
+                  "title": "地址",
+                  "desc": "226 Aspinall Road, Megalong Valley NSW 2785"
+                },
+                {
+                  "icon": "#3b82f6",
+                  "title": "联系方式",
+                  "desc": "0403 118 990 / info@dryridge.com.au"
+                },
+                {
+                  "icon": "#f59e0b",
+                  "title": "营业时间",
+                  "desc": "品酒室需预约（详见官网）"
+                }
+              ],
+              "tags": [
+                "Riesling",
+                "Vermentino",
+                "Chardonnay",
+                "Pinot Grigio",
+                "Sangiovese",
+                "Shiraz",
+                "Pinot Noir",
+                "Tempranillo",
+                "Prosecco",
+                "Rosé"
+              ]
+            }
+          },
+          {
+            "title": "Winburndale Vineyard & Winery",
+            "img": "",
+            "enTitle": "Winburndale Vineyard & Winery",
+            "itemData": {
+              "dialogInfoTitle": "Winburndale Vineyard & Winery",
+              "desc": "位于新南威尔士州中央山脉产区的家族精品酒庄，距离巴瑟斯特15分钟车程。葡萄园手工修剪，手工采摘，酿造过程采用最小干预方式。生产赤霞珠、西拉、西拉赤霞珠混酿、灰皮诺、霞多丽及桃红葡萄酒。",
+              "features": [
+                {
+                  "icon": "#22c55e",
+                  "title": "地址",
+                  "desc": "116 Saint Anthonys Creek Road, Glanmire NSW 2795"
+                },
+                {
+                  "icon": "#3b82f6",
+                  "title": "联系方式",
+                  "desc": "(02) 6337 3134 / clare@winburndalewines.com.au"
+                },
+                {
+                  "icon": "#f59e0b",
+                  "title": "营业时间",
+                  "desc": "周六 10:30am–3:30pm（无需预约）；周日及工作日需预约"
+                }
+              ],
+              "tags": [
+                "Cabernet Sauvignon",
+                "Shiraz",
+                "Shiraz Cabernet",
+                "Pinot Gris",
+                "Chardonnay",
+                "Rosé"
+              ]
+            }
+          },
+          {
+            "title": "Colmar Estate",
+            "img": "",
+            "enTitle": "Colmar Estate",
+            "itemData": {
+              "dialogInfoTitle": "Colmar Estate",
+              "desc": "位于新南威尔士州奥兰治产区的精品酒庄，Halliday五星红五星评级。以雷司令和起泡酒著称，生产黑皮诺、霞多丽、灰皮诺、桃红及传统法起泡酒，多次在澳洲葡萄酒展中获奖。",
+              "features": [
+                {
+                  "icon": "#22c55e",
+                  "title": "地址",
+                  "desc": "790 Pinnacle Rd, Orange, NSW 2800"
+                },
+                {
+                  "icon": "#3b82f6",
+                  "title": "联系方式",
+                  "desc": "0419 977 270 / contact@colmarestate.com.au"
+                },
+                {
+                  "icon": "#f59e0b",
+                  "title": "营业时间",
+                  "desc": "需预约（Cellar Door）"
+                }
+              ],
+              "tags": [
+                "Pinot Noir",
+                "Chardonnay",
+                "Riesling",
+                "Pinot Gris",
+                "Sparkling",
+                "Rosé",
+                "Five Red Stars",
+                "Halliday"
+              ]
+            }
+          },
+          {
+            "title": "Grass Parrot Vineyard",
+            "img": "",
+            "enTitle": "Grass Parrot Vineyard",
+            "itemData": {
+              "dialogInfoTitle": "Grass Parrot Vineyard",
+              "desc": "位于新南威尔士州中央山脉产区的家族精品酒庄，采用可持续有机种植原则，低干预酿造。生产西拉、品丽珠、西拉品丽珠混酿、桃红及起泡酒，多次在葡萄酒展中获奖。",
+              "features": [
+                {
+                  "icon": "#22c55e",
+                  "title": "地址",
+                  "desc": "Bathurst region, Central Ranges, NSW（具体门牌待补充）"
+                },
+                {
+                  "icon": "#3b82f6",
+                  "title": "联系方式",
+                  "desc": "通过官网联系表单"
+                },
+                {
+                  "icon": "#f59e0b",
+                  "title": "营业时间",
+                  "desc": "需预约（无固定品酒室开放时间）"
+                }
+              ],
+              "tags": [
+                "Shiraz",
+                "Cabernet Franc",
+                "Shiraz Cabernet Franc",
+                "Rosé",
+                "Sparkling",
+                "Organic",
+                "Low Intervention"
               ]
             }
           }
