@@ -33,6 +33,14 @@ const pageSize = computed(() => {
   return 5 // 5行 x 1列 (手机端)
 })
 
+const getSubNavItems = (subNav) => {
+  if (Array.isArray(subNav?.info)) return subNav.info
+  if (Array.isArray(subNav?.itemData)) return subNav.itemData
+  return []
+}
+
+const getItemInfo = (item) => item?.info || item?.itemData || null
+
 // 获取所有项目数据
 const allItems = computed(() => {
   const items = []
@@ -55,8 +63,9 @@ const allItems = computed(() => {
           shouldInclude = true
       }
 
-      if (shouldInclude && subNav.itemData) {
-        subNav.itemData.forEach((item, itemIndex) => {
+      const subNavItems = getSubNavItems(subNav)
+      if (shouldInclude && subNavItems.length) {
+        subNavItems.forEach((item, itemIndex) => {
           items.push({
             ...item,
             subNavName: subNav.subNavName,
@@ -154,7 +163,7 @@ const focusByHit = async (hitKey) => {
   if (!subNav) return false
 
   const targetIndex = Number(indexStr)
-  const targetItem = subNav.itemData?.[targetIndex]
+  const targetItem = getSubNavItems(subNav)?.[targetIndex]
   if (!targetItem) return false
 
   isExpanded.value = true
@@ -252,8 +261,8 @@ const handleSubNavClick = (subNav) => {
               <span class="item-en-title">{{ item.enTitle }}</span>
             </div>
             <div class="item-body">
-              <p class="item-info-title">{{ item.itemData?.dialogInfoTitle }}</p>
-              <p class="item-desc">{{ item.itemData?.desc }}</p>
+              <p class="item-info-title">{{ getItemInfo(item)?.dialogInfoTitle }}</p>
+              <p class="item-desc">{{ getItemInfo(item)?.desc }}</p>
             </div>
           </div>
         </div>

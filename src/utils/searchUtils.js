@@ -110,7 +110,9 @@ const buildSearchIndex = (itemJson, sourceType = 'item') => {
     for (const subNav of subNavList) {
       const subNavName = subNav?.subNavName || ''
       const subNavPath = subNav?.subNavPath || ''
-      const itemData = Array.isArray(subNav?.itemData) ? subNav.itemData : []
+      const itemData = Array.isArray(subNav?.info)
+        ? subNav.info
+        : (Array.isArray(subNav?.itemData) ? subNav.itemData : [])
 
       itemData.forEach((item, itemIndex) => {
         const title = item?.title || ''
