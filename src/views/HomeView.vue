@@ -1,17 +1,22 @@
 <script setup>
-import { ref } from 'vue';
+import { computed } from 'vue';
+import { storeToRefs } from 'pinia'
 import ServiceNav from '@/components/ServiceNav.vue'
+import { useLoadingStore } from '@/stores/loadingStore'
 
-const isSearching = ref(false)
-const isLoading = ref(false)
+const loadingStore = useLoadingStore()
+const { fullscreenLoading } = storeToRefs(loadingStore)
+const loadingState = computed(() => fullscreenLoading.value)
 </script>
 
 <template>
-  <ServiceNav />
-  <div v-loading.fullscreen="isSearching || isLoading" element-loading-spinner-color="#279486"
-    element-loading-background="rgba(255, 255, 255, 0.8)"></div>
-  <div class="content-box">
-    <RouterView />
+  <div>
+    <ServiceNav />
+    <div v-loading.fullscreen="loadingState" element-loading-spinner-color="#279486"
+      element-loading-background="rgba(255, 255, 255, 0.8)"></div>
+    <div class="content-box">
+      <RouterView />
+    </div>
   </div>
 </template>
 

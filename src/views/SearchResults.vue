@@ -9,12 +9,14 @@ import {
   getHighlightSegments,
   saveSearchTarget
 } from '@/utils/searchUtils'
+import { withRandomLoading } from '@/utils/loadingUtils'
 
 const route = useRoute()
 const router = useRouter()
 
 const pageSize = 10
 const currentPage = ref(1)
+const pageLoading = ref(false)
 
 const keyword = computed(() => (typeof route.query.s === 'string' ? route.query.s.trim() : ''))
 const indexRows = [...buildSearchIndex(itemJson, 'item'), ...buildSearchIndex(wineJson, 'wine')]
@@ -58,12 +60,21 @@ const pagedResults = computed(() => {
   return allResults.value.slice(start, start + pageSize)
 })
 
-watch(keyword, () => {
-  currentPage.value = 1
+watch(keyword, async () => {
+  await withRandomLoading(async () => {
+    pageLoading.value = true
+    currentPage.value = 1
+  }, { min: 80, max: 300 })
+  pageLoading.value = false
 }, { immediate: true })
 
-const handlePageChange = (page) => {
-  currentPage.value = page
+const handlePageChange = async (page) => {
+  if (page === currentPage.value) return
+  await withRandomLoading(async () => {
+    pageLoading.value = true
+    currentPage.value = page
+  }, { min: 80, max: 300 })
+  pageLoading.value = false
 }
 
 const openResult = (result) => {
@@ -103,7 +114,8 @@ const openResult = (result) => {
       </div>
     </div>
 
-    <div class="results-section">
+    <div class="results-section" v-loading.fullscreen="pageLoading" element-loading-spinner-color="#279486"
+      element-loading-background="rgba(255, 255, 255, 0.8)">
       <div v-if="hasResults" class="results-list">
         <article v-for="result in pagedResults" :key="result.id" class="result-card">
           <div class="result-meta">

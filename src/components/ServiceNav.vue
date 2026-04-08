@@ -5,6 +5,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useNavStore } from '@/stores/navStore'
 import itemJson from '@/data/item.json'
+import { withRandomLoading } from '@/utils/loadingUtils'
 
 const route = useRoute()
 const router = useRouter()
@@ -43,12 +44,15 @@ const handleTagClick = (item, event) => {
   }
 }
 
-const openSearchPage = () => {
+const openSearchPage = async () => {
   const s = keyword.value.trim()
   if (!s) return
-  router.push({
+  await withRandomLoading(() => router.push({
     name: 'SearchResults',
     query: { s }
+  }), {
+    min: 80,
+    max: 300
   })
 }
 
