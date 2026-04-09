@@ -50,13 +50,13 @@ const allItems = computed(() => {
       // 根据当前选中的子导航过滤数据
       let shouldInclude = false
       switch (activeCategoryType.value) {
-        case '葡萄酒类':
+        case '葡萄酒酒庄':
           shouldInclude = subNav.subNavName.includes('葡萄酒')
           break
-        case '洋酒类':
+        case '洋酒酒庄':
           shouldInclude = subNav.subNavName.includes('洋酒')
           break
-        case '其它酒类':
+        case '其它酒类酒庄':
           shouldInclude = !subNav.subNavName.includes('葡萄酒') && !subNav.subNavName.includes('红酒') && !subNav.subNavName.includes('白酒') && !subNav.subNavName.includes('洋酒') && !subNav.subNavName.includes('威士忌') && !subNav.subNavName.includes('白兰地') && !subNav.subNavName.includes('伏特加')
           break
         default:
@@ -147,9 +147,9 @@ const playPanelHitHighlight = (targetEl, fallbackMs = 1800) => {
 }
 
 const getAlcoholTypeBySubNavName = (subNavName = '') => {
-  if (subNavName.includes('葡萄酒')) return '葡萄酒类'
-  if (subNavName.includes('洋酒')) return '洋酒类'
-  return '其它酒类'
+  if (subNavName.includes('葡萄酒')) return '葡萄酒酒庄'
+  if (subNavName.includes('洋酒')) return '洋酒酒庄'
+  return '其它酒类酒庄'
 }
 
 const focusByHit = async (hitKey) => {
@@ -240,10 +240,13 @@ const handleSubNavClick = (subNav) => {
 
     <!-- 酒类子导航 -->
     <div v-if="isExpanded" class="alcohol-subnav">
-      <div class="subnav-item" :class="{ 'active': activeCategoryType === '葡萄酒类' }" @click="handleSubNavClick('葡萄酒类')">葡萄酒类
+      <div class="subnav-item" :class="{ 'active': activeCategoryType === '葡萄酒酒庄' }" @click="handleSubNavClick('葡萄酒酒庄')">
+        葡萄酒酒庄
       </div>
-      <div class="subnav-item" :class="{ 'active': activeCategoryType === '洋酒类' }" @click="handleSubNavClick('洋酒类')">洋酒类</div>
-      <div class="subnav-item" :class="{ 'active': activeCategoryType === '其它酒类' }" @click="handleSubNavClick('其它酒类')">其它酒类
+      <div class="subnav-item" :class="{ 'active': activeCategoryType === '洋酒酒庄' }" @click="handleSubNavClick('洋酒酒庄')">洋酒酒庄
+      </div>
+      <div class="subnav-item" :class="{ 'active': activeCategoryType === '其它酒类酒庄' }" @click="handleSubNavClick('其它酒类酒庄')">
+        其它酒类酒庄
       </div>
     </div>
 
@@ -254,8 +257,7 @@ const handleSubNavClick = (subNav) => {
         <!-- 分页内容 -->
         <div class="items-grid">
           <div v-for="(item, index) in paginatedItems" :key="index" class="item-card pointer"
-            :data-winery-hit-key="item.__hitKey"
-            @click="openWineryDetail(item)">
+            :data-winery-hit-key="item.__hitKey" @click="openWineryDetail(item)">
             <div class="item-header">
               <span class="item-title">{{ item.title }}</span>
               <span class="item-en-title">{{ item.enTitle }}</span>
