@@ -8,12 +8,10 @@ import { useNavStore } from '@/stores/navStore';
 import defaultImg from '@/assets/img/default.png';
 import itemJson from '@/data/wine.json';
 import { readSearchTarget, saveSearchTarget } from '@/utils/searchUtils'
-import CategoryDetailPanel from '@/views/CategoryDetailPanel.vue'
 
 const regionRouteNames = itemJson.map((region) => region.path)
 
 const gridRef = ref(null)
-const categoryPanelRef = ref(null)
 
 const currentPage = ref(1)
 const scrollPage = ref(1)
@@ -196,6 +194,38 @@ const waitForSearchTargetReady = (hitKey, maxFrames = 180) => {
   })
 }
 
+const focusCategoryPanelByHit = (hitKey, timeoutMs = 6000) => {
+  return new Promise((resolve) => {
+    const requestId = `focus_${Date.now()}_${Math.random().toString(36).slice(2)}`
+    let timer = null
+
+    const cleanup = () => {
+      window.removeEventListener('auswine:focus-category-hit-result', onResult)
+      if (timer) {
+        clearTimeout(timer)
+        timer = null
+      }
+    }
+
+    const onResult = (event) => {
+      const detail = event?.detail || {}
+      if (detail.requestId !== requestId) return
+      cleanup()
+      resolve(!!detail.handled)
+    }
+
+    window.addEventListener('auswine:focus-category-hit-result', onResult)
+    window.dispatchEvent(new CustomEvent('auswine:focus-category-hit', {
+      detail: { requestId, hitKey }
+    }))
+
+    timer = setTimeout(() => {
+      cleanup()
+      resolve(false)
+    }, timeoutMs)
+  })
+}
+
 const handleSearchTargetFocus = async () => {
   const routeHit = typeof route.query.hit === 'string' ? route.query.hit : ''
   const persisted = readSearchTarget()
@@ -209,7 +239,7 @@ const handleSearchTargetFocus = async () => {
   const targetSourceType = targetHit.split('__')[0]
   if (targetSourceType === 'item') {
     await nextTick()
-    const handledByPanel = await categoryPanelRef.value?.focusByHit?.(targetHit)
+    const handledByPanel = await focusCategoryPanelByHit(targetHit)
     if (!handledByPanel) return
 
     notifySearchHitDone()
@@ -331,7 +361,6 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <CategoryDetailPanel ref="categoryPanelRef" />
   <div class="subnav-box center">
     <ul class="subnav-list">
       <li v-for="(subItem, idx) in subNavList" :key="idx" class="subnav-item w100"

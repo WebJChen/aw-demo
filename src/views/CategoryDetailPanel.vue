@@ -96,6 +96,7 @@ const resetPage = () => {
 const categoryList = computed(() => {
   return itemJson.filter(item => item.navName === activeNav.value)
 })
+const panelTitleText = computed(() => `${activeNav.value || ''}全部相关酒庄`)
 
 const toggleExpand = () => {
   isExpanded.value = !isExpanded.value
@@ -231,7 +232,7 @@ const handleSubNavClick = (subNav) => {
 <template>
   <div ref="panelRef" class="category-detail-panel w100">
     <div class="toggle-btn pointer" @click="toggleExpand">
-      <span class="toggle-text">{{ isExpanded ? '点击收起' : '点击展开本州全部相关类别酒庄' }}</span>
+      <span class="toggle-text">{{ panelTitleText }}</span>
       <el-icon class="toggle-icon" :class="{ 'rotate': isExpanded }">
         <ArrowDown v-if="!isExpanded" />
         <ArrowUp v-else />
@@ -240,13 +241,16 @@ const handleSubNavClick = (subNav) => {
 
     <!-- 酒类子导航 -->
     <div v-if="isExpanded" class="alcohol-subnav">
-      <div class="subnav-item" :class="{ 'active': activeCategoryType === '葡萄酒酒庄' }" @click="handleSubNavClick('葡萄酒酒庄')">
-        葡萄酒酒庄
+      <div class="subnav-item" :class="{ 'active': activeCategoryType === '葡萄酒酒庄' }"
+        @click="handleSubNavClick('葡萄酒酒庄')">
+        点击展示葡萄酒酒庄
       </div>
-      <div class="subnav-item" :class="{ 'active': activeCategoryType === '洋酒酒庄' }" @click="handleSubNavClick('洋酒酒庄')">洋酒酒庄
+      <div class="subnav-item" :class="{ 'active': activeCategoryType === '洋酒酒庄' }" @click="handleSubNavClick('洋酒酒庄')">
+        点击展示洋酒酒庄
       </div>
-      <div class="subnav-item" :class="{ 'active': activeCategoryType === '其它酒类酒庄' }" @click="handleSubNavClick('其它酒类酒庄')">
-        其它酒类酒庄
+      <div class="subnav-item" :class="{ 'active': activeCategoryType === '其它酒类酒庄' }"
+        @click="handleSubNavClick('其它酒类酒庄')">
+        点击展示其它酒类酒庄
       </div>
     </div>
 
@@ -295,13 +299,13 @@ const handleSubNavClick = (subNav) => {
 <style scoped lang="scss">
 .category-detail-panel {
   max-width: 1200px;
-  margin: 0 auto 40px;
+  margin: 30px auto 0;
   padding: 0 20px;
 
   .toggle-btn {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: 8px;
     padding: 12px 24px;
     background: linear-gradient(180deg, #33b1a3 0%, #279486 100%);
@@ -324,13 +328,14 @@ const handleSubNavClick = (subNav) => {
     }
 
     .toggle-text {
-      flex: 1;
       text-align: center;
+      flex: 1;
     }
 
     .toggle-icon {
       font-size: 20px;
       transition: transform 0.3s ease;
+      margin-left: auto;
 
       &.rotate {
         transform: rotate(180deg);

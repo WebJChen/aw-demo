@@ -1,17 +1,19 @@
 <script setup>
 import { Search } from '@element-plus/icons-vue'
-import { computed, ref, watch } from 'vue'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useNavStore } from '@/stores/navStore'
 import itemJson from '@/data/item.json'
 import { withRandomLoading } from '@/utils/loadingUtils'
+import CategoryDetailPanel from '@/views/CategoryDetailPanel.vue'
 
 const route = useRoute()
 const router = useRouter()
 const navStore = useNavStore()
 const { activeNav } = storeToRefs(navStore)
 const keyword = ref('')
+const categoryPanelRef = ref(null)
 
 const syncKeywordFromRoute = () => {
   keyword.value = typeof route.query.s === 'string' ? route.query.s : ''
@@ -60,6 +62,27 @@ const onSearchEnter = () => {
   openSearchPage()
 }
 
+const handleFocusCategoryHit = async (event) => {
+  const detail = event?.detail || {}
+  const requestId = detail.requestId
+  const hitKey = detail.hitKey
+  const handled = await categoryPanelRef.value?.focusByHit?.(hitKey)
+  window.dispatchEvent(new CustomEvent('auswine:focus-category-hit-result', {
+    detail: {
+      requestId,
+      handled: !!handled
+    }
+  }))
+}
+
+onMounted(() => {
+  window.addEventListener('auswine:focus-category-hit', handleFocusCategoryHit)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('auswine:focus-category-hit', handleFocusCategoryHit)
+})
+
 watch(() => route.name, (name) => {
   if (typeof name === 'string' && slugTagMap.value[name]) {
     navStore.setActiveNav(slugTagMap.value[name])
@@ -89,6 +112,7 @@ watch(() => route.query.s, () => {
           </span>
         </a>
       </div>
+      <CategoryDetailPanel v-if="!isSearchRoute" ref="categoryPanelRef" />
       <div class="search-container">
         <el-input v-model="keyword" placeholder="搜索全站..." class="search-input" size="large" clearable
           @keyup.enter="onSearchEnter">
@@ -119,6 +143,7 @@ watch(() => route.query.s, () => {
   transform: translateX(-50%);
   z-index: 1000;
   padding: 0 20px;
+  margin-bottom: 40px;
 
   :deep(.el-card__body) {
     display: flex;
