@@ -3268,7 +3268,71 @@
                 "Award Winning"
               ]
             }
-          }
+          },{
+  "title": "Callington Mill Distillery",
+  "img": "",
+  "enTitle": "Callington Mill Distillery",
+  "info": {
+    "name": "Callington Mill Distillery",
+    "desc": "位于塔斯马尼亚Oatlands历史风车遗址的威士忌蒸馏厂，使用最新塔斯马尼亚蒸馏技术，生产单一麦芽威士忌（如Quagmire Peated、El Sol）及桶陈金酒（Poltergeist Barrel Aged Gin）。提供威士忌品鉴、自导览参观、导览体验（$150）及个性化调酒体验（$295）。曾获2024 Icons of Whisky全球游客景点奖。",
+    "features": [
+      {
+        "icon": "#22c55e",
+        "title": "地址",
+        "desc": "6 Mill Lane, Oatlands TAS 7120"
+      },
+      {
+        "icon": "#3b82f6",
+        "title": "联系方式",
+        "desc": "电话：+61 482 509 019；邮箱：info@callingtonmilldistillery.com.au"
+      },
+      {
+        "icon": "#f59e0b",
+        "title": "营业时间",
+        "desc": "每天10:00 - 17:00（品酒室及自导览）"
+      }
+    ],
+    "tags": [
+      "单一麦芽威士忌",
+      "桶陈金酒",
+      "导览体验",
+      "获奖蒸馏厂",
+      "历史遗址"
+    ]
+  }
+},{
+  "title": "Clyde Mill Distillery",
+  "img": "../assets/img/categoryImgs/clydemillwhiskybottles.jpeg",
+  "enTitle": "Clyde Mill Distillery",
+  "info": {
+    "name": "Clyde Mill Distillery",
+    "desc": "位于塔斯马尼亚中央高地Bothwell的历史水动力面粉厂改造而成的威士忌蒸馏厂，由Ramsay家族运营。生产单一麦芽威士忌和定制金酒，提供蒸馏厂导览（周四至周一10:00和14:30，约45分钟）、品鉴体验。餐厅Mill Kitchen使用本地食材。",
+    "features": [
+      {
+        "icon": "#22c55e",
+        "title": "地址",
+        "desc": "254 Nant Lane, Bothwell TAS, Australia"
+      },
+      {
+        "icon": "#3b82f6",
+        "title": "联系方式",
+        "desc": "电话：0499 017 211；邮箱：hello@clydemill.com.au"
+      },
+      {
+        "icon": "#f59e0b",
+        "title": "营业时间",
+        "desc": "品鉴室：周一、周四、周五、周日11:00-17:00，周六11:00至深夜；周二、周三关闭（10人以上团体7天开放）。导览：周四至周一10:00和14:30，周二、周三需预约。"
+      }
+    ],
+    "tags": [
+      "单一麦芽威士忌",
+      "金酒",
+      "历史水磨坊",
+      "导览体验",
+      "家族经营"
+    ]
+  }
+}
         ]
       },
       {
@@ -5605,6 +5669,39 @@
                 "马尔贝克",
                 "家族酒庄",
                 "凉爽气候"
+              ]
+            }
+          },
+          {
+            "title": "Pankhurst Wines",
+            "img": "",
+            "enTitle": "Pankhurst Wines",
+            "info": {
+              "name": "Pankhurst Wines",
+              "desc": "成立于1986年的家族酒庄，位于Wallaroo。坚持使用自有庄园葡萄，采用低环境影响种植方式。生产黑比诺、玛珊、霞多丽、丹魄、赤霞珠等葡萄酒，多次获得奖牌。周末及公共假期开放品酒，建议提前预约。",
+              "features": [
+                {
+                  "icon": "#22c55e",
+                  "title": "地址",
+                  "desc": "56 Woodgrove Close, Wallaroo NSW 2618"
+                },
+                {
+                  "icon": "#3b82f6",
+                  "title": "联系方式",
+                  "desc": "电话：0418 667 433；邮箱：allanandchristine@pankhurstwines.com.au"
+                },
+                {
+                  "icon": "#f59e0b",
+                  "title": "营业时间",
+                  "desc": "周六至周日及公共假期 10:00 - 17:00"
+                }
+              ],
+              "tags": [
+                "庄园种植",
+                "获奖酒款",
+                "环保种植",
+                "预约品酒",
+                "老藤黑比诺"
               ]
             }
           }
@@ -13341,7 +13438,72 @@
                 "葡萄酒俱乐部"
               ]
             }
-          }
+          },
+          {
+            "title": "Mount Majura Vineyard",
+            "img": "",
+            "enTitle": "Mount Majura Vineyard",
+            "info": {
+              "name": "Mount Majura Vineyard",
+              "desc": "位于堪培拉Majura的酒庄，葡萄园建于1988年，土壤为古老的石灰岩混合火山岩，气候大陆性。擅长丹魄、雷司令、起泡酒等，坚持手工酿造。每天开放品酒，品酒费$20/人，设有葡萄酒俱乐部。",
+              "features": [
+                {
+                  "icon": "#22c55e",
+                  "title": "地址",
+                  "desc": "88 Lime Kiln Rd, Majura ACT 2609"
+                },
+                {
+                  "icon": "#3b82f6",
+                  "title": "联系方式",
+                  "desc": "电话：02 6262 3070 / 0493 490 220；邮箱：info@mountmajura.com.au"
+                },
+                {
+                  "icon": "#f59e0b",
+                  "title": "营业时间",
+                  "desc": "每天10:00-17:00（品酒10:00-16:00）"
+                }
+              ],
+              "tags": [
+                "丹魄",
+                "石灰岩土壤",
+                "大陆性气候",
+                "每日开放",
+                "手工酿造"
+              ]
+            }
+          },{
+  "title": "Local Spirit Group",
+  "img": "",
+  "enTitle": "Local Spirit Group",
+  "info": {
+    "name": "Local Spirit Group",
+    "desc": "位于堪培拉Beard的手工蒸馏酒厂及葡萄酒生产商，酿造获奖烈酒和利口酒。主打产品包括Caramel Vodka（澳洲最佳风味伏特加）、Salted Caramel Espresso Martini、Super Dry Gin、Citrus Pink Gin、Colour Changing Elderflower Blue Gin等。同时计划推出葡萄酒系列。",
+    "features": [
+      {
+        "icon": "#22c55e",
+        "title": "地址",
+        "desc": "Beard, ACT（具体门牌未提供）"
+      },
+      {
+        "icon": "#3b82f6",
+        "title": "联系方式",
+        "desc": "电话：0406 820 082；邮箱：Ben@LocalSpirit.com.au"
+      },
+      {
+        "icon": "#f59e0b",
+        "title": "营业时间",
+        "desc": "请通过电话或网站查询（设有Cellar Door）"
+      }
+    ],
+    "tags": [
+      "风味伏特加",
+      "金酒",
+      "预调鸡尾酒",
+      "获奖烈酒",
+      "堪培拉"
+    ]
+  }
+}
         ]
       },
       {
@@ -13379,7 +13541,138 @@
                 "tag3"
               ]
             }
-          }
+          },
+          {
+            "title": "The Canberra Distillery",
+            "img": "",
+            "enTitle": "The Canberra Distillery",
+            "info": {
+              "name": "The Canberra Distillery",
+              "desc": "位于堪培拉Mitchell的小批量手工蒸馏酒厂，专注于使用当地风味和优质原料酿造金酒、威士忌、朗姆酒及利口酒。蒸馏时只取“酒心”，多次获奖。提供蒸馏所参观与品鉴体验（目前因装修关闭至2026年初）。",
+              "features": [
+                {
+                  "icon": "#22c55e",
+                  "title": "地址",
+                  "desc": "70 Dacre St, Mitchell, ACT 2911"
+                },
+                {
+                  "icon": "#3b82f6",
+                  "title": "联系方式",
+                  "desc": "邮箱：info@thecanberradistillery.com.au；团体预订通过邮箱联系"
+                },
+                {
+                  "icon": "#f59e0b",
+                  "title": "营业时间",
+                  "desc": "重要提示：酒厂关闭装修至2026年初，周日及公共假期不开放。请关注Instagram和Google了解临时摊位及后续时间变化。"
+                }
+              ],
+              "tags": [
+                "小批量蒸馏",
+                "金酒",
+                "威士忌",
+                "朗姆酒",
+                "利口酒",
+                "仅取酒心"
+              ]
+            }
+          },
+          {
+            "title": "Ambrosia Distillery",
+            "img": "",
+            "enTitle": "Ambrosia Distillery",
+            "info": {
+              "name": "Ambrosia Distillery",
+              "desc": "位于堪培拉Fyshwick的小批量手工蒸馏酒厂，专注于风味伏特加（芒果、荔枝、百香果、太妃糖等）和澳大利亚植物金酒、玫瑰金酒。创始人Andrew拥有调酒和医学科学背景，采用半透膜技术。提供迷你品鉴套装，澳大利亚境内满$99包邮。",
+              "features": [
+                {
+                  "icon": "#22c55e",
+                  "title": "地址",
+                  "desc": "Suite 10b, Building 3.3, 1 Dairy Rd, Fyshwick ACT 2906"
+                },
+                {
+                  "icon": "#3b82f6",
+                  "title": "联系方式",
+                  "desc": "电话：0431 038 802 (Andrew)；邮箱：andrew@ambrosiadistillery.com"
+                },
+                {
+                  "icon": "#f59e0b",
+                  "title": "营业时间",
+                  "desc": "建议提前致电或发消息预约（酒厂主理人常外出送货或参加活动）"
+                }
+              ],
+              "tags": [
+                "风味伏特加",
+                "小批量",
+                "植物金酒",
+                "品鉴套装",
+                "科学蒸馏"
+              ]
+            }
+          },
+          {
+            "title": "Underground Spirits",
+            "img": "",
+            "enTitle": "Underground Spirits",
+            "info": {
+              "name": "Underground Spirits",
+              "desc": "诞生于堪培拉的烈酒品牌，主打焦糖风味伏特加，以及金酒、伏特加等。风格不随主流，追求顺滑口感。提供企业定制和鸡尾酒方案。全澳订单满$100免运费。",
+              "features": [
+                {
+                  "icon": "#22c55e",
+                  "title": "地址",
+                  "desc": "堪培拉，澳大利亚首都领地（具体地址未提供）"
+                },
+                {
+                  "icon": "#3b82f6",
+                  "title": "联系方式",
+                  "desc": "通过网站联系表单；社交媒体 Facebook/Instagram/YouTube"
+                },
+                {
+                  "icon": "#f59e0b",
+                  "title": "营业时间",
+                  "desc": "请通过网站或社交媒体查询"
+                }
+              ],
+              "tags": [
+                "焦糖伏特加",
+                "小众烈酒",
+                "堪培拉酿造",
+                "全澳包邮"
+              ]
+            }
+          },{
+  "title": "Local Spirit Group",
+  "img": "",
+  "enTitle": "Local Spirit Group",
+  "info": {
+    "name": "Local Spirit Group",
+    "desc": "位于堪培拉Beard的手工蒸馏酒厂及葡萄酒生产商，酿造获奖烈酒和利口酒。主打产品包括Caramel Vodka（澳洲最佳风味伏特加）、Salted Caramel Espresso Martini、Super Dry Gin、Citrus Pink Gin、Colour Changing Elderflower Blue Gin等。同时计划推出葡萄酒系列。",
+    "features": [
+      {
+        "icon": "#22c55e",
+        "title": "地址",
+        "desc": "Beard, ACT"
+      },
+      {
+        "icon": "#3b82f6",
+        "title": "联系方式",
+        "desc": "电话：0406 820 082；邮箱：Ben@LocalSpirit.com.au"
+      },
+      {
+        "icon": "#f59e0b",
+        "title": "营业时间",
+        "desc": "请通过电话或网站查询（设有Cellar Door）"
+      }
+    ],
+    "tags": [
+      "风味伏特加",
+      "金酒",
+      "预调鸡尾酒",
+      "获奖烈酒",
+      "堪培拉"
+    ]
+  }
+}
         ]
       },
       {
