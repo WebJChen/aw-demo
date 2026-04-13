@@ -1,6 +1,6 @@
 <script setup>
 import { ref, computed, onUnmounted, nextTick } from 'vue'
-import { ArrowDown, ArrowUp } from '@element-plus/icons-vue'
+import { ArrowDown } from '@element-plus/icons-vue'
 import { storeToRefs } from 'pinia'
 import { useNavStore } from '@/stores/navStore'
 import { useDeviceStore } from '@/stores/deviceStore'
@@ -97,13 +97,6 @@ const categoryList = computed(() => {
   return itemJson.filter(item => item.navName === activeNav.value)
 })
 const panelTitleText = computed(() => `${activeNav.value || ''}全部相关酒庄`)
-
-const toggleExpand = () => {
-  isExpanded.value = !isExpanded.value
-  if (isExpanded.value) {
-    resetPage()
-  }
-}
 
 const openWineryDetail = (item) => {
   selectedItem.value = item || null
@@ -225,32 +218,38 @@ const nextPage = () => {
 
 const handleSubNavClick = (subNav) => {
   navStore.setActiveCategoryType(subNav)
+  isExpanded.value = true
   resetPage() // 切换子导航时重置页码
 }
 </script>
 
 <template>
   <div ref="panelRef" class="category-detail-panel w100">
-    <div class="toggle-btn pointer" @click="toggleExpand">
-      <span class="toggle-text">{{ panelTitleText }}</span>
-      <el-icon class="toggle-icon" :class="{ 'rotate': isExpanded }">
-        <ArrowDown v-if="!isExpanded" />
-        <ArrowUp v-else />
-      </el-icon>
+    <div class="toggle-btn">
+      <span class="toggle-text w100">{{ panelTitleText }}</span>
     </div>
 
     <!-- 酒类子导航 -->
-    <div v-if="isExpanded" class="alcohol-subnav">
+    <div class="alcohol-subnav">
       <div class="subnav-item" :class="{ 'active': activeCategoryType === '葡萄酒酒庄' }"
         @click="handleSubNavClick('葡萄酒酒庄')">
-        点击展示葡萄酒酒庄
+        <span class="subnav-text">点击展示葡萄酒酒庄</span>
+        <el-icon class="toggle-icon" :class="{ 'rotate': isExpanded && activeCategoryType === '葡萄酒酒庄' }">
+          <ArrowDown />
+        </el-icon>
       </div>
       <div class="subnav-item" :class="{ 'active': activeCategoryType === '洋酒酒庄' }" @click="handleSubNavClick('洋酒酒庄')">
-        点击展示洋酒酒庄
+        <span class="subnav-text">点击展示洋酒酒庄</span>
+        <el-icon class="toggle-icon" :class="{ 'rotate': isExpanded && activeCategoryType === '洋酒酒庄' }">
+          <ArrowDown />
+        </el-icon>
       </div>
       <div class="subnav-item" :class="{ 'active': activeCategoryType === '其它酒类酒庄' }"
         @click="handleSubNavClick('其它酒类酒庄')">
-        点击展示其它酒类酒庄
+        <span class="subnav-text">点击展示其它酒类酒庄</span>
+        <el-icon class="toggle-icon" :class="{ 'rotate': isExpanded && activeCategoryType === '其它酒类酒庄' }">
+          <ArrowDown />
+        </el-icon>
       </div>
     </div>
 
@@ -305,8 +304,7 @@ const handleSubNavClick = (subNav) => {
   .toggle-btn {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    gap: 8px;
+    justify-content: center;
     padding: 12px 24px;
     background: linear-gradient(180deg, #33b1a3 0%, #279486 100%);
     color: #fff;
@@ -317,29 +315,8 @@ const handleSubNavClick = (subNav) => {
     font-weight: 500;
     user-select: none;
 
-    &:hover {
-      background: linear-gradient(180deg, #2da099 0%, #238377 100%);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(51, 177, 163, 0.4);
-    }
-
-    &:active {
-      transform: translateY(0);
-    }
-
     .toggle-text {
       text-align: center;
-      flex: 1;
-    }
-
-    .toggle-icon {
-      font-size: 20px;
-      transition: transform 0.3s ease;
-      margin-left: auto;
-
-      &.rotate {
-        transform: rotate(180deg);
-      }
     }
   }
 
@@ -352,6 +329,10 @@ const handleSubNavClick = (subNav) => {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 
     .subnav-item {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 8px;
       flex: 1;
       padding: 10px 20px;
       text-align: center;
@@ -362,6 +343,21 @@ const handleSubNavClick = (subNav) => {
       cursor: pointer;
       transition: all 0.3s ease;
       border-right: 1px solid #e0e0e0;
+
+      .subnav-text {
+        flex: 1;
+        text-align: center;
+      }
+
+      .toggle-icon {
+        font-size: 16px;
+        transition: transform 0.3s ease;
+        margin-left: auto;
+
+        &.rotate {
+          transform: rotate(180deg);
+        }
+      }
 
       &:last-child {
         border-right: none;
@@ -612,10 +608,6 @@ const handleSubNavClick = (subNav) => {
     .toggle-btn {
       padding: 14px 20px;
       font-size: 17px;
-
-      .toggle-icon {
-        font-size: 22px;
-      }
     }
 
     .alcohol-subnav {
@@ -624,6 +616,10 @@ const handleSubNavClick = (subNav) => {
       .subnav-item {
         padding: 12px 16px;
         font-size: 15px;
+
+        .toggle-icon {
+          font-size: 22px;
+        }
       }
     }
 
@@ -711,10 +707,6 @@ const handleSubNavClick = (subNav) => {
     .toggle-btn {
       padding: 12px 16px;
       font-size: 16px;
-
-      .toggle-icon {
-        font-size: 20px;
-      }
     }
 
     .alcohol-subnav {
@@ -723,6 +715,10 @@ const handleSubNavClick = (subNav) => {
       .subnav-item {
         padding: 10px 12px;
         font-size: 13px;
+
+        .toggle-icon {
+          font-size: 20px;
+        }
       }
     }
 

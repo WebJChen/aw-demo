@@ -3098,7 +3098,70 @@
                 "Old Vines"
               ]
             }
-          }
+          },{
+  "title": "Derwent Estate",
+  "img": "",
+  "enTitle": "Derwent Estate",
+  "info": {
+    "name": "Derwent Estate",
+    "desc": "位于塔斯马尼亚Granton的葡萄酒庄，坐落在德文特河畔。设有Cellar Door（每日10am-5pm）和The Shed Restaurant。餐厅使用本地食材，周三至周日午餐。酒庄可举办活动。",
+    "features": [
+      {
+        "icon": "#22c55e",
+        "title": "地址",
+        "desc": "329 Lyell Hwy, Granton TAS 7030"
+      },
+      {
+        "icon": "#3b82f6",
+        "title": "联系方式",
+        "desc": "电话：03 6263 5802；邮箱：cellarclub@derwentestate.com.au"
+      },
+      {
+        "icon": "#f59e0b",
+        "title": "营业时间",
+        "desc": "Cellar Door：每日10:00-17:00；餐厅：周三至周四12:00-15:00，周五至周日11:30-15:00，场馆17:00关闭"
+      }
+    ],
+    "tags": [
+      "塔斯马尼亚葡萄酒",
+      "河畔酒庄",
+      "酒窖门",
+      "活动场地"
+    ]
+  }
+},{
+  "title": "Craigie Knowe Vineyard",
+  "img": "../assets/img/categoryImgs/craigieknowevineyard.jpg",
+  "enTitle": "Craigie Knowe Vineyard",
+  "info": {
+    "name": "Craigie Knowe Vineyard",
+    "desc": "塔斯马尼亚东海岸最古老的葡萄园，成立于1979年。家族经营，种植黑比诺、雷司令、赤霞珠、灰比诺、霞多丽等。提供品酒（导览式就坐）、野餐桌、巧克力配酒体验。7天开放，狗友好。可露营（$25/晚）。购买6瓶以上澳大利亚境内免运费。",
+    "features": [
+      {
+        "icon": "#22c55e",
+        "title": "地址",
+        "desc": "80 Glen Gala Road, Cranbrook TAS 7190"
+      },
+      {
+        "icon": "#3b82f6",
+        "title": "联系方式",
+        "desc": "电话：0499 901 109；邮箱：glenn@craigieknowe.com.au"
+      },
+      {
+        "icon": "#f59e0b",
+        "title": "营业时间",
+        "desc": "每日11:00-16:00；周六晚餐（Flora's餐厅周六晚营业）"
+      }
+    ],
+    "tags": [
+      "东海岸最老酒庄",
+      "黑比诺",
+      "家族经营",
+      "狗友好",
+      "露营"
+    ]
+  }
+}
         ]
       },
       {
