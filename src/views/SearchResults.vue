@@ -125,13 +125,13 @@ const openResult = (result) => {
                 <span v-else>{{ seg.text }}</span>
               </span>
             </span>
+            <span class="meta-source" :class="result.sourceType">{{ result.sourceType === 'wine' ? '酒' : '酒庄' }}</span>
             <span class="meta-sub">
               <span v-for="(seg, idx) in getHighlightSegments(result.groupName, keyword)" :key="`m2-${idx}`">
                 <span v-if="seg.highlight" class="result-title-highlight">{{ seg.text }}</span>
                 <span v-else>{{ seg.text }}</span>
               </span>
             </span>
-            <span class="meta-source" :class="result.sourceType">{{ result.sourceType === 'wine' ? '酒' : '酒庄' }}</span>
           </div>
 
           <h3 class="result-title">
@@ -275,8 +275,8 @@ const openResult = (result) => {
 }
 
 .meta-source.item {
-  background: #dbeafe;
-  color: #1e40af;
+  background: #e99539;
+  color: #fff;
 }
 
 .result-title {

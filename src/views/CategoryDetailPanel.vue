@@ -97,6 +97,7 @@ const categoryList = computed(() => {
   return itemJson.filter(item => item.navName === activeNav.value)
 })
 const panelTitleText = computed(() => `${activeNav.value || ''}全部相关酒庄`)
+const hasVisibleData = computed(() => isExpanded.value && allItems.value.length > 0)
 
 const openWineryDetail = (item) => {
   selectedItem.value = item || null
@@ -217,6 +218,11 @@ const nextPage = () => {
 }
 
 const handleSubNavClick = (subNav) => {
+  if (activeCategoryType.value === subNav) {
+    isExpanded.value = !isExpanded.value
+    if (isExpanded.value) resetPage()
+    return
+  }
   navStore.setActiveCategoryType(subNav)
   isExpanded.value = true
   resetPage() // 切换子导航时重置页码
@@ -231,23 +237,23 @@ const handleSubNavClick = (subNav) => {
 
     <!-- 酒类子导航 -->
     <div class="alcohol-subnav">
-      <div class="subnav-item" :class="{ 'active': activeCategoryType === '葡萄酒酒庄' }"
+      <div class="subnav-item" :class="{ 'active': hasVisibleData && activeCategoryType === '葡萄酒酒庄' }"
         @click="handleSubNavClick('葡萄酒酒庄')">
         <span class="subnav-text">点击展示葡萄酒酒庄</span>
-        <el-icon class="toggle-icon" :class="{ 'rotate': isExpanded && activeCategoryType === '葡萄酒酒庄' }">
+        <el-icon class="toggle-icon" :class="{ 'rotate': hasVisibleData && activeCategoryType === '葡萄酒酒庄' }">
           <ArrowDown />
         </el-icon>
       </div>
-      <div class="subnav-item" :class="{ 'active': activeCategoryType === '洋酒酒庄' }" @click="handleSubNavClick('洋酒酒庄')">
+      <div class="subnav-item" :class="{ 'active': hasVisibleData && activeCategoryType === '洋酒酒庄' }" @click="handleSubNavClick('洋酒酒庄')">
         <span class="subnav-text">点击展示洋酒酒庄</span>
-        <el-icon class="toggle-icon" :class="{ 'rotate': isExpanded && activeCategoryType === '洋酒酒庄' }">
+        <el-icon class="toggle-icon" :class="{ 'rotate': hasVisibleData && activeCategoryType === '洋酒酒庄' }">
           <ArrowDown />
         </el-icon>
       </div>
-      <div class="subnav-item" :class="{ 'active': activeCategoryType === '其它酒类酒庄' }"
+      <div class="subnav-item" :class="{ 'active': hasVisibleData && activeCategoryType === '其它酒类酒庄' }"
         @click="handleSubNavClick('其它酒类酒庄')">
         <span class="subnav-text">点击展示其它酒类酒庄</span>
-        <el-icon class="toggle-icon" :class="{ 'rotate': isExpanded && activeCategoryType === '其它酒类酒庄' }">
+        <el-icon class="toggle-icon" :class="{ 'rotate': hasVisibleData && activeCategoryType === '其它酒类酒庄' }">
           <ArrowDown />
         </el-icon>
       </div>
