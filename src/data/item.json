@@ -3133,7 +3133,7 @@
           },
           {
             "title": "Craigie Knowe Vineyard",
-            "img": "../assets/img/categoryImgs/craigieknowevineyard.jpg",
+            "img": "../assets/img/categoryImgs/tasmania/craigieknowevineyard.jpg",
             "enTitle": "Craigie Knowe Vineyard",
             "info": {
               "name": "Craigie Knowe Vineyard",
@@ -3369,7 +3369,7 @@
           },
           {
             "title": "Clyde Mill Distillery",
-            "img": "../assets/img/categoryImgs/clydemillwhiskybottles.jpeg",
+            "img": "../assets/img/categoryImgs/tasmania/clydemillwhiskybottles.jpeg",
             "enTitle": "Clyde Mill Distillery",
             "info": {
               "name": "Clyde Mill Distillery",
@@ -10932,6 +10932,39 @@
                 "低产"
               ]
             }
+          },
+          {
+            "title": "Rogues Lane",
+            "img": "",
+            "enTitle": "Rogues Lane",
+            "info": {
+              "name": "Rogues Lane",
+              "desc": "位于维多利亚州Heathcote产区的小型家族酒庄，7英亩葡萄园，95%西拉和5%马尔贝克，葡萄藤种植于1995年，产量控制在每英亩2吨以下。酿造西拉红葡萄酒，部分整串发酵，手工压帽，篮式压榨，40%新法国橡木桶陈酿20个月。产品包括Rogues Lane Reserve Heathcote Shiraz和'The Rogue' Heathcote Shiraz。",
+              "features": [
+                {
+                  "icon": "#22c55e",
+                  "title": "地址",
+                  "desc": "Heathcote VIC"
+                },
+                {
+                  "icon": "#3b82f6",
+                  "title": "联系方式",
+                  "desc": "邮箱：philip@rogueslane.com / amy@rogueslane.com"
+                },
+                {
+                  "icon": "#f59e0b",
+                  "title": "营业时间",
+                  "desc": "待补充"
+                }
+              ],
+              "tags": [
+                "Heathcote",
+                "西拉",
+                "小型酒庄",
+                "法国橡木",
+                "低产"
+              ]
+            }
           }
         ]
       },
@@ -14492,39 +14525,6 @@
                 "都市酒庄",
                 "品酒与餐饮",
                 "葡萄酒俱乐部"
-              ]
-            }
-          },
-          {
-            "title": "Mount Majura Vineyard",
-            "img": "",
-            "enTitle": "Mount Majura Vineyard",
-            "info": {
-              "name": "Mount Majura Vineyard",
-              "desc": "位于堪培拉Majura的酒庄，葡萄园建于1988年，土壤为古老的石灰岩混合火山岩，气候大陆性。擅长丹魄、雷司令、起泡酒等，坚持手工酿造。每天开放品酒，品酒费$20/人，设有葡萄酒俱乐部。",
-              "features": [
-                {
-                  "icon": "#22c55e",
-                  "title": "地址",
-                  "desc": "88 Lime Kiln Rd, Majura ACT 2609"
-                },
-                {
-                  "icon": "#3b82f6",
-                  "title": "联系方式",
-                  "desc": "电话：02 6262 3070 / 0493 490 220；邮箱：info@mountmajura.com.au"
-                },
-                {
-                  "icon": "#f59e0b",
-                  "title": "营业时间",
-                  "desc": "每天10:00-17:00（品酒10:00-16:00）"
-                }
-              ],
-              "tags": [
-                "丹魄",
-                "石灰岩土壤",
-                "大陆性气候",
-                "每日开放",
-                "手工酿造"
               ]
             }
           },

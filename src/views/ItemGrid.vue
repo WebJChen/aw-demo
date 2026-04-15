@@ -8,6 +8,7 @@ import { useNavStore } from '@/stores/navStore';
 import defaultImg from '@/assets/img/default.png';
 import itemJson from '@/data/wine.json';
 import { readSearchTarget, saveSearchTarget } from '@/utils/searchUtils'
+import { resolveDataImage } from '@/utils/dataImageResolver'
 
 const regionRouteNames = itemJson.map((region) => region.path)
 
@@ -285,22 +286,7 @@ const handleSearchTargetFocus = async () => {
 }
 
 const resolveImageUrl = (img) => {
-  const raw = typeof img === 'string' ? img.trim() : ''
-  if (!raw) return defaultImg
-  if (/^(https?:|data:|blob:)/.test(raw)) return raw
-  if (raw.startsWith('/')) return raw
-
-  const candidates = [raw]
-  if (raw.startsWith('@/')) {
-    candidates.push(`../${raw.slice(2)}`)
-  }
-
-  for (const candidate of candidates) {
-    try {
-      return new URL(candidate, import.meta.url).href
-    } catch (_) { }
-  }
-  return defaultImg
+  return resolveDataImage(img, defaultImg)
 }
 
 const applySubNavFromRoute = () => {

@@ -7,6 +7,7 @@ import { useDeviceStore } from '@/stores/deviceStore'
 import { ItemDataDialog } from '@/components/dialogs/page/home'
 import defaultImg from '@/assets/img/default.png'
 import itemJson from '@/data/item.json'
+import { resolveDataImage } from '@/utils/dataImageResolver'
 
 const isExpanded = ref(false)
 const navStore = useNavStore()
@@ -187,22 +188,7 @@ defineExpose({
 })
 
 const resolveImageUrl = (img) => {
-  const raw = typeof img === 'string' ? img.trim() : ''
-  if (!raw) return defaultImg
-  if (/^(https?:|data:|blob:)/.test(raw)) return raw
-  if (raw.startsWith('/')) return raw
-
-  const candidates = [raw]
-  if (raw.startsWith('@/')) {
-    candidates.push(`../${raw.slice(2)}`)
-  }
-
-  for (const candidate of candidates) {
-    try {
-      return new URL(candidate, import.meta.url).href
-    } catch (_) { }
-  }
-  return defaultImg
+  return resolveDataImage(img, defaultImg)
 }
 
 const prevPage = () => {
