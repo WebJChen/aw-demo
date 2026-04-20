@@ -1,6 +1,7 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { InfoFilled } from '@element-plus/icons-vue'
+import { resolveDataImage } from '@/utils/dataImageResolver'
 
 const props = defineProps({
   visible: { type: Boolean, default: false },
@@ -32,10 +33,38 @@ const getDefaultWineInfo = (title = '酒款详情', desc = '') => ({
 })
 
 const itemDetail = computed(() => props.itemData?.[0] || {})
+const itemInfo = computed(() => itemDetail.value?.info || itemDetail.value?.wineData || itemDetail.value?.itemData || null)
+
+const resolveDialogImage = (image) => resolveDataImage(image, '')
+
+const dialogImages = computed(() => {
+  const imageGroups = [
+    itemInfo.value?.images,
+    itemInfo.value?.banners,
+    itemInfo.value?.bannerList,
+    itemInfo.value?.imgs,
+    itemDetail.value?.images,
+    itemDetail.value?.banners,
+    itemDetail.value?.bannerList,
+    itemDetail.value?.imgs
+  ]
+
+  const multiImages = imageGroups
+    .flatMap((group) => Array.isArray(group) ? group : [])
+    .map((image) => resolveDialogImage(image))
+    .filter(Boolean)
+
+  if (multiImages.length > 0) return multiImages
+
+  const fallbackImages = [props.banner, itemDetail.value?.img]
+    .map((image) => resolveDialogImage(image))
+    .filter(Boolean)
+
+  return Array.from(new Set(fallbackImages))
+})
 
 const wineInfo = computed(() => {
-  // 尝试获取不同数据结构的信息
-  const info = itemDetail.value?.info || itemDetail.value?.wineData || itemDetail.value?.itemData
+  const info = itemInfo.value
   if (!info || typeof info !== 'object') return getDefaultWineInfo(props.title, itemDetail.value?.wineData?.desc || itemDetail.value?.itemData?.desc || '')
 
   return {
@@ -51,17 +80,24 @@ const hasSource = computed(() => wineInfo.value.source.length > 0)
 </script>
 
 <template>
+
   <el-dialog v-model="dialogVisible" :show-close="true" width="980px" class="wine-item-dialog" align-center
     :z-index="9300" :append-to-body="true" :lock-scroll="true">
     <template #header>
       <div class="dlg-title">{{ title }}<span v-if="enTitle">（{{ enTitle }}）</span></div>
     </template>
 
-    <div class="dlg-banner w100" v-if="banner">
-      <img :src="banner" alt="banner" class="w100 h100" />
-    </div>
-
     <div class="dlg-section">
+      <div class="dlg-banner w100" v-if="dialogImages.length">
+        <el-carousel :interval="0" indicator-position="inside" arrow="hover" height="100%">
+          <el-carousel-item v-for="(image, index) in dialogImages" :key="index">
+            <el-image :src="image" alt="banner" class="carousel-image pointer" fit="cover"
+              :preview-src-list="dialogImages" :initial-index="index" :zoom-rate="1.2" :max-scale="7" :min-scale="0.2"
+              show-progress show-close show-toolbar show-index :preview-teleported="true" :z-index="9888" />
+          </el-carousel-item>
+        </el-carousel>
+      </div>
+
       <div class="section-title" v-if="wineInfo.name">{{ wineInfo.name }}</div>
       <div class="section-desc">
         {{ wineInfo.desc }}
@@ -108,6 +144,7 @@ const hasSource = computed(() => wineInfo.value.source.length > 0)
       </el-table-column>
     </el-table>
   </el-dialog>
+
 </template>
 
 <style lang="scss" scoped>
@@ -131,19 +168,42 @@ const hasSource = computed(() => wineInfo.value.source.length > 0)
 }
 
 .dlg-banner {
-  // width: 100%;
-  height: 240px;
+  height: 350px;
 
-  img {
+  :deep(.el-carousel),
+  :deep(.el-carousel__container) {
+    height: 100%;
+  }
+
+  .carousel-image {
+    width: 100%;
+    height: 100%;
     display: block;
     object-fit: cover;
   }
 }
 
 .dlg-section {
-  padding: 18px 20px 10px;
   letter-spacing: normal;
   text-align: left;
+  max-height: 560px;
+  overflow-y: auto;
+
+  .section-title,
+  .section-desc,
+  .feature-grid,
+  .tag-row {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+
+  .section-title {
+    margin-top: 18px;
+  }
+
+  .tag-row {
+    margin-bottom: 10px;
+  }
 }
 
 .section-title {
@@ -211,7 +271,7 @@ const hasSource = computed(() => wineInfo.value.source.length > 0)
 .dlg-footer {
   position: relative;
   padding: 0 12px 12px;
-  margin-top: 48px;
+  margin-top: 10px;
 }
 
 .info-disclaimer {
@@ -247,6 +307,10 @@ const hasSource = computed(() => wineInfo.value.source.length > 0)
 }
 
 @media (max-width: 768px) {
+  .dlg-banner {
+    height: 220px;
+  }
+
   .feature-grid {
     grid-template-columns: repeat(1, 1fr);
   }
