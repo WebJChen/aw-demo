@@ -3,6 +3,7 @@ import { onMounted, onUnmounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useDeviceStore } from '@/stores/deviceStore'
 import { useDialogStore } from '@/stores/dialogStore'
+import { Z_INDEX } from '@/constants/zIndex'
 
 const deviceStore = useDeviceStore()
 const { isMobile } = storeToRefs(deviceStore)
@@ -21,7 +22,7 @@ const closeDialog = () => dialogStore.closeDialog('aboutUs')
 
 <template>
   <el-dialog v-model="dialogStore.dialogs.aboutUs.show" title="关于我们" align-center :width="isMobile ? '100%' : '60%'"
-    :append-to-body="true" :lock-scroll="true">
+    :append-to-body="true" :lock-scroll="true" :z-index="Z_INDEX.dialog.base">
     <div class="about-us-content">
       <p class="about-text">
         塔斯马尼亚旅行有限公司(TASMANIA TRIPS

@@ -1,7 +1,8 @@
 <script setup>
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { InfoFilled } from '@element-plus/icons-vue'
 import { resolveDataImage } from '@/utils/dataImageResolver'
+import { Z_INDEX } from '@/constants/zIndex'
 
 const props = defineProps({
   visible: { type: Boolean, default: false },
@@ -11,7 +12,7 @@ const props = defineProps({
   itemData: { type: Array, default: () => [] }
 })
 
-const emit = defineEmits(['update:visible'])
+const emit = defineEmits(['update:visible', 'add-cart'])
 
 const dialogVisible = computed({
   get: () => props.visible,
@@ -19,6 +20,7 @@ const dialogVisible = computed({
 })
 
 const sourceDialogVisible = ref(false)
+const addCartQuantity = ref(1)
 
 const getDefaultWineInfo = (title = '酒款详情', desc = '') => ({
   name: title || '酒款详情',
@@ -34,6 +36,7 @@ const getDefaultWineInfo = (title = '酒款详情', desc = '') => ({
 
 const itemDetail = computed(() => props.itemData?.[0] || {})
 const itemInfo = computed(() => itemDetail.value?.info || itemDetail.value?.wineData || itemDetail.value?.itemData || null)
+const isCartTestItem = computed(() => itemDetail.value?.cartTestEnabled === true)
 
 const resolveDialogImage = (image) => resolveDataImage(image, '')
 
@@ -77,12 +80,25 @@ const wineInfo = computed(() => {
 })
 
 const hasSource = computed(() => wineInfo.value.source.length > 0)
+const handleAddCart = () => {
+  if (!itemDetail.value) return
+  emit('add-cart', {
+    item: itemDetail.value,
+    quantity: addCartQuantity.value
+  })
+}
+
+watch(dialogVisible, (visible) => {
+  if (visible) {
+    addCartQuantity.value = 1
+  }
+})
 </script>
 
 <template>
 
   <el-dialog v-model="dialogVisible" :show-close="true" width="980px" class="wine-item-dialog" align-center
-    :z-index="9300" :append-to-body="true" :lock-scroll="true">
+    :z-index="Z_INDEX.dialog.base" :append-to-body="true" :lock-scroll="true">
     <template #header>
       <div class="dlg-title">{{ title }}<span v-if="enTitle">（{{ enTitle }}）</span></div>
     </template>
@@ -93,7 +109,8 @@ const hasSource = computed(() => wineInfo.value.source.length > 0)
           <el-carousel-item v-for="(image, index) in dialogImages" :key="index">
             <el-image :src="image" alt="banner" class="carousel-image pointer" fit="cover"
               :preview-src-list="dialogImages" :initial-index="index" :zoom-rate="1.2" :max-scale="7" :min-scale="0.2"
-              show-progress show-close show-toolbar show-index :preview-teleported="true" :z-index="9888" />
+              show-progress show-close show-toolbar show-index :preview-teleported="true"
+              :z-index="Z_INDEX.dialog.imagePreview" />
           </el-carousel-item>
         </el-carousel>
       </div>
@@ -117,6 +134,10 @@ const hasSource = computed(() => wineInfo.value.source.length > 0)
 
     <template #footer>
       <div class="dlg-footer">
+        <div v-if="isCartTestItem" class="cart-action-btn">
+          <el-input-number v-model="addCartQuantity" :min="1" :max="99" size="small" />
+          <el-button type="primary" @click="handleAddCart">加入购物车</el-button>
+        </div>
         <div class="info-disclaimer" @click="hasSource ? (sourceDialogVisible = true) : null">
           <el-icon class="info-icon">
             <InfoFilled />
@@ -132,7 +153,8 @@ const hasSource = computed(() => wineInfo.value.source.length > 0)
     </template>
   </el-dialog>
 
-  <el-dialog v-model="sourceDialogVisible" :z-index="9999" :append-to-body="true" title="信息参考来源" align-center
+  <el-dialog v-model="sourceDialogVisible" :z-index="Z_INDEX.dialog.nested" :append-to-body="true" title="信息参考来源"
+    align-center
     width="80%" class="source-dia">
     <el-table :data="wineInfo.source" border>
       <el-table-column prop="title" label="条目/文章标题" width="200" />
@@ -272,6 +294,21 @@ const hasSource = computed(() => wineInfo.value.source.length > 0)
   position: relative;
   padding: 0 12px 12px;
   margin-top: 10px;
+  min-height: 36px;
+}
+
+.cart-action-btn {
+  position: absolute;
+  right: 12px;
+  bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .el-button {
+    border-radius: 8px;
+    padding: 0 18px;
+  }
 }
 
 .info-disclaimer {
@@ -318,6 +355,15 @@ const hasSource = computed(() => wineInfo.value.source.length > 0)
   .info-disclaimer {
     position: relative;
     bottom: 0;
+  }
+
+  .cart-action-btn {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    margin-top: 8px;
+    display: flex;
+    justify-content: flex-end;
   }
 }
 </style>

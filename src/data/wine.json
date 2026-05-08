@@ -11,6 +11,41 @@
                 "isShow": true,
                 "itemData": [
                     {
+                        "title": "塔斯马尼亚州红酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - tasmania - red-wine",
+                        "cartTestEnabled": true,
+                        "testPrice": 104,
+                        "wineData": {
+                            "name": "塔斯马尼亚州红酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "塔斯马尼亚州",
+                                "红酒"
+                            ]
+                        }
+                    },
+                    {
                         "title": "Tolpuddle Vineyard Pinot Noir",
                         "img": "",
                         "enTitle": "Tolpuddle Vineyard Pinot Noir",
@@ -2053,6 +2088,41 @@
                 "isShow": true,
                 "itemData": [
                     {
+                        "title": "塔斯马尼亚州白葡萄酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - tasmania - white-wine",
+                        "cartTestEnabled": true,
+                        "testPrice": 104,
+                        "wineData": {
+                            "name": "塔斯马尼亚州白葡萄酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "塔斯马尼亚州",
+                                "白葡萄酒"
+                            ]
+                        }
+                    },
+                    {
                         "title": "塔州白葡萄酒示例1",
                         "img": "",
                         "enTitle": "Tasmania White Wine Example 1",
@@ -3849,6 +3919,41 @@
                 "isShow": true,
                 "itemData": [
                     {
+                        "title": "塔斯马尼亚州气泡酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - tasmania - sparkling-wine",
+                        "cartTestEnabled": true,
+                        "testPrice": 104,
+                        "wineData": {
+                            "name": "塔斯马尼亚州气泡酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "塔斯马尼亚州",
+                                "气泡酒"
+                            ]
+                        }
+                    },
+                    {
                         "title": "塔州气泡酒示例1",
                         "img": "",
                         "enTitle": "Tasmania Sparkling Wine Example 1",
@@ -4557,6 +4662,41 @@
                 "isShow": true,
                 "itemData": [
                     {
+                        "title": "塔斯马尼亚州威士忌购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - tasmania - whisky",
+                        "cartTestEnabled": true,
+                        "testPrice": 104,
+                        "wineData": {
+                            "name": "塔斯马尼亚州威士忌购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "塔斯马尼亚州",
+                                "威士忌"
+                            ]
+                        }
+                    },
+                    {
                         "title": "塔州威士忌示例1",
                         "img": "",
                         "enTitle": "Tasmania Whisky Example 1",
@@ -4917,6 +5057,41 @@
                 "subNavPath": "other-spirits",
                 "isShow": true,
                 "itemData": [
+                    {
+                        "title": "塔斯马尼亚州其它洋酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - tasmania - other-spirits",
+                        "cartTestEnabled": true,
+                        "testPrice": 104,
+                        "wineData": {
+                            "name": "塔斯马尼亚州其它洋酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "塔斯马尼亚州",
+                                "其它洋酒"
+                            ]
+                        }
+                    },
                     {
                         "title": "塔州其它洋酒示例1",
                         "img": "",
@@ -5585,6 +5760,41 @@
                 "isShow": true,
                 "itemData": [
                     {
+                        "title": "塔斯马尼亚州苹果酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - tasmania - cider",
+                        "cartTestEnabled": true,
+                        "testPrice": 104,
+                        "wineData": {
+                            "name": "塔斯马尼亚州苹果酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "塔斯马尼亚州",
+                                "苹果酒"
+                            ]
+                        }
+                    },
+                    {
                         "title": "塔州苹果酒示例1",
                         "img": "",
                         "enTitle": "Tasmania Cider Example 1",
@@ -5787,6 +5997,41 @@
                 "subNavPath": "red-wine",
                 "isShow": true,
                 "itemData": [
+                    {
+                        "title": "新南威尔士州红酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - new-south-wales - red-wine",
+                        "cartTestEnabled": true,
+                        "testPrice": 109,
+                        "wineData": {
+                            "name": "新南威尔士州红酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "新南威尔士州",
+                                "红酒"
+                            ]
+                        }
+                    },
                     {
                         "title": "新南威尔士州红酒示例1",
                         "img": "",
@@ -11115,6 +11360,41 @@
                 "isShow": true,
                 "itemData": [
                     {
+                        "title": "新南威尔士州白葡萄酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - new-south-wales - white-wine",
+                        "cartTestEnabled": true,
+                        "testPrice": 109,
+                        "wineData": {
+                            "name": "新南威尔士州白葡萄酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "新南威尔士州",
+                                "白葡萄酒"
+                            ]
+                        }
+                    },
+                    {
                         "title": "新南威尔士州白葡萄酒示例1",
                         "img": "",
                         "enTitle": "New South Wales White Wine Example 1",
@@ -14628,6 +14908,41 @@
                 "isShow": true,
                 "itemData": [
                     {
+                        "title": "新南威尔士州气泡酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - new-south-wales - sparkling-wine",
+                        "cartTestEnabled": true,
+                        "testPrice": 109,
+                        "wineData": {
+                            "name": "新南威尔士州气泡酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "新南威尔士州",
+                                "气泡酒"
+                            ]
+                        }
+                    },
+                    {
                         "title": "新南威尔士州气泡酒示例1",
                         "img": "",
                         "enTitle": "New South Wales Sparkling Wine Example 1",
@@ -15492,6 +15807,41 @@
                 "isShow": true,
                 "itemData": [
                     {
+                        "title": "新南威尔士州威士忌购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - new-south-wales - whisky",
+                        "cartTestEnabled": true,
+                        "testPrice": 109,
+                        "wineData": {
+                            "name": "新南威尔士州威士忌购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "新南威尔士州",
+                                "威士忌"
+                            ]
+                        }
+                    },
+                    {
                         "title": "新南威尔士州威士忌示例1",
                         "img": "",
                         "enTitle": "New South Wales Whisky Example 1",
@@ -15788,6 +16138,41 @@
                 "subNavPath": "other-spirits",
                 "isShow": true,
                 "itemData": [
+                    {
+                        "title": "新南威尔士州其它洋酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - new-south-wales - other-spirits",
+                        "cartTestEnabled": true,
+                        "testPrice": 109,
+                        "wineData": {
+                            "name": "新南威尔士州其它洋酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "新南威尔士州",
+                                "其它洋酒"
+                            ]
+                        }
+                    },
                     {
                         "title": "新南威尔士州其它洋酒示例1",
                         "img": "",
@@ -20414,6 +20799,41 @@
                 "isShow": true,
                 "itemData": [
                     {
+                        "title": "新南威尔士州苹果酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - new-south-wales - cider",
+                        "cartTestEnabled": true,
+                        "testPrice": 109,
+                        "wineData": {
+                            "name": "新南威尔士州苹果酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "新南威尔士州",
+                                "苹果酒"
+                            ]
+                        }
+                    },
+                    {
                         "title": "新南威尔士州苹果酒示例1",
                         "img": "",
                         "enTitle": "New South Wales Cider Example 1",
@@ -20869,6 +21289,41 @@
                 "subNavPath": "red-wine",
                 "isShow": true,
                 "itemData": [
+                    {
+                        "title": "南澳大利亚州红酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - south-australia - red-wine",
+                        "cartTestEnabled": true,
+                        "testPrice": 114,
+                        "wineData": {
+                            "name": "南澳大利亚州红酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "南澳大利亚州",
+                                "红酒"
+                            ]
+                        }
+                    },
                     {
                         "title": "南澳大利亚州红酒示例1",
                         "img": "",
@@ -25619,6 +26074,41 @@
                 "isShow": true,
                 "itemData": [
                     {
+                        "title": "南澳大利亚州白葡萄酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - south-australia - white-wine",
+                        "cartTestEnabled": true,
+                        "testPrice": 114,
+                        "wineData": {
+                            "name": "南澳大利亚州白葡萄酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "南澳大利亚州",
+                                "白葡萄酒"
+                            ]
+                        }
+                    },
+                    {
                         "title": "南澳大利亚州白葡萄酒示例1",
                         "img": "",
                         "enTitle": "South Australia White Wine Example 1",
@@ -27062,6 +27552,41 @@
                 "isShow": true,
                 "itemData": [
                     {
+                        "title": "南澳大利亚州气泡酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - south-australia - sparkling-wine",
+                        "cartTestEnabled": true,
+                        "testPrice": 114,
+                        "wineData": {
+                            "name": "南澳大利亚州气泡酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "南澳大利亚州",
+                                "气泡酒"
+                            ]
+                        }
+                    },
+                    {
                         "title": "南澳大利亚州气泡酒示例1",
                         "img": "",
                         "enTitle": "South Australia Sparkling Wine Example 1",
@@ -27571,6 +28096,41 @@
                 "subNavPath": "whisky",
                 "isShow": true,
                 "itemData": [
+                    {
+                        "title": "南澳大利亚州威士忌购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - south-australia - whisky",
+                        "cartTestEnabled": true,
+                        "testPrice": 114,
+                        "wineData": {
+                            "name": "南澳大利亚州威士忌购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "南澳大利亚州",
+                                "威士忌"
+                            ]
+                        }
+                    },
                     {
                         "title": "南澳大利亚州威士忌示例1",
                         "img": "",
@@ -28885,6 +29445,41 @@
                 "subNavPath": "other-spirits",
                 "isShow": true,
                 "itemData": [
+                    {
+                        "title": "南澳大利亚州其它洋酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - south-australia - other-spirits",
+                        "cartTestEnabled": true,
+                        "testPrice": 114,
+                        "wineData": {
+                            "name": "南澳大利亚州其它洋酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "南澳大利亚州",
+                                "其它洋酒"
+                            ]
+                        }
+                    },
                     {
                         "title": "南澳大利亚州其它洋酒示例1",
                         "img": "",
@@ -32128,6 +32723,41 @@
                 "isShow": true,
                 "itemData": [
                     {
+                        "title": "南澳大利亚州苹果酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - south-australia - cider",
+                        "cartTestEnabled": true,
+                        "testPrice": 114,
+                        "wineData": {
+                            "name": "南澳大利亚州苹果酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "南澳大利亚州",
+                                "苹果酒"
+                            ]
+                        }
+                    },
+                    {
                         "title": "南澳大利亚州苹果酒示例1",
                         "img": "",
                         "enTitle": "South Australia Cider Example 1",
@@ -32173,6 +32803,41 @@
                 "subNavPath": "red-wine",
                 "isShow": true,
                 "itemData": [
+                    {
+                        "title": "西澳大利亚州红酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - western-australia - red-wine",
+                        "cartTestEnabled": true,
+                        "testPrice": 119,
+                        "wineData": {
+                            "name": "西澳大利亚州红酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "西澳大利亚州",
+                                "红酒"
+                            ]
+                        }
+                    },
                     {
                         "title": "西澳大利亚州红酒示例1",
                         "img": "",
@@ -34700,6 +35365,41 @@
                 "isShow": true,
                 "itemData": [
                     {
+                        "title": "西澳大利亚州白葡萄酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - western-australia - white-wine",
+                        "cartTestEnabled": true,
+                        "testPrice": 119,
+                        "wineData": {
+                            "name": "西澳大利亚州白葡萄酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "西澳大利亚州",
+                                "白葡萄酒"
+                            ]
+                        }
+                    },
+                    {
                         "title": "西澳大利亚州白葡萄酒示例1",
                         "img": "",
                         "enTitle": "Western Australia White Wine Example 1",
@@ -36805,6 +37505,41 @@
                 "isShow": true,
                 "itemData": [
                     {
+                        "title": "西澳大利亚州气泡酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - western-australia - sparkling-wine",
+                        "cartTestEnabled": true,
+                        "testPrice": 119,
+                        "wineData": {
+                            "name": "西澳大利亚州气泡酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "西澳大利亚州",
+                                "气泡酒"
+                            ]
+                        }
+                    },
+                    {
                         "title": "西澳大利亚州气泡酒示例1",
                         "img": "",
                         "enTitle": "Western Australia Sparkling Wine Example 1",
@@ -37311,6 +38046,41 @@
                 "subNavPath": "whisky",
                 "isShow": true,
                 "itemData": [
+                    {
+                        "title": "西澳大利亚州威士忌购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - western-australia - whisky",
+                        "cartTestEnabled": true,
+                        "testPrice": 119,
+                        "wineData": {
+                            "name": "西澳大利亚州威士忌购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "西澳大利亚州",
+                                "威士忌"
+                            ]
+                        }
+                    },
                     {
                         "title": "西澳大利亚州威士忌示例1",
                         "img": "",
@@ -37983,6 +38753,41 @@
                 "subNavPath": "other-spirits",
                 "isShow": true,
                 "itemData": [
+                    {
+                        "title": "西澳大利亚州其它洋酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - western-australia - other-spirits",
+                        "cartTestEnabled": true,
+                        "testPrice": 119,
+                        "wineData": {
+                            "name": "西澳大利亚州其它洋酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "西澳大利亚州",
+                                "其它洋酒"
+                            ]
+                        }
+                    },
                     {
                         "title": "西澳大利亚州其它洋酒示例1",
                         "img": "",
@@ -41518,6 +42323,41 @@
                 "isShow": true,
                 "itemData": [
                     {
+                        "title": "西澳大利亚州苹果酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - western-australia - cider",
+                        "cartTestEnabled": true,
+                        "testPrice": 119,
+                        "wineData": {
+                            "name": "西澳大利亚州苹果酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "西澳大利亚州",
+                                "苹果酒"
+                            ]
+                        }
+                    },
+                    {
                         "title": "西澳大利亚州苹果酒示例1",
                         "img": "",
                         "enTitle": "Western Australia Cider Example 1",
@@ -41564,6 +42404,41 @@
                 "isShow": true,
                 "itemData": [
                     {
+                        "title": "维多利亚州红酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - victoria - red-wine",
+                        "cartTestEnabled": true,
+                        "testPrice": 124,
+                        "wineData": {
+                            "name": "维多利亚州红酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "维多利亚州",
+                                "红酒"
+                            ]
+                        }
+                    },
+                    {
                         "title": "维多利亚州红酒示例1",
                         "img": "",
                         "enTitle": "Victoria Red Wine Example 1",
@@ -41601,6 +42476,41 @@
                 "subNavPath": "white-wine",
                 "isShow": true,
                 "itemData": [
+                    {
+                        "title": "维多利亚州白葡萄酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - victoria - white-wine",
+                        "cartTestEnabled": true,
+                        "testPrice": 124,
+                        "wineData": {
+                            "name": "维多利亚州白葡萄酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "维多利亚州",
+                                "白葡萄酒"
+                            ]
+                        }
+                    },
                     {
                         "title": "维多利亚州白葡萄酒示例1",
                         "img": "",
@@ -41640,6 +42550,41 @@
                 "isShow": true,
                 "itemData": [
                     {
+                        "title": "维多利亚州气泡酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - victoria - sparkling-wine",
+                        "cartTestEnabled": true,
+                        "testPrice": 124,
+                        "wineData": {
+                            "name": "维多利亚州气泡酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "维多利亚州",
+                                "气泡酒"
+                            ]
+                        }
+                    },
+                    {
                         "title": "维多利亚州气泡酒示例1",
                         "img": "",
                         "enTitle": "Victoria Sparkling Wine Example 1",
@@ -41677,6 +42622,41 @@
                 "subNavPath": "whisky",
                 "isShow": true,
                 "itemData": [
+                    {
+                        "title": "维多利亚州威士忌购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - victoria - whisky",
+                        "cartTestEnabled": true,
+                        "testPrice": 124,
+                        "wineData": {
+                            "name": "维多利亚州威士忌购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "维多利亚州",
+                                "威士忌"
+                            ]
+                        }
+                    },
                     {
                         "title": "维多利亚州威士忌示例1",
                         "img": "",
@@ -41716,6 +42696,41 @@
                 "isShow": true,
                 "itemData": [
                     {
+                        "title": "维多利亚州其它洋酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - victoria - other-spirits",
+                        "cartTestEnabled": true,
+                        "testPrice": 124,
+                        "wineData": {
+                            "name": "维多利亚州其它洋酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "维多利亚州",
+                                "其它洋酒"
+                            ]
+                        }
+                    },
+                    {
                         "title": "维多利亚州其它洋酒示例1",
                         "img": "",
                         "enTitle": "Other Spirits Example Title",
@@ -41753,6 +42768,41 @@
                 "subNavPath": "cider",
                 "isShow": true,
                 "itemData": [
+                    {
+                        "title": "维多利亚州苹果酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - victoria - cider",
+                        "cartTestEnabled": true,
+                        "testPrice": 124,
+                        "wineData": {
+                            "name": "维多利亚州苹果酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "维多利亚州",
+                                "苹果酒"
+                            ]
+                        }
+                    },
                     {
                         "title": "维多利亚州苹果酒示例1",
                         "img": "",
@@ -41800,6 +42850,41 @@
                 "isShow": true,
                 "itemData": [
                     {
+                        "title": "昆士兰州红酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - queensland - red-wine",
+                        "cartTestEnabled": true,
+                        "testPrice": 129,
+                        "wineData": {
+                            "name": "昆士兰州红酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "昆士兰州",
+                                "红酒"
+                            ]
+                        }
+                    },
+                    {
                         "title": "昆士兰州红酒示例1",
                         "img": "",
                         "enTitle": "Queensland Red Wine Example 1",
@@ -41837,6 +42922,41 @@
                 "subNavPath": "white-wine",
                 "isShow": true,
                 "itemData": [
+                    {
+                        "title": "昆士兰州白葡萄酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - queensland - white-wine",
+                        "cartTestEnabled": true,
+                        "testPrice": 129,
+                        "wineData": {
+                            "name": "昆士兰州白葡萄酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "昆士兰州",
+                                "白葡萄酒"
+                            ]
+                        }
+                    },
                     {
                         "title": "昆士兰州白葡萄酒示例1",
                         "img": "",
@@ -41876,6 +42996,41 @@
                 "isShow": true,
                 "itemData": [
                     {
+                        "title": "昆士兰州气泡酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - queensland - sparkling-wine",
+                        "cartTestEnabled": true,
+                        "testPrice": 129,
+                        "wineData": {
+                            "name": "昆士兰州气泡酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "昆士兰州",
+                                "气泡酒"
+                            ]
+                        }
+                    },
+                    {
                         "title": "昆士兰州气泡酒示例1",
                         "img": "",
                         "enTitle": "Queensland Sparkling Wine Example 1",
@@ -41913,6 +43068,41 @@
                 "subNavPath": "whisky",
                 "isShow": true,
                 "itemData": [
+                    {
+                        "title": "昆士兰州威士忌购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - queensland - whisky",
+                        "cartTestEnabled": true,
+                        "testPrice": 129,
+                        "wineData": {
+                            "name": "昆士兰州威士忌购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "昆士兰州",
+                                "威士忌"
+                            ]
+                        }
+                    },
                     {
                         "title": "昆士兰州威士忌示例1",
                         "img": "",
@@ -41952,6 +43142,41 @@
                 "isShow": true,
                 "itemData": [
                     {
+                        "title": "昆士兰州其它洋酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - queensland - other-spirits",
+                        "cartTestEnabled": true,
+                        "testPrice": 129,
+                        "wineData": {
+                            "name": "昆士兰州其它洋酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "昆士兰州",
+                                "其它洋酒"
+                            ]
+                        }
+                    },
+                    {
                         "title": "昆士兰州其它洋酒示例1",
                         "img": "",
                         "enTitle": "Queensland Other Spirits Example 1",
@@ -41989,6 +43214,41 @@
                 "subNavPath": "cider",
                 "isShow": true,
                 "itemData": [
+                    {
+                        "title": "昆士兰州苹果酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - queensland - cider",
+                        "cartTestEnabled": true,
+                        "testPrice": 129,
+                        "wineData": {
+                            "name": "昆士兰州苹果酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "昆士兰州",
+                                "苹果酒"
+                            ]
+                        }
+                    },
                     {
                         "title": "昆士兰州苹果酒示例1",
                         "img": "",
@@ -42036,6 +43296,41 @@
                 "isShow": true,
                 "itemData": [
                     {
+                        "title": "北领地红酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - northern-territory - red-wine",
+                        "cartTestEnabled": true,
+                        "testPrice": 134,
+                        "wineData": {
+                            "name": "北领地红酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "北领地",
+                                "红酒"
+                            ]
+                        }
+                    },
+                    {
                         "title": "北领地红酒示例111111",
                         "img": "../assets/img/dialog_test.jpg",
                         "enTitle": "Northern Territory Red Wine Example 1",
@@ -42073,6 +43368,41 @@
                 "subNavPath": "white-wine",
                 "isShow": true,
                 "itemData": [
+                    {
+                        "title": "北领地白葡萄酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - northern-territory - white-wine",
+                        "cartTestEnabled": true,
+                        "testPrice": 134,
+                        "wineData": {
+                            "name": "北领地白葡萄酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "北领地",
+                                "白葡萄酒"
+                            ]
+                        }
+                    },
                     {
                         "title": "北领地白葡萄酒示例1",
                         "img": "",
@@ -42112,6 +43442,41 @@
                 "isShow": true,
                 "itemData": [
                     {
+                        "title": "北领地气泡酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - northern-territory - sparkling-wine",
+                        "cartTestEnabled": true,
+                        "testPrice": 134,
+                        "wineData": {
+                            "name": "北领地气泡酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "北领地",
+                                "气泡酒"
+                            ]
+                        }
+                    },
+                    {
                         "title": "北领地气泡酒示例1",
                         "img": "",
                         "enTitle": "Northern Territory Sparkling Wine Example 1",
@@ -42149,6 +43514,41 @@
                 "subNavPath": "whisky",
                 "isShow": true,
                 "itemData": [
+                    {
+                        "title": "北领地威士忌购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - northern-territory - whisky",
+                        "cartTestEnabled": true,
+                        "testPrice": 134,
+                        "wineData": {
+                            "name": "北领地威士忌购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "北领地",
+                                "威士忌"
+                            ]
+                        }
+                    },
                     {
                         "title": "北领地威士忌示例1",
                         "img": "",
@@ -42188,6 +43588,41 @@
                 "isShow": true,
                 "itemData": [
                     {
+                        "title": "北领地其它洋酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - northern-territory - other-spirits",
+                        "cartTestEnabled": true,
+                        "testPrice": 134,
+                        "wineData": {
+                            "name": "北领地其它洋酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "北领地",
+                                "其它洋酒"
+                            ]
+                        }
+                    },
+                    {
                         "title": "北领地其它洋酒示例1",
                         "img": "",
                         "enTitle": "Northern Territory Other Spirits Example 1",
@@ -42225,6 +43660,41 @@
                 "subNavPath": "cider",
                 "isShow": true,
                 "itemData": [
+                    {
+                        "title": "北领地苹果酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - northern-territory - cider",
+                        "cartTestEnabled": true,
+                        "testPrice": 134,
+                        "wineData": {
+                            "name": "北领地苹果酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "北领地",
+                                "苹果酒"
+                            ]
+                        }
+                    },
                     {
                         "title": "北领地苹果酒示例1",
                         "img": "",
@@ -42272,6 +43742,41 @@
                 "isShow": true,
                 "itemData": [
                     {
+                        "title": "堪培拉红酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - canberra - red-wine",
+                        "cartTestEnabled": true,
+                        "testPrice": 139,
+                        "wineData": {
+                            "name": "堪培拉红酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "堪培拉",
+                                "红酒"
+                            ]
+                        }
+                    },
+                    {
                         "title": "堪培拉红酒示例1",
                         "img": "",
                         "enTitle": "Canberra Red Wine Example 1",
@@ -42309,6 +43814,41 @@
                 "subNavPath": "white-wine",
                 "isShow": true,
                 "itemData": [
+                    {
+                        "title": "堪培拉白葡萄酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - canberra - white-wine",
+                        "cartTestEnabled": true,
+                        "testPrice": 139,
+                        "wineData": {
+                            "name": "堪培拉白葡萄酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "堪培拉",
+                                "白葡萄酒"
+                            ]
+                        }
+                    },
                     {
                         "title": "堪培拉白葡萄酒示例1",
                         "img": "",
@@ -42348,6 +43888,41 @@
                 "isShow": true,
                 "itemData": [
                     {
+                        "title": "堪培拉气泡酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - canberra - sparkling-wine",
+                        "cartTestEnabled": true,
+                        "testPrice": 139,
+                        "wineData": {
+                            "name": "堪培拉气泡酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "堪培拉",
+                                "气泡酒"
+                            ]
+                        }
+                    },
+                    {
                         "title": "堪培拉气泡酒示例1",
                         "img": "",
                         "enTitle": "Canberra Sparkling Wine Example 1",
@@ -42385,6 +43960,41 @@
                 "subNavPath": "whisky",
                 "isShow": true,
                 "itemData": [
+                    {
+                        "title": "堪培拉威士忌购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - canberra - whisky",
+                        "cartTestEnabled": true,
+                        "testPrice": 139,
+                        "wineData": {
+                            "name": "堪培拉威士忌购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "堪培拉",
+                                "威士忌"
+                            ]
+                        }
+                    },
                     {
                         "title": "堪培拉威士忌示例1",
                         "img": "",
@@ -42424,6 +44034,41 @@
                 "isShow": true,
                 "itemData": [
                     {
+                        "title": "堪培拉其它洋酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - canberra - other-spirits",
+                        "cartTestEnabled": true,
+                        "testPrice": 139,
+                        "wineData": {
+                            "name": "堪培拉其它洋酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "堪培拉",
+                                "其它洋酒"
+                            ]
+                        }
+                    },
+                    {
                         "title": "堪培拉其它洋酒示例1",
                         "img": "",
                         "enTitle": "Canberra Other Spirits Example 1",
@@ -42461,6 +44106,41 @@
                 "subNavPath": "cider",
                 "isShow": true,
                 "itemData": [
+                    {
+                        "title": "堪培拉苹果酒购物车测试酒款",
+                        "img": "",
+                        "enTitle": "Cart Test - canberra - cider",
+                        "cartTestEnabled": true,
+                        "testPrice": 139,
+                        "wineData": {
+                            "name": "堪培拉苹果酒购物车测试酒款",
+                            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+                            "website": "",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "购物车测试地址（示例）"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "购物车测试电话（示例）"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "购物车测试营业时间（示例）"
+                                }
+                            ],
+                            "tags": [
+                                "购物车测试",
+                                "可加入购物车",
+                                "堪培拉",
+                                "苹果酒"
+                            ]
+                        }
+                    },
                     {
                         "title": "堪培拉苹果酒示例1",
                         "img": "",

@@ -3,6 +3,7 @@ import { onMounted, onUnmounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useDialogStore } from '@/stores/dialogStore'
 import { useDeviceStore } from '@/stores/deviceStore'
+import { Z_INDEX } from '@/constants/zIndex'
 
 const dialogStore = useDialogStore()
 const deviceStore = useDeviceStore()
@@ -21,8 +22,7 @@ const closeDialog = () => dialogStore.closeDialog('termsAndConditions')
 
 <template>
     <el-dialog v-model="dialogStore.dialogs.termsAndConditions.show" title="TasTrips.Online服务条款与条件" width="800" max-width="500px"
-        :fullscreen="isPhone"
-        align-center center :z-index=9500>
+        :fullscreen="isPhone" align-center center :append-to-body="true" :z-index="Z_INDEX.dialog.base">
         <div class="policy-text">
             <div class="policy-section">
                 <h2>一、接受条款</h2>

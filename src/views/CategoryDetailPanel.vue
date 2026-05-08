@@ -1,9 +1,11 @@
 <script setup>
 import { ref, computed, onUnmounted, nextTick } from 'vue'
 import { ArrowDown } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
 import { storeToRefs } from 'pinia'
 import { useNavStore } from '@/stores/navStore'
 import { useDeviceStore } from '@/stores/deviceStore'
+import { useCartStore } from '@/stores/cartStore'
 import { ItemDataDialog } from '@/components/dialogs/page/home'
 import defaultImg from '@/assets/img/default.png'
 import itemJson from '@/data/item.json'
@@ -19,6 +21,7 @@ const panelRef = ref(null)
 let panelHitTimer = null
 const deviceStore = useDeviceStore()
 const { isPhone, isTablet } = storeToRefs(deviceStore)
+const cartStore = useCartStore()
 
 onUnmounted(() => {
   clearPanelHitState()
@@ -103,6 +106,26 @@ const hasVisibleData = computed(() => isExpanded.value && allItems.value.length 
 const openWineryDetail = (item) => {
   selectedItem.value = item || null
   itemDialogVisible.value = true
+}
+
+const addToCart = (payload) => {
+  const item = payload?.item || payload
+  const quantity = payload?.quantity || 1
+  const result = cartStore.addCartItem({
+    item,
+    regionPath: '',
+    regionName: activeNav.value || '',
+    subNavPath: '',
+    subNavName: item?.subNavName || '',
+    quantity
+  })
+  if (result === 'success') {
+    ElMessage.success('已加入购物车')
+    return
+  }
+  if (result === 'limit') {
+    ElMessage.warning(`购物车数量已达上限（${cartStore.MAX_CART_ITEMS}）`)
+  }
 }
 
 const clearPanelHitState = () => {
@@ -284,7 +307,7 @@ const handleSubNavClick = (subNav) => {
   </div>
   <ItemDataDialog v-model:visible="itemDialogVisible" :title="selectedItem?.title || ''"
     :en-title="selectedItem?.enTitle || ''" :banner="resolveImageUrl(selectedItem?.img)"
-    :item-data="selectedItem ? [selectedItem] : []" />
+    :item-data="selectedItem ? [selectedItem] : []" @add-cart="addToCart" />
 </template>
 
 <style scoped lang="scss">

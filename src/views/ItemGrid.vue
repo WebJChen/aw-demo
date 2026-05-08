@@ -2,13 +2,16 @@
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useRoute, useRouter } from 'vue-router';
+import { ElMessage } from 'element-plus'
 import { ItemDataDialog } from '@/components/dialogs/page/home';
 import { useDeviceStore } from '@/stores/deviceStore';
 import { useNavStore } from '@/stores/navStore';
+import { useCartStore } from '@/stores/cartStore'
 import defaultImg from '@/assets/img/default.png';
 import itemJson from '@/data/wine.json';
 import { readSearchTarget, saveSearchTarget } from '@/utils/searchUtils'
 import { resolveDataImage } from '@/utils/dataImageResolver'
+import { Z_INDEX } from '@/constants/zIndex'
 
 const regionRouteNames = itemJson.map((region) => region.path)
 
@@ -22,6 +25,7 @@ const deviceStore = useDeviceStore()
 const { isPhone, isPortrait } = storeToRefs(deviceStore)
 const navStore = useNavStore()
 const { activeSubNav, activeNav } = storeToRefs(navStore)
+const cartStore = useCartStore()
 const route = useRoute()
 const router = useRouter()
 const itemDialogVisible = ref(false)
@@ -166,6 +170,26 @@ const handleWindowScroll = () => {
 const openItemDialog = (item) => {
   selectedItem.value = item || null
   itemDialogVisible.value = true
+}
+
+const addToCart = (payload) => {
+  const item = payload?.item || payload
+  const quantity = payload?.quantity || 1
+  const result = cartStore.addCartItem({
+    item,
+    regionPath: currentRegionPath.value,
+    regionName: currentRegion.value?.navName || '',
+    subNavPath: currentSubNav.value?.subNavPath || '',
+    subNavName: currentSubNav.value?.subNavName || '',
+    quantity
+  })
+  if (result === 'success') {
+    ElMessage.success('已加入购物车')
+    return
+  }
+  if (result === 'limit') {
+    ElMessage.warning(`购物车数量已达上限（${cartStore.MAX_CART_ITEMS}）`)
+  }
 }
 
 const notifySearchHitDone = () => {
@@ -374,7 +398,7 @@ onUnmounted(() => {
   </div>
   <ItemDataDialog v-model:visible="itemDialogVisible" :title="selectedItem?.title || ''"
     :en-title="selectedItem?.enTitle || ''" :banner="resolveImageUrl(selectedItem?.img)"
-    :item-data="selectedItem ? [selectedItem] : []" />
+    :item-data="selectedItem ? [selectedItem] : []" @add-cart="addToCart" />
 </template>
 
 <style scoped lang="scss">
@@ -415,6 +439,17 @@ onUnmounted(() => {
       color: #fff;
       border-color: transparent;
       box-shadow: 0 6px 16px rgba(61, 199, 190, 0.26);
+    }
+  }
+}
+
+/* PC端子导航字号（不影响平板和手机） */
+@media (min-width: 1025px) {
+  .subnav-box {
+    .subnav-list {
+      .subnav-item {
+        font-size: var(--aw-font-16);
+      }
     }
   }
 }
@@ -508,7 +543,7 @@ onUnmounted(() => {
     bottom: 60px;
     left: calc(50% + (100vw - 100%) / 2);
     transform: translateX(-50%);
-    z-index: 1000;
+    z-index: v-bind('Z_INDEX.page.floatingPagination');
     padding: 10px 20px;
     background: rgba(255, 255, 255, 0.95);
     border-radius: 8px;

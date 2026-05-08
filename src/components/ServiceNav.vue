@@ -7,6 +7,7 @@ import { useNavStore } from '@/stores/navStore'
 import itemJson from '@/data/item.json'
 import { withRandomLoading } from '@/utils/loadingUtils'
 import CategoryDetailPanel from '@/views/CategoryDetailPanel.vue'
+import { Z_INDEX } from '@/constants/zIndex'
 
 const route = useRoute()
 const router = useRouter()
@@ -38,6 +39,7 @@ const tagRoutes = computed(() => navItems.value.map((item) => ({
   }).href
 })))
 const isSearchRoute = computed(() => route.name === 'SearchResults')
+const isCartRoute = computed(() => route.name === 'Cart')
 
 const handleTagClick = (item, event) => {
   // 禁用项仅展示样式，不允许新开页面
@@ -102,7 +104,7 @@ watch(() => route.query.s, () => {
       <div class="search-tags">
         <a v-for="item in tagRoutes" :key="item.tag" :href="item.href" target="_blank" rel="noopener noreferrer"
           class="tag-pill w100 pointer"
-          :class="{ active: !isSearchRoute && activeNav === item.tag, disabled: !item.available }"
+          :class="{ active: !isSearchRoute && !isCartRoute && activeNav === item.tag, disabled: !item.available }"
           @click="handleTagClick(item, $event)">
           <span class="tag-content">
             {{ item.tag }}
@@ -112,7 +114,7 @@ watch(() => route.query.s, () => {
           </span>
         </a>
       </div>
-      <CategoryDetailPanel v-if="!isSearchRoute" ref="categoryPanelRef" />
+      <CategoryDetailPanel v-if="!isSearchRoute && !isCartRoute" ref="categoryPanelRef" />
       <div class="search-container">
         <el-input v-model="keyword" placeholder="搜索全站..." class="search-input" size="large" clearable
           @keyup.enter="onSearchEnter">
@@ -141,7 +143,7 @@ watch(() => route.query.s, () => {
   top: 25px;
   left: 50%;
   transform: translateX(-50%);
-  z-index: 1000;
+  z-index: v-bind('Z_INDEX.page.searchNav');
   padding: 0 20px;
   margin-bottom: 40px;
 
@@ -280,6 +282,38 @@ watch(() => route.query.s, () => {
       .search-container {
         width: 100%;
         max-width: 1000px;
+      }
+    }
+  }
+}
+
+/* PC端统一字号（不影响平板和手机） */
+@media (min-width: 1025px) {
+  .search-nav {
+    .search-card {
+      .search-tags {
+        .tag-pill,
+        .active,
+        .disabled {
+          font-size: var(--aw-font-16);
+        }
+
+        .tag-pill {
+          height: 73px;
+        }
+      }
+
+      .search-container {
+        .search-input {
+          :deep(.el-input__wrapper) {
+            height: 46px;
+            font-size: 13px;
+          }
+        }
+
+        .search-btn {
+          height: 46px;
+        }
       }
     }
   }

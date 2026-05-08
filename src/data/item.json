@@ -3163,7 +3163,38 @@
                 "露营"
               ]
             }
-          }
+          },{
+  "title": "La Villa Wines",
+  "img": "",
+  "enTitle": "La Villa Wines",
+  "info": {
+    "name": "La Villa Wines",
+    "desc": "位于塔斯马尼亚西北部Spreyton的家族酒庄，仿意大利农庄风格，以凉爽气候葡萄酒闻名，品种包括Savagnin、Nebbiolo Rose、黑比诺、霞多丽等。酒庄由果园转型而来，葡萄园9公顷。酒窖门每年10月至5月开放。",
+    "features": [
+      {
+        "icon": "#22c55e",
+        "title": "地址",
+        "desc": "347 Mersey Main Road, Spreyton, Devonport TAS 7310"
+      },
+      {
+        "icon": "#3b82f6",
+        "title": "联系方式",
+        "desc": "电话：0418 642 722；邮箱：lavillawines@iinet.net.au"
+      },
+      {
+        "icon": "#f59e0b",
+        "title": "营业时间",
+        "desc": "酒窖门10月-5月开放（具体时间请致电）；6月-9月关闭"
+      }
+    ],
+    "tags": [
+      "酒庄",
+      "意大利品种",
+      "凉爽气候",
+      "西北部"
+    ]
+  }
+}
         ]
       },
       {

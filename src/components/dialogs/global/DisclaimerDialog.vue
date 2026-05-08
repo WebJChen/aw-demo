@@ -1,5 +1,6 @@
 <script setup>
 import { useDialogStore } from '@/stores/dialogStore'
+import { Z_INDEX } from '@/constants/zIndex'
 
 const dialogStore = useDialogStore()
 
@@ -10,8 +11,7 @@ const acceptDisclaimer = () => {
 
 <template>
   <el-dialog v-model="dialogStore.dialogs.disclaimer.show" align-center width="520px" :close-on-click-modal="false"
-    :show-close="false"
-    :append-to-body="true" :lock-scroll="true">
+    :show-close="false" :append-to-body="true" :lock-scroll="true" :z-index="Z_INDEX.dialog.base">
     <template #header>
       <div style="font-weight:700; letter-spacing:2px; color:#33b1a3;">免责条款提示</div>
     </template>

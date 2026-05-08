@@ -1,6 +1,7 @@
 <script setup>
 import { Location, Phone, Message, ArrowUp, ArrowDown, ChatRound } from '@element-plus/icons-vue'
 import { useDialogStore } from '@/stores/dialogStore';
+import { Z_INDEX } from '@/constants/zIndex';
 
 const dialogStore = useDialogStore()
 const openComingSoonDialog = () => dialogStore.openDialog('comingSoon')
@@ -199,11 +200,11 @@ const getFooterImg = name => new URL(`../assets/img/footer/${name}`, import.meta
 .el-header .ul-css .el-dropdown {
   // position: relative;
   color: #111;
-  font-size: 16px;
+  font-size: 12px;
 }
 
 .el-dropdown-menu {
-  z-index: 3000 !important;
+  z-index: 300 !important;
 }
 
 /* 统一处理语言下拉触发器的焦点样式，避免偶发黑框 */
@@ -230,7 +231,7 @@ const getFooterImg = name => new URL(`../assets/img/footer/${name}`, import.meta
     height: 70px;
     line-height: 70px;
     // background-color: #39c5bb;
-    z-index: 2000;
+    z-index: v-bind('Z_INDEX.layout.header');
     overflow: visible;
 
     .logo,
@@ -541,6 +542,56 @@ const getFooterImg = name => new URL(`../assets/img/footer/${name}`, import.meta
         .copyright {
           text-align: center;
           color: #6b7280;
+        }
+      }
+    }
+  }
+}
+
+/* 仅PC端（>=1025）应用对齐后的字体与图片尺寸 */
+@media (min-width: 1025px) {
+  .el-container {
+    .el-header {
+      .logo {
+        .logo-img {
+          width: 198px;
+        }
+      }
+    }
+
+    .el-footer {
+      .footer-content {
+        .footer-section {
+          .logo-section {
+            .company-name {
+              .logo-img {
+                width: 213px;
+              }
+            }
+          }
+
+          .contact-info {
+            .contact-item {
+              .el-icon {
+                font-size: 16px;
+              }
+            }
+          }
+
+          .section-title {
+            h3 {
+              font-size: 16px;
+            }
+          }
+
+          .footer-pics {
+            .footer-p-item {
+              .footer-img {
+                width: 86px;
+                height: 86px;
+              }
+            }
+          }
         }
       }
     }

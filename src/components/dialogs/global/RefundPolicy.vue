@@ -3,6 +3,7 @@ import { onMounted, onUnmounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useDialogStore } from '@/stores/dialogStore'
 import { useDeviceStore } from '@/stores/deviceStore'
+import { Z_INDEX } from '@/constants/zIndex'
 
 const dialogStore = useDialogStore()
 const deviceStore = useDeviceStore()
@@ -22,7 +23,7 @@ const closeDialog = () => dialogStore.closeDialog('refundPolicy')
 <template>
   <!-- <div> -->
   <el-dialog v-model="dialogStore.dialogs.refundPolicy.show" title="TasTrips.Online退款政策" width="800" max-width="500px" :fullscreen="isPhone"
-    align-center center :z-index=9500>
+    align-center center :append-to-body="true" :z-index="Z_INDEX.dialog.base">
     <div class="policy-text">
       <div class="policy-section">
         <h2>第一章 总则</h2>

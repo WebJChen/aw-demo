@@ -1,0 +1,22 @@
+:root {
+  --aw-font-13: 13px;
+  --aw-font-14: 14px;
+  --aw-font-15: 15px;
+  --aw-font-16: 16px;
+}
+
+.fs13 {
+  font-size: var(--aw-font-13);
+}
+
+.fs14 {
+  font-size: var(--aw-font-14);
+}
+
+.fs15 {
+  font-size: var(--aw-font-15);
+}
+
+.fs16 {
+  font-size: var(--aw-font-16);
+}

@@ -1,6 +1,7 @@
 <script setup>
 import { onMounted, onUnmounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import { Z_INDEX } from '@/constants/zIndex'
 
 const FIRST_VISIT_KEY = 'isFirstVisit'
 const SEARCH_HIT_DONE_EVENT = 'auswine:search-hit-done'
@@ -84,7 +85,7 @@ onUnmounted(() => {
 
 <template>
   <el-dialog v-model="showTipsModal" append-to-body align-center width="520px" :close-on-click-modal="false"
-    :show-close="false" :z-index="9999">
+    :show-close="false" :z-index="Z_INDEX.dialog.base">
     <template #header>
       <div style="font-weight:700; letter-spacing:2px; color:#101010;">温馨提示</div>
     </template>

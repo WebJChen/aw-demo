@@ -3,6 +3,7 @@ import { onMounted, onUnmounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useDeviceStore } from '@/stores/deviceStore'
 import { useDialogStore } from '@/stores/dialogStore'
+import { Z_INDEX } from '@/constants/zIndex'
 
 const deviceStore = useDeviceStore()
 const { isMobile } = storeToRefs(deviceStore)
@@ -21,6 +22,7 @@ const closeDialog = () => dialogStore.closeDialog('joinUs')
 
 <template>
   <el-dialog v-model="dialogStore.dialogs.joinUs.show" :append-to-body="true" align-center width="520px"
+    :z-index="Z_INDEX.dialog.base"
     class="join-us-dialog" @close="closeDialog">
     <template #header>
       <div style="font-weight:700; letter-spacing:2px; color:#33b1a3;">加入我们</div>

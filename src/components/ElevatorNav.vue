@@ -1,9 +1,14 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
+import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
-import { ArrowUp, ArrowDown, Switch } from '@element-plus/icons-vue'
+import { ArrowUp, ArrowDown, Switch, ShoppingCart } from '@element-plus/icons-vue'
+import { useCartStore } from '@/stores/cartStore'
+import { Z_INDEX } from '@/constants/zIndex'
 
 const router = useRouter()
+const cartStore = useCartStore()
+const { totalQuantity } = storeToRefs(cartStore)
 
 const showElevator = ref(false)
 const isAtBottom = ref(false)
@@ -46,6 +51,10 @@ const togglePosition = () => {
   isLeftPosition.value = !isLeftPosition.value
 }
 
+const goToCart = () => {
+  router.push({ name: 'Cart' })
+}
+
 // 窗口大小变化处理
 const handleResize = () => {
   // 窗口大小变化时重新判断是否显示电梯导航
@@ -68,21 +77,29 @@ onUnmounted(() => {
 </script>
 
 <template>
- <div class="elevator-nav" :class="{ show: showElevator, 'left-position': isLeftPosition }">
-    <div class="elevator-btn pointer" :class="{ show: showElevator }" @click="scrollToTop">
-      <el-icon>
-        <ArrowUp />
-      </el-icon>
-    </div>
-    <div class="elevator-btn pointer" :class="{ show: showElevator }" @click="scrollToBottom">
-      <el-icon>
-        <ArrowDown />
-      </el-icon>
-    </div>
-    <div class="elevator-btn pointer" :class="{ show: showElevator }" @click="togglePosition">
-      <el-icon>
-        <Switch />
-      </el-icon>
+  <div class="elevator-nav" :class="{ 'left-position': isLeftPosition }">
+    <div class="elevator-scroll-group" :class="{ show: showElevator }">
+      <div class="elevator-btn pointer" @click="scrollToTop">
+        <el-icon>
+          <ArrowUp />
+        </el-icon>
+      </div>
+      <div class="elevator-btn pointer" @click="scrollToBottom">
+        <el-icon>
+          <ArrowDown />
+        </el-icon>
+      </div>
+      <div class="elevator-btn pointer cart-action" @click="goToCart" title="购物车">
+        <el-icon>
+          <ShoppingCart />
+        </el-icon>
+        <span class="badge">{{ totalQuantity }}</span>
+      </div>
+      <div class="elevator-btn pointer" @click="togglePosition">
+        <el-icon>
+          <Switch />
+        </el-icon>
+      </div>
     </div>
   </div>
 </template>
@@ -94,24 +111,34 @@ onUnmounted(() => {
   right: 20px;
   top: 50%;
   transform: translateY(-50%);
-  z-index: 9200;
+  z-index: v-bind('Z_INDEX.layout.elevator');
   flex-direction: column;
   gap: 10px;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
-
-  &.show {
-    opacity: 1;
-    visibility: visible;
-  }
 
   &.left-position {
     right: auto;
     left: 20px;
   }
 
+  .elevator-scroll-group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .elevator-scroll-group {
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+
+    &.show {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+
   .elevator-btn {
+    position: relative;
     display: flex;
     width: 50px;
     height: 50px;
@@ -138,6 +165,21 @@ onUnmounted(() => {
       font-size: 20px !important;
       color: #33b1a3 !important;
     }
+  }
+
+  .cart-action .badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 8px;
+    padding: 0 4px;
+    font-size: 10px;
+    line-height: 16px;
+    text-align: center;
+    color: #fff;
+    background: #33b1a3;
   }
 }
 

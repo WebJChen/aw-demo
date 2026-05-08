@@ -3,6 +3,7 @@ import { onMounted, onUnmounted } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useDeviceStore } from '@/stores/deviceStore'
 import { useDialogStore } from '@/stores/dialogStore'
+import { Z_INDEX } from '@/constants/zIndex'
 
 const deviceStore = useDeviceStore()
 const { isMobile } = storeToRefs(deviceStore)
@@ -21,7 +22,7 @@ const closeDialog = () => dialogStore.closeDialog('contactUs')
 
 <template>
   <el-dialog v-model="dialogStore.dialogs.contactUs.show" title="咨询方式" :close-on-click-modal="true" align-center
-    class="contact-dialog" :z-index="9800" :fullscreen="isMobile" :append-to-body="true">
+    class="contact-dialog" :z-index="Z_INDEX.dialog.base" :fullscreen="isMobile" :append-to-body="true">
     <div class="consultation-content">
       <div class="consultation-item">
         <i class="contact-icon phone-icon"></i>
