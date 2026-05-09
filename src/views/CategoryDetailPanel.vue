@@ -1,7 +1,6 @@
 <script setup>
 import { ref, computed, onUnmounted, nextTick } from 'vue'
 import { ArrowDown } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
 import { storeToRefs } from 'pinia'
 import { useNavStore } from '@/stores/navStore'
 import { useDeviceStore } from '@/stores/deviceStore'
@@ -109,22 +108,25 @@ const openWineryDetail = (item) => {
 }
 
 const addToCart = (payload) => {
-  const item = payload?.item || payload
-  const quantity = payload?.quantity || 1
-  const result = cartStore.addCartItem({
-    item,
-    regionPath: '',
-    regionName: activeNav.value || '',
-    subNavPath: '',
-    subNavName: item?.subNavName || '',
-    quantity
-  })
-  if (result === 'success') {
-    ElMessage.success('已加入购物车')
-    return
-  }
-  if (result === 'limit') {
-    ElMessage.warning(`购物车数量已达上限（${cartStore.MAX_CART_ITEMS}）`)
+  const onResult = payload?.onResult
+  try {
+    const item = payload?.item || payload
+    const quantity = payload?.quantity || 1
+    const hitKey = typeof item?.__hitKey === 'string' ? item.__hitKey : ''
+    const hitParts = hitKey.split('__')
+    const inferredRegionPath = hitParts.length >= 4 ? hitParts[1] : ''
+    const inferredSubNavPath = hitParts.length >= 4 ? hitParts[2] : ''
+    const result = cartStore.addCartItem({
+      item,
+      regionPath: inferredRegionPath,
+      regionName: activeNav.value || '',
+      subNavPath: inferredSubNavPath,
+      subNavName: item?.subNavName || '',
+      quantity
+    })
+    onResult?.(result, { maxCartItems: cartStore.MAX_CART_ITEMS })
+  } catch (_) {
+    onResult?.('error', { maxCartItems: cartStore.MAX_CART_ITEMS })
   }
 }
 

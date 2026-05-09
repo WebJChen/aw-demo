@@ -1,5 +1,6 @@
 import { computed, ref, watch } from 'vue'
 import { defineStore } from 'pinia'
+import wineJson from '@/data/wine.json'
 
 const DEFAULT_PRICE = 188
 const STORAGE_KEY = 'aw_cart_items'
@@ -17,13 +18,59 @@ const extractDesc = (item) => {
   return ''
 }
 
+const buildWineHitKey = (regionPath, subNavPath, index) => `wine__${regionPath || ''}__${subNavPath || ''}__${index}`
+
+const inferHitKeyFromData = (item) => {
+  const regionPath = normalizeText(item?.regionPath)
+  const subNavPath = normalizeText(item?.subNavPath)
+  if (!regionPath || !subNavPath) return ''
+
+  const region = (wineJson || []).find((it) => it.path === regionPath)
+  const subNav = region?.subNavList?.find((it) => it.subNavPath === subNavPath)
+  const itemData = Array.isArray(subNav?.itemData) ? subNav.itemData : []
+  if (!itemData.length) return ''
+
+  const targetEnTitle = normalizeText(item?.enTitle)
+  if (targetEnTitle) {
+    const byEnTitle = itemData.findIndex((it) => normalizeText(it?.enTitle) === targetEnTitle)
+    if (byEnTitle >= 0) return buildWineHitKey(regionPath, subNavPath, byEnTitle)
+  }
+
+  const targetTitle = normalizeText(item?.title)
+  if (targetTitle) {
+    const byTitle = itemData.findIndex((it) => normalizeText(it?.title) === targetTitle)
+    if (byTitle >= 0) return buildWineHitKey(regionPath, subNavPath, byTitle)
+  }
+
+  // 兜底：每个分类通常只有一条购物车测试数据
+  const byCartTest = itemData.findIndex((it) => it?.cartTestEnabled === true)
+  if (byCartTest >= 0) return buildWineHitKey(regionPath, subNavPath, byCartTest)
+
+  return ''
+}
+
+const normalizeLoadedItem = (item) => {
+  if (!item || typeof item !== 'object') return null
+  const sourceHitKey = normalizeText(item.sourceHitKey) || inferHitKeyFromData(item)
+  const fallbackCartId = normalizeText(item.cartId) || `${normalizeText(item.regionPath, 'unknown')}__${normalizeText(item.subNavPath, 'unknown')}__${normalizeText(item.title, 'unknown')}`
+  return {
+    ...item,
+    cartId: sourceHitKey || fallbackCartId,
+    quantity: Math.max(1, Number(item.quantity) || 1),
+    selected: item.selected === true,
+    sourceHitKey
+  }
+}
+
 export const useCartStore = defineStore('cart', () => {
   const loadCartItems = () => {
     if (typeof window === 'undefined') return []
     try {
       const stored = localStorage.getItem(STORAGE_KEY)
       if (stored) {
-        return JSON.parse(stored)
+        const parsed = JSON.parse(stored)
+        if (!Array.isArray(parsed)) return []
+        return parsed.map(normalizeLoadedItem).filter(Boolean)
       }
     } catch (error) {
       console.error('加载购物车数据失败:', error)
@@ -58,7 +105,35 @@ export const useCartStore = defineStore('cart', () => {
     }, 0)
   })
 
-  const buildCartId = ({ regionPath, subNavPath, title }) => {
+  // 被勾选的条目代表用户有购买倾向
+  const selectedCount = computed(() => {
+    return cartItems.value.filter((item) => item.selected).length
+  })
+
+  const selectedQuantity = computed(() => {
+    return cartItems.value.reduce((sum, item) => {
+      if (!item.selected) return sum
+      return sum + (Number(item.quantity) || 0)
+    }, 0)
+  })
+
+  const selectedAmount = computed(() => {
+    return cartItems.value.reduce((sum, item) => {
+      if (!item.selected) return sum
+      const price = Number(item.price) || 0
+      const quantity = Number(item.quantity) || 0
+      return sum + (price * quantity)
+    }, 0)
+  })
+
+  const selectedItems = computed(() => cartItems.value.filter((item) => item.selected))
+
+  const isAllSelected = computed(() => {
+    return cartItems.value.length > 0 && cartItems.value.every((item) => item.selected)
+  })
+
+  const buildCartId = ({ regionPath, subNavPath, title, sourceHitKey = '' }) => {
+    if (sourceHitKey) return sourceHitKey
     return `${regionPath || 'unknown'}__${subNavPath || 'unknown'}__${title || 'unknown'}`
   }
 
@@ -68,10 +143,21 @@ export const useCartStore = defineStore('cart', () => {
 
     const addQuantity = Math.max(1, Number(quantity) || 1)
     const title = normalizeText(item.title, '测试酒款')
-    const cartId = buildCartId({ regionPath, subNavPath, title })
+    const sourceHitKey = normalizeText(item?.__hitKey || item?.sourceHitKey)
+    const cartId = buildCartId({ regionPath, subNavPath, title, sourceHitKey })
     const existed = cartItems.value.find((cartItem) => cartItem.cartId === cartId)
     if (existed) {
       existed.quantity += addQuantity
+      existed.title = title
+      existed.enTitle = normalizeText(item.enTitle)
+      existed.desc = extractDesc(item)
+      existed.img = normalizeText(item.img)
+      existed.price = Number(item.testPrice) || existed.price || DEFAULT_PRICE
+      existed.regionPath = normalizeText(regionPath) || existed.regionPath
+      existed.regionName = normalizeText(regionName) || existed.regionName
+      existed.subNavPath = normalizeText(subNavPath) || existed.subNavPath
+      existed.subNavName = normalizeText(subNavName) || existed.subNavName
+      existed.sourceHitKey = sourceHitKey || existed.sourceHitKey || ''
       return 'success'
     }
 
@@ -91,7 +177,9 @@ export const useCartStore = defineStore('cart', () => {
       regionName: normalizeText(regionName),
       subNavPath: normalizeText(subNavPath),
       subNavName: normalizeText(subNavName),
-      addedAt: Date.now()
+      addedAt: Date.now(),
+      selected: false,
+      sourceHitKey
     })
     return 'success'
   }
@@ -110,14 +198,39 @@ export const useCartStore = defineStore('cart', () => {
     cartItems.value = []
   }
 
+  const removeSelectedItems = () => {
+    cartItems.value = cartItems.value.filter((item) => !item.selected)
+  }
+
+  const setItemSelected = (cartId, selected) => {
+    const target = cartItems.value.find((item) => item.cartId === cartId)
+    if (!target) return
+    target.selected = !!selected
+  }
+
+  const setAllSelected = (selected) => {
+    const nextSelected = !!selected
+    cartItems.value.forEach((item) => {
+      item.selected = nextSelected
+    })
+  }
+
   return {
     cartItems,
     MAX_CART_ITEMS,
     totalQuantity,
     totalAmount,
+    selectedCount,
+    selectedQuantity,
+    selectedAmount,
+    selectedItems,
+    isAllSelected,
     addCartItem,
     updateQuantity,
     removeCartItem,
-    clearCart
+    clearCart,
+    removeSelectedItems,
+    setItemSelected,
+    setAllSelected
   }
 })

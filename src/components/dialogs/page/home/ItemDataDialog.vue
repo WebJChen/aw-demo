@@ -1,5 +1,6 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
+import { ElMessage } from 'element-plus'
 import { InfoFilled } from '@element-plus/icons-vue'
 import { resolveDataImage } from '@/utils/dataImageResolver'
 import { Z_INDEX } from '@/constants/zIndex'
@@ -80,12 +81,55 @@ const wineInfo = computed(() => {
 })
 
 const hasSource = computed(() => wineInfo.value.source.length > 0)
+
+const showCartResultMessage = (result, maxItems) => {
+  if (result === 'success') {
+    ElMessage({
+      type: 'success',
+      message: '已加入购物车',
+      showClose: true,
+      offset: 24
+    })
+  } else if (result === 'limit') {
+    ElMessage({
+      type: 'warning',
+      message: `购物车数量已达上限（${maxItems || 500}）`,
+      showClose: true,
+      offset: 24
+    })
+  } else if (result === 'invalid') {
+    ElMessage({
+      type: 'error',
+      message: '加入购物车失败：当前酒款不支持加入购物车',
+      showClose: true,
+      offset: 24
+    })
+  } else {
+    ElMessage({
+      type: 'error',
+      message: '加入购物车失败，请稍后重试',
+      showClose: true,
+      offset: 24
+    })
+  }
+}
+
 const handleAddCart = () => {
   if (!itemDetail.value) return
+  let resultHandled = false
   emit('add-cart', {
     item: itemDetail.value,
-    quantity: addCartQuantity.value
+    quantity: addCartQuantity.value,
+    onResult: (result, extra = {}) => {
+      resultHandled = true
+      showCartResultMessage(result, extra.maxCartItems)
+    }
   })
+  // 兜底：父组件未回调结果时，仍在弹窗内给出失败反馈，避免“点击无响应”的体感
+  setTimeout(() => {
+    if (resultHandled) return
+    showCartResultMessage('error')
+  }, 300)
 }
 
 watch(dialogVisible, (visible) => {

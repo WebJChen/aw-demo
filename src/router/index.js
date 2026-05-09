@@ -14,6 +14,11 @@ const serviceNavRoutes = [
 
 const routes = [
 	{
+		path: '/checkout',
+		name: 'Checkout',
+		component: () => import("@/views/CheckoutView.vue")
+	},
+	{
 		path: '/',
 		component: () => import('@/layouts/DefaultLayout.vue'),
 		children: [

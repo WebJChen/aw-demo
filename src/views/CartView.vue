@@ -1,15 +1,19 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
+import { useRouter } from 'vue-router'
+import { ElMessage } from 'element-plus'
 import { useCartStore } from '@/stores/cartStore'
 import { useDeviceStore } from '@/stores/deviceStore'
 import defaultImg from '@/assets/img/default.png'
 import { resolveDataImage } from '@/utils/dataImageResolver'
+import { saveSearchTarget } from '@/utils/searchUtils'
 
 const cartStore = useCartStore()
-const { cartItems, totalAmount, totalQuantity } = storeToRefs(cartStore)
+const { cartItems, selectedQuantity, selectedAmount, isAllSelected } = storeToRefs(cartStore)
 const deviceStore = useDeviceStore()
 const { isPhone } = storeToRefs(deviceStore)
+const router = useRouter()
 
 const currentPage = ref(1)
 const pageSize = computed(() => (isPhone.value ? 4 : 8))
@@ -41,36 +45,103 @@ const handlePageChange = (page) => {
 }
 
 const resolveImageUrl = (img) => resolveDataImage(img, defaultImg)
+const formatMoney = (value) => {
+  const amount = Number(value)
+  if (!Number.isFinite(amount)) return '0.00'
+  return amount.toFixed(2)
+}
+
+const handleSelectAllChange = (checked) => {
+  cartStore.setAllSelected(checked)
+}
+
+const openItemLocation = (item) => {
+  const regionPath = item?.regionPath || ''
+  const subNavPath = item?.subNavPath || ''
+  const hitKey = typeof item?.sourceHitKey === 'string' ? item.sourceHitKey : ''
+  if (!regionPath || !subNavPath) {
+    ElMessage.warning('当前条目缺少定位信息，暂无法跳转')
+    return
+  }
+
+  if (!hitKey) {
+    const href = router.resolve({
+      name: regionPath,
+      params: { subNav: subNavPath }
+    }).href
+    window.open(href, '_blank', 'noopener,noreferrer')
+    return
+  }
+
+  const sourceType = hitKey.startsWith('item__') ? 'item' : 'wine'
+  saveSearchTarget({
+    hit: hitKey,
+    sourceType,
+    pending: true,
+    regionPath,
+    subNavPath,
+    ts: Date.now()
+  })
+
+  const href = router.resolve({
+    name: regionPath,
+    params: { subNav: subNavPath },
+    query: { hit: hitKey }
+  }).href
+  window.open(href, '_blank', 'noopener,noreferrer')
+}
+
+const goCheckout = () => {
+  if (!selectedQuantity.value) {
+    ElMessage.warning('请先勾选要结算的商品')
+    return
+  }
+  router.push({ name: 'Checkout' })
+}
 </script>
 
 <template>
   <div class="cart-page">
     <div class="cart-header">
       <h1>购物车</h1>
-      <p>已选择 {{ totalQuantity }} 件测试酒款，可在本地临时保存。</p>
+      <p>已选择 {{ selectedQuantity }} 件，可在本地临时保存。</p>
     </div>
 
-    <div class="cart-content">
-      <template v-if="totalItems > 0">
-        <div class="cart-toolbar">
-          <el-button text type="danger" @click="cartStore.clearCart()">清空购物车</el-button>
+    <div class="cart-content" v-if="totalItems > 0">
+      <section class="cart-main-panel">
+        <div class="cart-table-head">
+          <span>商品信息</span>
+          <span>单价（元）</span>
+          <span>数量</span>
+          <span>小计（元）</span>
+          <span>操作</span>
+          <span>选择</span>
         </div>
 
-        <article v-for="item in pagedItems" :key="item.cartId" class="cart-card">
-          <img :src="resolveImageUrl(item.img)" :alt="item.title" class="card-cover">
-          <div class="card-main">
-            <div class="card-title-row">
-              <h3>{{ item.title }}</h3>
+        <article v-for="item in pagedItems" :key="item.cartId" class="cart-row" :class="{ selected: item.selected }">
+          <div class="row-product">
+            <el-image :src="resolveImageUrl(item.img)" :alt="item.title" class="card-cover" fit="cover"
+              :preview-src-list="[resolveImageUrl(item.img)]" :preview-teleported="true" />
+            <div class="product-info">
+              <h3 class="title-link" @click="openItemLocation(item)">{{ item.title }}</h3>
               <span v-if="item.enTitle" class="en-title">{{ item.enTitle }}</span>
+              <p v-if="item.desc" class="card-desc">{{ item.desc }}</p>
+              <div class="card-meta">{{ item.regionName }} / {{ item.subNavName }}</div>
             </div>
-            <p v-if="item.desc" class="card-desc">{{ item.desc }}</p>
-            <div class="card-meta">{{ item.regionName }} / {{ item.subNavName }}</div>
-            <div class="card-actions">
-              <span class="price">$ {{ Number(item.price).toFixed(2) }}</span>
-              <el-input-number :model-value="item.quantity" :min="1" :step="1" size="small"
-                @update:model-value="(value) => cartStore.updateQuantity(item.cartId, value)" />
-              <el-button text type="danger" @click="cartStore.removeCartItem(item.cartId)">移除</el-button>
-            </div>
+          </div>
+
+          <div class="row-price">¥ {{ formatMoney(item.price) }}</div>
+          <div class="row-qty">
+            <el-input-number :model-value="item.quantity" :min="1" :step="1" size="small"
+              @update:model-value="(value) => cartStore.updateQuantity(item.cartId, value)" />
+          </div>
+          <div class="row-subtotal">¥ {{ formatMoney((Number(item.price) || 0) * (Number(item.quantity) || 0)) }}</div>
+          <div class="row-action">
+            <el-button text type="danger" @click="cartStore.removeCartItem(item.cartId)">移除</el-button>
+          </div>
+          <div class="row-select">
+            <el-checkbox class="action-select" :model-value="item.selected"
+              @change="(checked) => cartStore.setItemSelected(item.cartId, checked)" />
           </div>
         </article>
 
@@ -79,13 +150,33 @@ const resolveImageUrl = (img) => resolveDataImage(img, defaultImg)
             layout="prev, pager, next" background @current-change="handlePageChange" />
         </div>
 
-        <div class="cart-summary">
-          <div class="summary-info">合计（测试）：A$ {{ Number(totalAmount).toFixed(2) }}</div>
-          <el-button type="primary">去结算</el-button>
+        <div class="cart-main-select">
+          <el-button text type="danger" class="clear-cart-btn" @click="cartStore.clearCart()">清空购物车</el-button>
+          <div class="all-select-wrap">
+            <span class="all-select-text">全选（{{ selectedQuantity }}）</span>
+            <el-checkbox class="all-select" :model-value="isAllSelected" @change="handleSelectAllChange" />
+          </div>
         </div>
-      </template>
+      </section>
 
-      <div v-else class="empty-state">
+      <aside class="cart-side-panel">
+        <div class="side-header">
+          <h3>结算信息</h3>
+        </div>
+        <div class="summary-row summary-row--selected-qty selected">
+          <span>已选数量</span>
+          <strong>{{ selectedQuantity }} 件</strong>
+        </div>
+        <div class="summary-row summary-row--selected-amount selected">
+          <span>总价</span>
+          <strong>¥ {{ formatMoney(selectedAmount) }}</strong>
+        </div>
+        <el-button type="primary" class="checkout-btn" @click="goCheckout">去结算</el-button>
+      </aside>
+    </div>
+
+    <div class="cart-content cart-content--empty" v-else>
+      <div class="empty-state">
         <p>购物车为空，可在酒款详情弹窗右下角点击“加入购物车”。</p>
       </div>
     </div>
@@ -103,7 +194,7 @@ const resolveImageUrl = (img) => resolveDataImage(img, defaultImg)
 
 .cart-header {
   padding: 20px 24px;
-  border-radius: 14px;
+  border-radius: 0;
   background: #fff;
   border: 1px solid #e5e7eb;
   box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
@@ -116,7 +207,7 @@ const resolveImageUrl = (img) => resolveDataImage(img, defaultImg)
     top: 16px;
     bottom: 16px;
     width: 4px;
-    border-radius: 999px;
+    border-radius: 0;
     background: #33b1a3;
   }
 
@@ -136,104 +227,306 @@ const resolveImageUrl = (img) => resolveDataImage(img, defaultImg)
 }
 
 .cart-content {
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-}
-
-.cart-toolbar {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.cart-card {
-  background: #fff;
-  border-radius: 14px;
-  border: 1px solid rgba(226, 232, 240, 0.9);
-  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
-  padding: 16px;
   display: grid;
-  grid-template-columns: 150px 1fr;
-  gap: 16px;
+  grid-template-columns: 1fr 320px;
+  gap: 18px;
+}
+
+.cart-main-panel {
+  background: #fff;
+  border: none;
+  border-radius: 0;
+  padding: 0;
+}
+
+.cart-table-head {
+  display: grid;
+  grid-template-columns: 2.5fr 1fr 1.1fr 1.1fr .8fr .6fr;
+  align-items: center;
+  min-height: 46px;
+  padding: 0 10px;
+  border-radius: 0;
+  background: #f3f4f6;
+  color: #4b5563;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.cart-row {
+  display: grid;
+  grid-template-columns: 2.5fr 1fr 1.1fr 1.1fr .8fr .6fr;
+  align-items: center;
+  padding: 20px 10px;
+  border-bottom: 1px solid #f1f5f9;
+  gap: 8px;
+}
+
+.cart-row.selected {
+  background: #f0fdfa;
+}
+
+.row-product {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 112px;
+  min-width: 0;
+}
+
+.product-info {
+  flex: 1;
+  min-width: 0;
+  width: 100%;
+}
+
+.product-info h3 {
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.5;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.title-link {
+  display: block;
+  width: 100%;
+  max-width: 320px;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.title-link:hover {
+  color: #1f6f66;
+}
+
+.row-price,
+.row-subtotal {
+  color: #111827;
+  font-weight: 600;
+}
+
+.row-subtotal {
+  color: #1f6f66;
 }
 
 .card-cover {
-  width: 100%;
-  height: 120px;
-  border-radius: 10px;
+  width: 94px;
+  height: 94px;
+  min-width: 94px;
+  min-height: 94px;
+  flex: 0 0 94px;
+  border-radius: 0;
   object-fit: cover;
 }
 
-.card-main {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.card-title-row {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: baseline;
-  gap: 8px;
-
-  h3 {
-    margin: 0;
-    color: #0f172a;
-    font-size: 18px;
-  }
+.card-cover :deep(img) {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .en-title {
-  color: #64748b;
-  font-size: 13px;
+  display: block;
+  margin-top: 4px;
+  color: #6b7280;
+  font-size: 15px;
 }
 
 .card-desc {
-  margin: 0;
+  margin: 8px 0;
   color: #334155;
-  line-height: 1.6;
+  font-size: 14px;
+  line-height: 1.65;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
 }
 
 .card-meta {
   color: #0f766e;
-  font-size: 13px;
+  font-size: 14px;
+  line-height: 1.5;
 }
 
-.card-actions {
+.row-qty :deep(.el-input-number) {
+  width: 110px;
+}
+
+.row-action :deep(.el-button) {
+  padding: 0;
+}
+
+.row-select {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-self: stretch;
+}
+
+.row-select :deep(.el-checkbox) {
+  margin: 0;
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: center;
+  line-height: 1;
 }
 
-.price {
-  min-width: 110px;
-  color: #279486;
-  font-size: 18px;
-  font-weight: 700;
+.row-select :deep(.el-checkbox__input) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 0;
+  vertical-align: middle;
+  line-height: 1;
 }
 
-.cart-summary {
-  margin-top: 10px;
+.action-select :deep(.el-checkbox__label),
+.all-select :deep(.el-checkbox__label) {
+  display: none;
+}
+
+.action-select :deep(.el-checkbox__inner),
+.all-select :deep(.el-checkbox__inner) {
+  width: 24px;
+  height: 24px;
+  margin: 0;
+  border: 2px solid #94a3b8;
+}
+
+.action-select :deep(.el-checkbox__input.is-checked .el-checkbox__inner),
+.all-select :deep(.el-checkbox__input.is-checked .el-checkbox__inner) {
+  background-color: #279486;
+  border-color: #279486;
+}
+
+.action-select :deep(.el-checkbox__inner::after),
+.all-select :deep(.el-checkbox__inner::after) {
+  left: 8px;
+  top: 2px;
+  width: 6px;
+  height: 12px;
+  border-width: 2.5px;
+}
+
+.action-select :deep(.el-checkbox__input.is-focus .el-checkbox__inner),
+.all-select :deep(.el-checkbox__input.is-focus .el-checkbox__inner) {
+  border-color: #279486;
+}
+
+.cart-main-select {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0 0;
+}
+
+.all-select-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.all-select-text {
+  color: #334155;
+  font-size: 14px;
+}
+
+.cart-side-panel {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0;
+  padding: 18px 16px;
+  height: fit-content;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+}
+
+.side-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+
+.cart-side-panel h3 {
+  margin: 0;
+  font-size: 22px;
+  color: #1f2937;
+}
+
+.clear-cart-btn {
+  padding: 0;
+}
+
+.summary-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 20px;
-  border-radius: 12px;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
+  margin-bottom: 10px;
+  color: #374151;
 }
 
-.summary-info {
-  font-size: 18px;
-  color: #0f172a;
+.summary-row span {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.summary-row strong {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.summary-row.selected strong {
+  color: #1f6f66;
+}
+
+.summary-row--selected-amount span {
+  font-size: 16px;
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.summary-row--selected-amount strong {
+  font-size: 22px;
   font-weight: 700;
 }
 
+.summary-row--selected-qty strong {
+  font-size: 15px;
+}
+
+.summary-row--selected-qty span {
+  font-size: 16px;
+  color: #1f2937;
+  font-weight: 600;
+}
+
+.checkout-btn {
+  width: 100%;
+  margin-top: 8px;
+  height: 40px;
+  border-radius: 0;
+}
+
 .empty-state {
+  width: 100%;
+  min-height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
   font-size: 16px;
   color: #64748b;
-  padding: 34px 0;
+  padding: 16px;
+}
+
+.cart-content--empty {
+  display: block;
 }
 
 .pagination-wrapper {
@@ -268,22 +561,56 @@ const resolveImageUrl = (img) => resolveDataImage(img, defaultImg)
     margin-top: 28px;
   }
 
-  .cart-card {
+  .cart-content {
     grid-template-columns: 1fr;
   }
 
+  .cart-table-head {
+    display: none;
+  }
+
+  .cart-row {
+    grid-template-columns: 1fr;
+    border: 1px solid #e5e7eb;
+    border-radius: 0;
+    margin-bottom: 10px;
+  }
+
+  .row-select {
+    justify-content: flex-end;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+  .cart-page {
+    width: 94%;
+    margin-top: 20px;
+  }
+
+  .cart-content {
+    grid-template-columns: 1fr 280px;
+    gap: 14px;
+  }
+
+  .cart-table-head,
+  .cart-row {
+    grid-template-columns: 2.2fr .9fr 1fr 1fr .8fr .6fr;
+  }
+
+  .title-link {
+    max-width: 240px;
+  }
+
   .card-cover {
-    height: 190px;
+    width: 82px;
+    height: 82px;
+    min-width: 82px;
+    min-height: 82px;
+    flex: 0 0 82px;
   }
 
-  .card-actions {
-    flex-wrap: wrap;
-  }
-
-  .cart-summary {
-    flex-direction: column;
-    gap: 10px;
-    align-items: flex-start;
+  .cart-side-panel h3 {
+    font-size: 20px;
   }
 }
 </style>

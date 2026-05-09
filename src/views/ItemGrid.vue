@@ -2,7 +2,6 @@
 import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useRoute, useRouter } from 'vue-router';
-import { ElMessage } from 'element-plus'
 import { ItemDataDialog } from '@/components/dialogs/page/home';
 import { useDeviceStore } from '@/stores/deviceStore';
 import { useNavStore } from '@/stores/navStore';
@@ -167,28 +166,32 @@ const handleWindowScroll = () => {
   navStore.saveScrollYThrottled(window.scrollY)
 }
 
-const openItemDialog = (item) => {
-  selectedItem.value = item || null
+const openItemDialog = (item, idx = -1) => {
+  const nextItem = item ? { ...item } : null
+  if (nextItem && Number.isInteger(idx) && idx >= 0) {
+    // 保存命中 key，供购物车“回到原位置”能力复用
+    nextItem.__hitKey = buildHitKey(idx)
+  }
+  selectedItem.value = nextItem
   itemDialogVisible.value = true
 }
 
 const addToCart = (payload) => {
-  const item = payload?.item || payload
-  const quantity = payload?.quantity || 1
-  const result = cartStore.addCartItem({
-    item,
-    regionPath: currentRegionPath.value,
-    regionName: currentRegion.value?.navName || '',
-    subNavPath: currentSubNav.value?.subNavPath || '',
-    subNavName: currentSubNav.value?.subNavName || '',
-    quantity
-  })
-  if (result === 'success') {
-    ElMessage.success('已加入购物车')
-    return
-  }
-  if (result === 'limit') {
-    ElMessage.warning(`购物车数量已达上限（${cartStore.MAX_CART_ITEMS}）`)
+  const onResult = payload?.onResult
+  try {
+    const item = payload?.item || payload
+    const quantity = payload?.quantity || 1
+    const result = cartStore.addCartItem({
+      item,
+      regionPath: currentRegionPath.value,
+      regionName: currentRegion.value?.navName || '',
+      subNavPath: currentSubNav.value?.subNavPath || '',
+      subNavName: currentSubNav.value?.subNavName || '',
+      quantity
+    })
+    onResult?.(result, { maxCartItems: cartStore.MAX_CART_ITEMS })
+  } catch (_) {
+    onResult?.('error', { maxCartItems: cartStore.MAX_CART_ITEMS })
   }
 }
 
@@ -382,7 +385,7 @@ onUnmounted(() => {
   </div>
 
   <div ref="gridRef" class="info-list">
-    <div v-for="(data, idx) in dataList" :key="idx" class="info-item pointer" @click="openItemDialog(data)"
+    <div v-for="(data, idx) in dataList" :key="idx" class="info-item pointer" @click="openItemDialog(data, idx)"
       :data-title="data.title" :data-hit-key="buildHitKey(idx)">
       <img :src="resolveImageUrl(data.img)" :alt="data.title" class="w100">
       <div class="info-title fs16" :title="data.title">{{ data.title }}</div>
