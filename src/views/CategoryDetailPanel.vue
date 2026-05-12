@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onUnmounted, nextTick } from 'vue'
+import { ref, computed, onUnmounted, nextTick, watch } from 'vue'
 import { ArrowDown } from '@element-plus/icons-vue'
 import { storeToRefs } from 'pinia'
 import { useNavStore } from '@/stores/navStore'
@@ -7,8 +7,9 @@ import { useDeviceStore } from '@/stores/deviceStore'
 import { useCartStore } from '@/stores/cartStore'
 import { ItemDataDialog } from '@/components/dialogs/page/home'
 import defaultImg from '@/assets/img/default.png'
-import itemJson from '@/data/item.json'
+import navData from '@/data/split/nav.json'
 import { resolveDataImage } from '@/utils/dataImageResolver'
+import { getItemRegionByPath } from '@/utils/dataRepository'
 
 const isExpanded = ref(false)
 const navStore = useNavStore()
@@ -21,6 +22,7 @@ let panelHitTimer = null
 const deviceStore = useDeviceStore()
 const { isPhone, isTablet } = storeToRefs(deviceStore)
 const cartStore = useCartStore()
+const currentRegionData = ref(null)
 
 onUnmounted(() => {
   clearPanelHitState()
@@ -44,10 +46,38 @@ const getSubNavItems = (subNav) => {
 
 const getItemInfo = (item) => item?.info || item?.itemData || null
 
+const currentRegionPath = computed(() => {
+  const byNavName = navData.find((item) => item.navName === activeNav.value)
+  return byNavName?.path || navData[0]?.path || ''
+})
+
+const syncCurrentRegionData = async () => {
+  const regionPath = currentRegionPath.value
+  if (!regionPath) {
+    currentRegionData.value = null
+    return
+  }
+  const loadedRegion = await getItemRegionByPath(regionPath)
+  if (regionPath !== currentRegionPath.value) return
+  if (loadedRegion) {
+    currentRegionData.value = loadedRegion
+    return
+  }
+
+  const navRegion = navData.find((item) => item.path === regionPath) || null
+  currentRegionData.value = navRegion
+    ? {
+      path: navRegion.path,
+      navName: navRegion.navName,
+      subNavList: Array.isArray(navRegion.subNavList) ? navRegion.subNavList : []
+    }
+    : null
+}
+
 // 获取所有项目数据
 const allItems = computed(() => {
   const items = []
-  const category = itemJson.find(item => item.navName === activeNav.value)
+  const category = currentRegionData.value
   if (category && category.subNavList) {
     category.subNavList.forEach(subNav => {
       // 根据当前选中的子导航过滤数据
@@ -97,7 +127,7 @@ const resetPage = () => {
 }
 
 const categoryList = computed(() => {
-  return itemJson.filter(item => item.navName === activeNav.value)
+  return currentRegionData.value ? [currentRegionData.value] : []
 })
 const panelTitleText = computed(() => `${activeNav.value || ''}全部相关酒庄`)
 const hasVisibleData = computed(() => isExpanded.value && allItems.value.length > 0)
@@ -178,7 +208,7 @@ const focusByHit = async (hitKey) => {
   const [sourceType, regionPath, subNavPath, indexStr] = hitKey.split('__')
   if (sourceType !== 'item' || !regionPath || !subNavPath) return false
 
-  const region = itemJson.find((item) => item.path === regionPath)
+  const region = await getItemRegionByPath(regionPath)
   if (!region) return false
   const subNav = region.subNavList?.find((item) => item.subNavPath === subNavPath)
   if (!subNav) return false
@@ -211,6 +241,10 @@ const focusByHit = async (hitKey) => {
 defineExpose({
   focusByHit
 })
+
+watch(() => currentRegionPath.value, () => {
+  void syncCurrentRegionData()
+}, { immediate: true })
 
 const resolveImageUrl = (img) => {
   return resolveDataImage(img, defaultImg)

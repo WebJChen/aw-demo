@@ -1,0 +1,446 @@
+{
+  "id": 7,
+  "navName": "北领地",
+  "available": true,
+  "path": "northern-territory",
+  "subNavList": [
+    {
+      "subNavName": "红酒",
+      "subNavPath": "red-wine",
+      "isShow": true,
+      "itemData": [
+        {
+          "title": "北领地红酒购物车测试酒款",
+          "img": "",
+          "enTitle": "Cart Test - northern-territory - red-wine",
+          "cartTestEnabled": true,
+          "testPrice": 134,
+          "wineData": {
+            "name": "北领地红酒购物车测试酒款",
+            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+            "website": "",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "购物车测试地址（示例）"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "购物车测试电话（示例）"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "购物车测试营业时间（示例）"
+              }
+            ],
+            "tags": [
+              "购物车测试",
+              "可加入购物车",
+              "北领地",
+              "红酒"
+            ]
+          }
+        },
+        {
+          "title": "北领地红酒示例111111",
+          "img": "../assets/img/dialog_test.jpg",
+          "enTitle": "Northern Territory Red Wine Example 1",
+          "wineData": {
+            "name": "北领地红酒文本1",
+            "desc": "北领地红酒描述1",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "addr"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "电话",
+                "desc": "phone"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "opening time"
+              }
+            ],
+            "tags": [
+              "tag1",
+              "tag2",
+              "tag3"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "subNavName": "白葡萄酒",
+      "subNavPath": "white-wine",
+      "isShow": true,
+      "itemData": [
+        {
+          "title": "北领地白葡萄酒购物车测试酒款",
+          "img": "",
+          "enTitle": "Cart Test - northern-territory - white-wine",
+          "cartTestEnabled": true,
+          "testPrice": 134,
+          "wineData": {
+            "name": "北领地白葡萄酒购物车测试酒款",
+            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+            "website": "",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "购物车测试地址（示例）"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "购物车测试电话（示例）"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "购物车测试营业时间（示例）"
+              }
+            ],
+            "tags": [
+              "购物车测试",
+              "可加入购物车",
+              "北领地",
+              "白葡萄酒"
+            ]
+          }
+        },
+        {
+          "title": "北领地白葡萄酒示例1",
+          "img": "",
+          "enTitle": "Northern Territory White Wine Example 1",
+          "wineData": {
+            "name": "北领地白葡萄酒文本1",
+            "desc": "北领地白葡萄酒描述1",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "addr"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "电话",
+                "desc": "phone"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "opening time"
+              }
+            ],
+            "tags": [
+              "tag1",
+              "tag2",
+              "tag3"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "subNavName": "气泡酒",
+      "subNavPath": "sparkling-wine",
+      "isShow": true,
+      "itemData": [
+        {
+          "title": "北领地气泡酒购物车测试酒款",
+          "img": "",
+          "enTitle": "Cart Test - northern-territory - sparkling-wine",
+          "cartTestEnabled": true,
+          "testPrice": 134,
+          "wineData": {
+            "name": "北领地气泡酒购物车测试酒款",
+            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+            "website": "",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "购物车测试地址（示例）"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "购物车测试电话（示例）"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "购物车测试营业时间（示例）"
+              }
+            ],
+            "tags": [
+              "购物车测试",
+              "可加入购物车",
+              "北领地",
+              "气泡酒"
+            ]
+          }
+        },
+        {
+          "title": "北领地气泡酒示例1",
+          "img": "",
+          "enTitle": "Northern Territory Sparkling Wine Example 1",
+          "wineData": {
+            "name": "北领地气泡酒文本1",
+            "desc": "北领地气泡酒描述1",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "addr"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "电话",
+                "desc": "phone"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "opening time"
+              }
+            ],
+            "tags": [
+              "tag1",
+              "tag2",
+              "tag3"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "subNavName": "威士忌",
+      "subNavPath": "whisky",
+      "isShow": true,
+      "itemData": [
+        {
+          "title": "北领地威士忌购物车测试酒款",
+          "img": "",
+          "enTitle": "Cart Test - northern-territory - whisky",
+          "cartTestEnabled": true,
+          "testPrice": 134,
+          "wineData": {
+            "name": "北领地威士忌购物车测试酒款",
+            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+            "website": "",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "购物车测试地址（示例）"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "购物车测试电话（示例）"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "购物车测试营业时间（示例）"
+              }
+            ],
+            "tags": [
+              "购物车测试",
+              "可加入购物车",
+              "北领地",
+              "威士忌"
+            ]
+          }
+        },
+        {
+          "title": "北领地威士忌示例1",
+          "img": "",
+          "enTitle": "Northern Territory Whisky Example 1",
+          "wineData": {
+            "name": "北领地威士忌文本1",
+            "desc": "北领地威士忌描述1",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "addr"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "电话",
+                "desc": "phone"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "opening time"
+              }
+            ],
+            "tags": [
+              "tag1",
+              "tag2",
+              "tag3"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "subNavName": "其它洋酒",
+      "subNavPath": "other-spirits",
+      "isShow": true,
+      "itemData": [
+        {
+          "title": "北领地其它洋酒购物车测试酒款",
+          "img": "",
+          "enTitle": "Cart Test - northern-territory - other-spirits",
+          "cartTestEnabled": true,
+          "testPrice": 134,
+          "wineData": {
+            "name": "北领地其它洋酒购物车测试酒款",
+            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+            "website": "",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "购物车测试地址（示例）"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "购物车测试电话（示例）"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "购物车测试营业时间（示例）"
+              }
+            ],
+            "tags": [
+              "购物车测试",
+              "可加入购物车",
+              "北领地",
+              "其它洋酒"
+            ]
+          }
+        },
+        {
+          "title": "北领地其它洋酒示例1",
+          "img": "",
+          "enTitle": "Northern Territory Other Spirits Example 1",
+          "wineData": {
+            "name": "北领地其它洋酒文本1",
+            "desc": "北领地其它洋酒描述1",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "addr"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "电话",
+                "desc": "phone"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "opening time"
+              }
+            ],
+            "tags": [
+              "tag1",
+              "tag2",
+              "tag3"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "subNavName": "苹果酒",
+      "subNavPath": "cider",
+      "isShow": true,
+      "itemData": [
+        {
+          "title": "北领地苹果酒购物车测试酒款",
+          "img": "",
+          "enTitle": "Cart Test - northern-territory - cider",
+          "cartTestEnabled": true,
+          "testPrice": 134,
+          "wineData": {
+            "name": "北领地苹果酒购物车测试酒款",
+            "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+            "website": "",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "购物车测试地址（示例）"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "购物车测试电话（示例）"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "购物车测试营业时间（示例）"
+              }
+            ],
+            "tags": [
+              "购物车测试",
+              "可加入购物车",
+              "北领地",
+              "苹果酒"
+            ]
+          }
+        },
+        {
+          "title": "北领地苹果酒示例1",
+          "img": "",
+          "enTitle": "Northern Territory Cider Example 1",
+          "wineData": {
+            "name": "北领地苹果酒文本1",
+            "desc": "北领地苹果酒描述1",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "addr"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "电话",
+                "desc": "phone"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "opening time"
+              }
+            ],
+            "tags": [
+              "tag1",
+              "tag2",
+              "tag3"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

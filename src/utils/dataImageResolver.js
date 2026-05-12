@@ -1,9 +1,19 @@
 import defaultImg from '@/assets/img/default.png'
 
-const assetModules = import.meta.glob('/src/assets/**/*.{png,jpg,jpeg,JPG,JPEG,gif,webp,svg}', {
+const baseAssetModules = import.meta.glob('/src/assets/**/*.{png,jpg,jpeg,JPG,JPEG,gif,webp,svg,avif,AVIF}', {
   eager: true,
   import: 'default'
 })
+
+const optimizedAssetModules = import.meta.glob('/src/assets/.optimized/**/*.{webp,avif,AVIF}', {
+  eager: true,
+  import: 'default'
+})
+
+const assetModules = {
+  ...baseAssetModules,
+  ...optimizedAssetModules
+}
 
 const normalizeAssetPath = (inputPath) => {
   const raw = String(inputPath || '').trim()
@@ -35,11 +45,28 @@ const resolveAssetModule = (inputPath) => {
   return fuzzyKey ? assetModules[fuzzyKey] : ''
 }
 
-const resolveDataImage = (inputPath, fallback = defaultImg) => {
+const getOptimizedAssetPath = (normalizedAssetPath, variant = 'thumb') => {
+  if (!normalizedAssetPath.startsWith('/src/assets/')) return ''
+  const relativePath = normalizedAssetPath.slice('/src/assets/'.length)
+  const lastDotIndex = relativePath.lastIndexOf('.')
+  if (lastDotIndex <= 0) return ''
+  const pathWithoutExt = relativePath.slice(0, lastDotIndex)
+  return `/src/assets/.optimized/${pathWithoutExt}.${variant}.webp`
+}
+
+const resolveDataImage = (inputPath, fallback = defaultImg, options = {}) => {
   const raw = String(inputPath || '').trim()
   if (!raw) return fallback
 
   if (/^(https?:|data:|blob:)/i.test(raw)) return raw
+
+  const variant = String(options?.variant || 'original').trim().toLowerCase()
+  const normalized = normalizeAssetPath(raw)
+  if (normalized && variant !== 'original') {
+    const optimizedPath = getOptimizedAssetPath(normalized, variant)
+    const optimizedUrl = resolveAssetModule(optimizedPath)
+    if (optimizedUrl) return optimizedUrl
+  }
 
   const moduleUrl = resolveAssetModule(raw)
   if (moduleUrl) return moduleUrl
@@ -53,4 +80,4 @@ const resolveDataImage = (inputPath, fallback = defaultImg) => {
   return fallback
 }
 
-export { resolveDataImage }
+export { resolveDataImage, resolveAssetModule }

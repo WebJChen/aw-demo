@@ -90,7 +90,7 @@ onUnmounted(() => {
       <div style="font-weight:700; letter-spacing:2px; color:#101010;">温馨提示</div>
     </template>
     <div style="color:#333; line-height:1.8; text-align:justify;">
-      温馨提示，本网站仍在建立之中，内容仍未完善，TasTrips.Online正在尽全力建设中，敬请期待。
+      温馨提示，本网站仍在建立之中，内容仍未完善，AW正在尽全力建设中，敬请期待。
     </div>
     <template #footer>
       <div style="display:flex; justify-content:flex-end; gap:16px; align-items:center;">

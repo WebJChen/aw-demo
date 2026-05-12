@@ -1,0 +1,194 @@
+[
+  {
+    "id": 1,
+    "navName": "塔斯马尼亚州",
+    "capital": "霍巴特",
+    "available": true,
+    "path": "tasmania",
+    "subNavList": [
+      {
+        "subNavName": "葡萄酒酒庄",
+        "subNavPath": "wine",
+        "isShow": true
+      },
+      {
+        "subNavName": "洋酒酒庄",
+        "subNavPath": "Spirits",
+        "isShow": true
+      },
+      {
+        "subNavName": "其它酒类酒庄",
+        "subNavPath": "other-spirits",
+        "isShow": true
+      }
+    ]
+  },
+  {
+    "id": 2,
+    "navName": "新南威尔士州",
+    "capital": "悉尼",
+    "available": true,
+    "path": "new-south-wales",
+    "subNavList": [
+      {
+        "subNavName": "葡萄酒酒庄",
+        "subNavPath": "wine",
+        "isShow": true
+      },
+      {
+        "subNavName": "洋酒酒庄",
+        "subNavPath": "Spirits",
+        "isShow": true
+      },
+      {
+        "subNavName": "其它酒类酒庄",
+        "subNavPath": "other-spirits",
+        "isShow": true
+      }
+    ]
+  },
+  {
+    "id": 3,
+    "navName": "南澳大利亚州",
+    "capital": "阿德雷德",
+    "available": true,
+    "path": "south-australia",
+    "subNavList": [
+      {
+        "subNavName": "葡萄酒酒庄",
+        "subNavPath": "wine",
+        "isShow": true
+      },
+      {
+        "subNavName": "洋酒酒庄",
+        "subNavPath": "spirits",
+        "isShow": true
+      },
+      {
+        "subNavName": "其它酒类酒庄",
+        "subNavPath": "other-spirits",
+        "isShow": true
+      }
+    ]
+  },
+  {
+    "id": 4,
+    "navName": "西澳大利亚州",
+    "capital": "珀斯",
+    "available": true,
+    "path": "western-australia",
+    "subNavList": [
+      {
+        "subNavName": "葡萄酒酒庄",
+        "subNavPath": "wine",
+        "isShow": true
+      },
+      {
+        "subNavName": "洋酒酒庄",
+        "subNavPath": "spirits",
+        "isShow": true
+      },
+      {
+        "subNavName": "其它酒类酒庄",
+        "subNavPath": "other-spirits",
+        "isShow": true
+      }
+    ]
+  },
+  {
+    "id": 5,
+    "navName": "维多利亚州",
+    "capital": "墨尔本",
+    "available": true,
+    "path": "victoria",
+    "subNavList": [
+      {
+        "subNavName": "葡萄酒酒庄",
+        "subNavPath": "wine",
+        "isShow": true
+      },
+      {
+        "subNavName": "洋酒酒庄",
+        "subNavPath": "spirit",
+        "isShow": true
+      },
+      {
+        "subNavName": "其它酒类酒庄",
+        "subNavPath": "other-spirits",
+        "isShow": true
+      }
+    ]
+  },
+  {
+    "id": 6,
+    "navName": "昆士兰州",
+    "capital": "布里斯班",
+    "available": true,
+    "path": "queensland",
+    "subNavList": [
+      {
+        "subNavName": "葡萄酒酒庄",
+        "subNavPath": "wine",
+        "isShow": true
+      },
+      {
+        "subNavName": "洋酒酒庄",
+        "subNavPath": "spirit",
+        "isShow": true
+      },
+      {
+        "subNavName": "其它酒类酒庄",
+        "subNavPath": "other-spirits",
+        "isShow": true
+      }
+    ]
+  },
+  {
+    "id": 7,
+    "navName": "北领地",
+    "capital": "达尔文",
+    "available": true,
+    "path": "northern-territory",
+    "subNavList": [
+      {
+        "subNavName": "葡萄酒酒庄",
+        "subNavPath": "wine",
+        "isShow": true
+      },
+      {
+        "subNavName": "洋酒酒庄",
+        "subNavPath": "spirit",
+        "isShow": true
+      },
+      {
+        "subNavName": "其它酒类酒庄",
+        "subNavPath": "other-spirits",
+        "isShow": true
+      }
+    ]
+  },
+  {
+    "id": 8,
+    "navName": "堪培拉",
+    "capital": "首都领地.ACT",
+    "available": true,
+    "path": "canberra",
+    "subNavList": [
+      {
+        "subNavName": "葡萄酒酒庄",
+        "subNavPath": "wine",
+        "isShow": true
+      },
+      {
+        "subNavName": "洋酒酒庄",
+        "subNavPath": "spirit",
+        "isShow": true
+      },
+      {
+        "subNavName": "其它酒类酒庄",
+        "subNavPath": "other-spirits",
+        "isShow": true
+      }
+    ]
+  }
+]

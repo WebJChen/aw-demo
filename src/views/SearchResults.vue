@@ -1,14 +1,13 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import itemJson from '@/data/item.json'
-import wineJson from '@/data/wine.json'
 import {
   buildSearchIndex,
   scoreRow,
   getHighlightSegments,
   saveSearchTarget
 } from '@/utils/searchUtils'
+import { getItemJson, getWineJson } from '@/utils/dataRepository'
 import { withRandomLoading } from '@/utils/loadingUtils'
 
 const route = useRoute()
@@ -17,16 +16,41 @@ const router = useRouter()
 const pageSize = 10
 const currentPage = ref(1)
 const pageLoading = ref(false)
+const searchRows = ref([])
+let indexRows = []
+let hasBuiltSearchIndex = false
+let buildSearchIndexPromise = null
 
 const keyword = computed(() => (typeof route.query.s === 'string' ? route.query.s.trim() : ''))
-const indexRows = [...buildSearchIndex(itemJson, 'item'), ...buildSearchIndex(wineJson, 'wine')]
 
-const allResults = computed(() => {
-  if (!keyword.value) return []
+const ensureSearchIndex = async () => {
+  if (hasBuiltSearchIndex) return
+  if (!buildSearchIndexPromise) {
+    buildSearchIndexPromise = Promise.all([getItemJson(), getWineJson()])
+      .then(([itemJson, wineJson]) => {
+        indexRows = [...buildSearchIndex(itemJson, 'item'), ...buildSearchIndex(wineJson, 'wine')]
+        hasBuiltSearchIndex = true
+      })
+      .catch(() => {
+        indexRows = []
+        hasBuiltSearchIndex = true
+      })
+  }
+  await buildSearchIndexPromise
+}
+
+const performSearch = async (rawKeyword) => {
+  const currentKeyword = String(rawKeyword || '').trim()
+  if (!currentKeyword) {
+    searchRows.value = []
+    return
+  }
+
+  await ensureSearchIndex()
 
   const rows = []
   for (const row of indexRows) {
-    const scoreData = scoreRow(row, keyword.value)
+    const scoreData = scoreRow(row, currentKeyword)
     if (!scoreData.matched) continue
 
     rows.push({
@@ -50,8 +74,10 @@ const allResults = computed(() => {
   }
 
   rows.sort((a, b) => b.score - a.score)
-  return rows
-})
+  searchRows.value = rows
+}
+
+const allResults = computed(() => searchRows.value)
 
 const totalResults = computed(() => allResults.value.length)
 const hasResults = computed(() => totalResults.value > 0)
@@ -64,6 +90,7 @@ watch(keyword, async () => {
   await withRandomLoading(async () => {
     pageLoading.value = true
     currentPage.value = 1
+    await performSearch(keyword.value)
   }, { min: 80, max: 300 })
   pageLoading.value = false
 }, { immediate: true })

@@ -1,6 +1,5 @@
 import { computed, ref, watch } from 'vue'
 import { defineStore } from 'pinia'
-import wineJson from '@/data/wine.json'
 
 const DEFAULT_PRICE = 188
 const STORAGE_KEY = 'aw_cart_items'
@@ -18,40 +17,9 @@ const extractDesc = (item) => {
   return ''
 }
 
-const buildWineHitKey = (regionPath, subNavPath, index) => `wine__${regionPath || ''}__${subNavPath || ''}__${index}`
-
-const inferHitKeyFromData = (item) => {
-  const regionPath = normalizeText(item?.regionPath)
-  const subNavPath = normalizeText(item?.subNavPath)
-  if (!regionPath || !subNavPath) return ''
-
-  const region = (wineJson || []).find((it) => it.path === regionPath)
-  const subNav = region?.subNavList?.find((it) => it.subNavPath === subNavPath)
-  const itemData = Array.isArray(subNav?.itemData) ? subNav.itemData : []
-  if (!itemData.length) return ''
-
-  const targetEnTitle = normalizeText(item?.enTitle)
-  if (targetEnTitle) {
-    const byEnTitle = itemData.findIndex((it) => normalizeText(it?.enTitle) === targetEnTitle)
-    if (byEnTitle >= 0) return buildWineHitKey(regionPath, subNavPath, byEnTitle)
-  }
-
-  const targetTitle = normalizeText(item?.title)
-  if (targetTitle) {
-    const byTitle = itemData.findIndex((it) => normalizeText(it?.title) === targetTitle)
-    if (byTitle >= 0) return buildWineHitKey(regionPath, subNavPath, byTitle)
-  }
-
-  // 兜底：每个分类通常只有一条购物车测试数据
-  const byCartTest = itemData.findIndex((it) => it?.cartTestEnabled === true)
-  if (byCartTest >= 0) return buildWineHitKey(regionPath, subNavPath, byCartTest)
-
-  return ''
-}
-
 const normalizeLoadedItem = (item) => {
   if (!item || typeof item !== 'object') return null
-  const sourceHitKey = normalizeText(item.sourceHitKey) || inferHitKeyFromData(item)
+  const sourceHitKey = normalizeText(item.sourceHitKey)
   const fallbackCartId = normalizeText(item.cartId) || `${normalizeText(item.regionPath, 'unknown')}__${normalizeText(item.subNavPath, 'unknown')}__${normalizeText(item.title, 'unknown')}`
   return {
     ...item,

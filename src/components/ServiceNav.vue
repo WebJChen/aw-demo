@@ -4,7 +4,7 @@ import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useNavStore } from '@/stores/navStore'
-import itemJson from '@/data/item.json'
+import navData from '@/data/split/nav.json'
 import { withRandomLoading } from '@/utils/loadingUtils'
 import CategoryDetailPanel from '@/views/CategoryDetailPanel.vue'
 import { Z_INDEX } from '@/constants/zIndex'
@@ -20,7 +20,7 @@ const syncKeywordFromRoute = () => {
   keyword.value = typeof route.query.s === 'string' ? route.query.s : ''
 }
 
-const navItems = computed(() => itemJson.map((item) => ({
+const navItems = computed(() => navData.map((item) => ({
   tag: item.navName,
   slug: item.path,
   available: item.available !== false,

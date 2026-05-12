@@ -4,7 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "data:split": "node scripts/split-data.mjs",
+    "dev": "npm run data:split && vite",
+    "images:thumb": "node scripts/generate-thumbs.mjs",
+    "prebuild": "npm run data:split && npm run images:thumb",
     "build": "vite build",
     "preview": "vite preview"
   },
@@ -20,6 +23,7 @@
     "@vitejs/plugin-vue": "^6.0.2",
     "eslint": "^10.0.3",
     "eslint-plugin-vue": "^10.8.0",
+    "sharp": "^0.34.5",
     "unplugin-auto-import": "^21.0.0",
     "unplugin-vue-components": "^31.0.0",
     "vite": "^7.3.1"

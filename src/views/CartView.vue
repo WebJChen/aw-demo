@@ -44,7 +44,7 @@ const handlePageChange = (page) => {
   currentPage.value = page
 }
 
-const resolveImageUrl = (img) => resolveDataImage(img, defaultImg)
+const resolveImageUrl = (img) => resolveDataImage(img, defaultImg, { variant: 'thumb' })
 const formatMoney = (value) => {
   const amount = Number(value)
   if (!Number.isFinite(amount)) return '0.00'

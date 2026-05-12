@@ -1,5 +1,5 @@
 import { createRouter, createWebHashHistory } from "vue-router"
-import itemJson from "@/data/item.json"
+import navData from "@/data/split/nav.json"
 
 const serviceNavRoutes = [
 	{ name: 'tasmania', path: 'tasmania' },
@@ -75,12 +75,12 @@ const router = createRouter({
 	routes
 })
 
-const firstRegion = itemJson[0]
+const firstRegion = navData[0]
 const fallbackRegionPath = firstRegion?.path || 'tasmania'
 const fallbackSubNavPath = firstRegion?.subNavList?.find((subNav) => subNav?.isShow !== false)?.subNavPath || 'red-wine'
 
-const findRegionByPath = (path) => itemJson.find((region) => region.path === path)
-const findRegionByNavName = (navName) => itemJson.find((region) => region.navName === navName)
+const findRegionByPath = (path) => navData.find((region) => region.path === path)
+const findRegionByNavName = (navName) => navData.find((region) => region.navName === navName)
 const getFirstEnabledSubNavPath = (region) => region?.subNavList?.find((subNav) => subNav?.isShow !== false)?.subNavPath || fallbackSubNavPath
 const getEnabledSubNavPath = (region, subNavName) => {
 	const target = region?.subNavList?.find((subNav) => subNav.subNavName === subNavName && subNav?.isShow !== false)

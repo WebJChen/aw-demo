@@ -106,7 +106,7 @@ const viewOrderMock = () => {
   ElMessage.info('订单详情页暂未接入，这里为模拟结算流程。')
 }
 
-const resolveImageUrl = (img) => resolveDataImage(img, defaultImg)
+const resolveImageUrl = (img) => resolveDataImage(img, defaultImg, { variant: 'thumb' })
 </script>
 
 <template>

@@ -7,19 +7,27 @@ import { useDeviceStore } from '@/stores/deviceStore';
 import { useNavStore } from '@/stores/navStore';
 import { useCartStore } from '@/stores/cartStore'
 import defaultImg from '@/assets/img/default.png';
-import itemJson from '@/data/wine.json';
+import navData from '@/data/split/nav.json';
 import { readSearchTarget, saveSearchTarget } from '@/utils/searchUtils'
 import { resolveDataImage } from '@/utils/dataImageResolver'
+import { getWineRegionByPath } from '@/utils/dataRepository'
 import { Z_INDEX } from '@/constants/zIndex'
 
-const regionRouteNames = itemJson.map((region) => region.path)
+const regionRouteNames = navData.map((region) => region.path)
+const fallbackRegionPath = navData[0]?.path || ''
+const fallbackRegionNavName = navData[0]?.navName || '塔斯马尼亚州'
+const INITIAL_RENDER_COUNT = 24
+const RENDER_STEP_COUNT = 24
 
 const gridRef = ref(null)
+const loadMoreTriggerRef = ref(null)
 
 const currentPage = ref(1)
 const scrollPage = ref(1)
 const loadMoad = ref(false)
 const isLoading = ref(false)
+const renderLimit = ref(INITIAL_RENDER_COUNT)
+const hasMore = ref(false)
 const deviceStore = useDeviceStore()
 const { isPhone, isPortrait } = storeToRefs(deviceStore)
 const navStore = useNavStore()
@@ -29,9 +37,13 @@ const route = useRoute()
 const router = useRouter()
 const itemDialogVisible = ref(false)
 const selectedItem = ref(null)
+const resolvedImagePathCache = new Map()
+const currentRegionData = ref(null)
 
 const handledSearchHit = ref('')
 let hitClearTimer = null
+let loadMoreObserver = null
+let scrollUpdateFrameId = 0
 
 const clearSearchHitState = () => {
   if (hitClearTimer) {
@@ -76,11 +88,11 @@ const playSearchHitHighlight = (targetEl, fallbackMs = 1800) => {
 const currentRegionPath = computed(() => {
   const routeName = typeof route.name === 'string' ? route.name : ''
   if (routeName && regionRouteNames.includes(routeName)) return routeName
-  return itemJson[0]?.path || ''
+  return fallbackRegionPath
 })
 
 const currentRegion = computed(() => {
-  return itemJson.find((region) => region.path === currentRegionPath.value) || itemJson[0] || null
+  return currentRegionData.value
 })
 
 const allSubNavs = computed(() => currentRegion.value?.subNavList || [])
@@ -103,6 +115,29 @@ const currentSubNav = computed(() => {
 })
 
 const dataList = computed(() => currentSubNav.value?.itemData || [])
+const syncCurrentRegionData = async () => {
+  const regionPath = currentRegionPath.value
+  const loadedRegion = await getWineRegionByPath(regionPath)
+  if (regionPath !== currentRegionPath.value) return
+
+  if (loadedRegion) {
+    currentRegionData.value = loadedRegion
+    return
+  }
+
+  const navRegion = navData.find((region) => region.path === regionPath) || navData[0] || null
+  currentRegionData.value = navRegion
+    ? {
+      path: navRegion.path,
+      navName: navRegion.navName,
+      subNavList: Array.isArray(navRegion.subNavList) ? navRegion.subNavList : []
+    }
+    : null
+}
+
+const visibleDataList = computed(() => {
+  return dataList.value.slice(0, Math.max(0, renderLimit.value))
+})
 const buildHitKey = (itemIndex) => `wine__${currentRegionPath.value}__${currentSubNav.value?.subNavPath || ''}__${itemIndex}`
 
 const eachPageCount = computed(() => {
@@ -116,13 +151,13 @@ const totalPages = computed(() => Math.max(1, Math.ceil(dataList.value.length / 
 
 function updateScrollPage() {
   if (!gridRef.value) return
-  const total = dataList.value.length
+  const total = visibleDataList.value.length
   if (total <= 0) {
     scrollPage.value = 1
     return
   }
   const per = eachPageCount.value || 1
-  const pages = Math.max(1, Math.ceil(total / per))
+  const pages = Math.max(1, Math.ceil(dataList.value.length / per))
   const grid = gridRef.value
   const rect = grid.getBoundingClientRect()
   const gridTop = rect.top + window.pageYOffset
@@ -145,6 +180,48 @@ function checkHasMoreData() {
   loadMoad.value = (currentPage.value * eachPageCount.value) < dataList.value.length
 }
 
+const getImageLoading = (index) => (index < 8 ? 'eager' : 'lazy')
+const getImageFetchPriority = (index) => (index < 8 ? 'high' : 'low')
+
+const resetRenderLimit = () => {
+  renderLimit.value = INITIAL_RENDER_COUNT
+}
+
+const updateHasMore = () => {
+  hasMore.value = renderLimit.value < dataList.value.length
+}
+
+const loadMoreItems = () => {
+  if (!hasMore.value) return
+  renderLimit.value = Math.min(dataList.value.length, renderLimit.value + RENDER_STEP_COUNT)
+  updateHasMore()
+}
+
+const initLoadMoreObserver = () => {
+  if (typeof window === 'undefined') return
+  if (!('IntersectionObserver' in window)) return
+  if (!loadMoreTriggerRef.value) return
+
+  if (loadMoreObserver) loadMoreObserver.disconnect()
+  loadMoreObserver = new IntersectionObserver((entries) => {
+    if (!entries?.length) return
+    const [entry] = entries
+    if (!entry?.isIntersecting) return
+    loadMoreItems()
+  }, {
+    root: null,
+    rootMargin: '500px 0px 500px 0px',
+    threshold: 0
+  })
+  loadMoreObserver.observe(loadMoreTriggerRef.value)
+}
+
+const teardownLoadMoreObserver = () => {
+  if (!loadMoreObserver) return
+  loadMoreObserver.disconnect()
+  loadMoreObserver = null
+}
+
 const handleSubNavClick = (subItem) => {
   if (subNavDisabledMap.value[subItem]) return
   navStore.setActiveSubNav(subItem)
@@ -161,8 +238,16 @@ const handleSubNavClick = (subItem) => {
   }
 }
 
+const scheduleUpdateScrollPage = () => {
+  if (scrollUpdateFrameId) return
+  scrollUpdateFrameId = requestAnimationFrame(() => {
+    scrollUpdateFrameId = 0
+    updateScrollPage()
+  })
+}
+
 const handleWindowScroll = () => {
-  updateScrollPage()
+  scheduleUpdateScrollPage()
   navStore.saveScrollYThrottled(window.scrollY)
 }
 
@@ -290,6 +375,13 @@ const handleSearchTargetFocus = async () => {
   const targetIndex = dataList.value.findIndex((_, idx) => buildHitKey(idx) === targetHit)
   if (targetIndex < 0) return
 
+  const targetVisibleCount = Math.max(
+    INITIAL_RENDER_COUNT,
+    (Math.floor(targetIndex / RENDER_STEP_COUNT) + 1) * RENDER_STEP_COUNT
+  )
+  renderLimit.value = Math.min(dataList.value.length, targetVisibleCount)
+  updateHasMore()
+
   await nextTick()
   const targetEl = await waitForSearchTargetReady(targetHit)
   if (!targetEl) return
@@ -313,7 +405,13 @@ const handleSearchTargetFocus = async () => {
 }
 
 const resolveImageUrl = (img) => {
-  return resolveDataImage(img, defaultImg)
+  const cacheKey = String(img || '')
+  if (resolvedImagePathCache.has(cacheKey)) {
+    return resolvedImagePathCache.get(cacheKey)
+  }
+  const resolved = resolveDataImage(img, defaultImg, { variant: 'thumb' })
+  resolvedImagePathCache.set(cacheKey, resolved)
+  return resolved
 }
 
 const applySubNavFromRoute = () => {
@@ -322,7 +420,7 @@ const applySubNavFromRoute = () => {
   const targetRegion = currentRegion.value
   if (!targetRegion) return
 
-  navStore.setActiveNav(targetRegion.navName || itemJson[0]?.navName || '塔斯马尼亚州')
+  navStore.setActiveNav(targetRegion.navName || fallbackRegionNavName)
 
   const routeSubNavPath = typeof route.params.subNav === 'string' ? route.params.subNav : ''
   const byRouteSubNav = routeSubNavPath
@@ -345,28 +443,49 @@ const applySubNavFromRoute = () => {
 onMounted(() => {
   deviceStore.startListen()
   applySubNavFromRoute()
+  resetRenderLimit()
+  updateHasMore()
   window.addEventListener('scroll', handleWindowScroll, { passive: true })
   requestAnimationFrame(() => {
     window.scrollTo({ top: navStore.scrollY, behavior: 'auto' })
     updateScrollPage()
   })
+  initLoadMoreObserver()
   handleSearchTargetFocus()
 })
+
+watch(() => currentRegionPath.value, () => {
+  void syncCurrentRegionData()
+}, { immediate: true })
 
 watch(() => [route.name, route.params.subNav], () => {
   clearSearchHitState()
   applySubNavFromRoute()
+  resetRenderLimit()
+  updateHasMore()
   selectedItem.value = null
+  nextTick(() => {
+    initLoadMoreObserver()
+  })
   handleSearchTargetFocus()
 })
 
 watch(() => dataList.value.length, () => {
+  updateHasMore()
   clearSearchHitState()
+  nextTick(() => {
+    initLoadMoreObserver()
+  })
   handleSearchTargetFocus()
 })
 
 onUnmounted(() => {
   clearSearchHitState()
+  teardownLoadMoreObserver()
+  if (scrollUpdateFrameId) {
+    cancelAnimationFrame(scrollUpdateFrameId)
+    scrollUpdateFrameId = 0
+  }
   deviceStore.stopListen()
   window.removeEventListener('scroll', handleWindowScroll)
   navStore.flushScrollY()
@@ -385,13 +504,15 @@ onUnmounted(() => {
   </div>
 
   <div ref="gridRef" class="info-list">
-    <div v-for="(data, idx) in dataList" :key="idx" class="info-item pointer" @click="openItemDialog(data, idx)"
+    <div v-for="(data, idx) in visibleDataList" :key="idx" class="info-item pointer" @click="openItemDialog(data, idx)"
       :data-title="data.title" :data-hit-key="buildHitKey(idx)">
-      <img :src="resolveImageUrl(data.img)" :alt="data.title" class="w100">
+      <img :src="resolveImageUrl(data.img)" :alt="data.title" class="w100" :loading="getImageLoading(idx)" decoding="async"
+        :fetchpriority="getImageFetchPriority(idx)">
       <div class="info-title fs16" :title="data.title">{{ data.title }}</div>
       <div v-if="data.enTitle" class="info-sub" :title="data.enTitle">{{ data.enTitle }}</div>
     </div>
   </div>
+  <div v-if="hasMore" ref="loadMoreTriggerRef" class="load-more-trigger" aria-hidden="true"></div>
 
   <div class="pagination-section pagination-section--scenic center">
     <div class="custom-pagination custom-pagination--fixed">
@@ -552,6 +673,11 @@ onUnmounted(() => {
     border-radius: 8px;
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
   }
+}
+
+.load-more-trigger {
+  width: 100%;
+  height: 1px;
 }
 
 :deep(.el-pagination) {

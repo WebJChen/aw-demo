@@ -1,0 +1,1706 @@
+{
+  "id": 2,
+  "navName": "新南威尔士州",
+  "capital": "悉尼",
+  "available": true,
+  "path": "new-south-wales",
+  "subNavList": [
+    {
+      "subNavName": "葡萄酒酒庄",
+      "subNavPath": "wine",
+      "isShow": true,
+      "itemData": [
+        {
+          "title": "新南威尔士州葡萄酒酒庄示例1",
+          "img": "",
+          "enTitle": "New South Wales Wine Example 1",
+          "info": {
+            "name": "新南威尔士州葡萄酒酒庄文本1",
+            "desc": "新南威尔士州葡萄酒酒庄描述1",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "addr"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "电话",
+                "desc": "phone"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "opening time"
+              }
+            ],
+            "tags": [
+              "tag1",
+              "tag2",
+              "tag3"
+            ]
+          }
+        },
+        {
+          "title": "Jubilee Vineyard Estate",
+          "img": "",
+          "enTitle": "Jubilee Vineyard Estate",
+          "info": {
+            "name": "Jubilee Vineyard Estate",
+            "desc": "位于新南威尔士州Hawkesbury地区Ebenezer的家族酒庄，历史可追溯至1821年。生产红葡萄酒、白葡萄酒、起泡酒及加强型葡萄酒，采用手工酿造工艺。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "519 Tizzana Road, Ebenezer NSW"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "0473 535 325 / wine@jubileevineyard.com.au"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "周六、周日 12:00pm–5:00pm，其他时间需预约"
+              }
+            ],
+            "tags": [
+              "Chambourcin",
+              "Shiraz",
+              "Cabernet Sauvignon",
+              "Sauvignon Blanc",
+              "Riesling",
+              "Pinot Gris",
+              "Sparkling",
+              "Fortified"
+            ]
+          }
+        },
+        {
+          "title": "Habitat Vineyard",
+          "img": "",
+          "enTitle": "Habitat Vineyard",
+          "info": {
+            "name": "Habitat Vineyard",
+            "desc": "位于新南威尔士州奥兰治产区Mt Canobolas的有机和生物动力法认证酒庄，成立于1989年，海拔1100米。生产霞多丽、西拉、赤霞珠、梅洛、黑皮诺等凉爽气候葡萄酒。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "329 Old Canobolas Road, Nashdale, NSW 2800, Australia"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "02-5301-6231 / sales@habitat-vineyard.com.au"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "需预约参观"
+              }
+            ],
+            "tags": [
+              "Chardonnay",
+              "Shiraz",
+              "Cabernet Sauvignon",
+              "Merlot",
+              "Pinot Noir",
+              "Organic",
+              "Biodynamic",
+              "Cool Climate"
+            ]
+          }
+        },
+        {
+          "title": "Dryridge Estate",
+          "img": "",
+          "enTitle": "Dryridge Estate",
+          "info": {
+            "name": "Dryridge Estate",
+            "desc": "位于新南威尔士州蓝山Megalong Valley的精品酒庄，拥有品酒室、住宿和婚礼场地。生产雷司令、维蒙蒂诺、霞多丽、灰皮诺、桑娇维塞、西拉、黑皮诺、丹魄及普罗塞克起泡酒。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "226 Aspinall Road, Megalong Valley NSW 2785"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "0403 118 990 / info@dryridge.com.au"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "品酒室需预约（详见官网）"
+              }
+            ],
+            "tags": [
+              "Riesling",
+              "Vermentino",
+              "Chardonnay",
+              "Pinot Grigio",
+              "Sangiovese",
+              "Shiraz",
+              "Pinot Noir",
+              "Tempranillo",
+              "Prosecco",
+              "Rosé"
+            ]
+          }
+        },
+        {
+          "title": "Winburndale Vineyard & Winery",
+          "img": "",
+          "enTitle": "Winburndale Vineyard & Winery",
+          "info": {
+            "name": "Winburndale Vineyard & Winery",
+            "desc": "位于新南威尔士州中央山脉产区的家族精品酒庄，距离巴瑟斯特15分钟车程。葡萄园手工修剪，手工采摘，酿造过程采用最小干预方式。生产赤霞珠、西拉、西拉赤霞珠混酿、灰皮诺、霞多丽及桃红葡萄酒。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "116 Saint Anthonys Creek Road, Glanmire NSW 2795"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "(02) 6337 3134 / clare@winburndalewines.com.au"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "周六 10:30am–3:30pm（无需预约）；周日及工作日需预约"
+              }
+            ],
+            "tags": [
+              "Cabernet Sauvignon",
+              "Shiraz",
+              "Shiraz Cabernet",
+              "Pinot Gris",
+              "Chardonnay",
+              "Rosé"
+            ]
+          }
+        },
+        {
+          "title": "Colmar Estate",
+          "img": "",
+          "enTitle": "Colmar Estate",
+          "info": {
+            "name": "Colmar Estate",
+            "desc": "位于新南威尔士州奥兰治产区的精品酒庄，Halliday五星红五星评级。以雷司令和起泡酒著称，生产黑皮诺、霞多丽、灰皮诺、桃红及传统法起泡酒，多次在澳洲葡萄酒展中获奖。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "790 Pinnacle Rd, Orange, NSW 2800"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "0419 977 270 / contact@colmarestate.com.au"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "需预约（Cellar Door）"
+              }
+            ],
+            "tags": [
+              "Pinot Noir",
+              "Chardonnay",
+              "Riesling",
+              "Pinot Gris",
+              "Sparkling",
+              "Rosé",
+              "Five Red Stars",
+              "Halliday"
+            ]
+          }
+        },
+        {
+          "title": "Grass Parrot Vineyard",
+          "img": "",
+          "enTitle": "Grass Parrot Vineyard",
+          "info": {
+            "name": "Grass Parrot Vineyard",
+            "desc": "位于新南威尔士州中央山脉产区的家族精品酒庄，采用可持续有机种植原则，低干预酿造。生产西拉、品丽珠、西拉品丽珠混酿、桃红及起泡酒，多次在葡萄酒展中获奖。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "Bathurst region, Central Ranges, NSW（具体门牌待补充）"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "通过官网联系表单"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "需预约（无固定品酒室开放时间）"
+              }
+            ],
+            "tags": [
+              "Shiraz",
+              "Cabernet Franc",
+              "Shiraz Cabernet Franc",
+              "Rosé",
+              "Sparkling",
+              "Organic",
+              "Low Intervention"
+            ]
+          }
+        },
+        {
+          "title": "Rosby Wines",
+          "img": "",
+          "enTitle": "Rosby Wines",
+          "info": {
+            "name": "Rosby Wines",
+            "desc": "位于新南威尔士州马奇产区的精品酒庄，兼具艺术画廊和住宿体验。种植赤霞珠和西拉（1995年种植），采用低干预葡萄栽培，生产高品质单一园葡萄酒。James Halliday高度评价。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "122 Strikes Lane, Eurunderee, Mudgee NSW 2850"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "0419 429 918 (酒类咨询) / info@rosby.com.au"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "周四至周一 10am–4pm"
+              }
+            ],
+            "tags": [
+              "Cabernet Sauvignon",
+              "Shiraz",
+              "Riesling",
+              "Chardonnay",
+              "Sangiovese",
+              "Rosé",
+              "Art Gallery",
+              "Accommodation"
+            ]
+          }
+        },
+        {
+          "title": "Yeates Wines",
+          "img": "",
+          "enTitle": "Yeates Wines",
+          "info": {
+            "name": "Yeates Wines",
+            "desc": "位于新南威尔士州马奇产区的家族精品酒庄，拥有该地区最古老的葡萄园之一。2025年马奇葡萄酒展荣获小型生产商奖、品酒室奖、最佳桃红奖及最佳博物馆红（西拉）奖。生产西拉、赤霞珠、阿尔巴利诺、雷司令、霞多丽、桑娇维塞及起泡酒。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "138 Craigmoor Road, Mudgee, NSW"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "0490 859 428 / info@yeateswines.com.au"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "周四 11am–4pm；周五、周六 11am–5:30pm；周日 11am–4pm；周一至周三休息"
+              }
+            ],
+            "tags": [
+              "Shiraz",
+              "Cabernet Sauvignon",
+              "Albariño",
+              "Riesling",
+              "Chardonnay",
+              "Rosé",
+              "Sparkling",
+              "Award Winning"
+            ]
+          }
+        },
+        {
+          "title": "De Salis Wines",
+          "img": "",
+          "enTitle": "De Salis Wines",
+          "info": {
+            "name": "De Salis Wines",
+            "desc": "位于新南威尔士州奥兰治产区Mount Canobolas北坡的精品酒庄，海拔1050米。由Head Winemaker Mitch Svenson领导，以干种植霞多丽和黑皮诺闻名，采用野生酵母发酵、苹果酸乳酸转化、无添加剂（极微量硫）的自然酿造方式。2025年Real Review澳大利亚百大酒庄排名第32位。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "125 Mount Lofty Rd, Nashdale NSW 2800"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "0412 633 336 / admin@desaliswines.com.au"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "每日 11am–5pm（建议预约）"
+              }
+            ],
+            "tags": [
+              "Pinot Noir",
+              "Chardonnay",
+              "Riesling",
+              "Sparkling",
+              "Rosé",
+              "Natural Wine",
+              "Minimal Intervention",
+              "Top 100 Winery"
+            ]
+          }
+        },
+        {
+          "title": "Yarran",
+          "img": "",
+          "enTitle": "Yarran",
+          "info": {
+            "name": "Yarran",
+            "desc": "位于新南威尔士州Riverina产区格里菲斯郊外的家族酒庄，成立于1998年，由Brewer家族拥有和经营。获得澳大利亚有机认证（ACO），生产有机葡萄酒，包括红、白、桃红、起泡酒、加强型葡萄酒及甜酒。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "Griffith, NSW（具体门牌待补充）"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "通过官网联系"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "需预约（品酒室开放）"
+              }
+            ],
+            "tags": [
+              "Shiraz",
+              "Cabernet Merlot",
+              "Merlot",
+              "Petit Verdot",
+              "Durif",
+              "Chardonnay",
+              "Sauvignon Blanc",
+              "Pinot Grigio",
+              "Fumé Blanc",
+              "Montepulciano",
+              "Rosé",
+              "Sparkling",
+              "Fortified",
+              "Botrytis",
+              "Organic"
+            ]
+          }
+        },
+        {
+          "title": "Mortimers Wines",
+          "img": "",
+          "enTitle": "Mortimers Wines",
+          "info": {
+            "name": "Mortimers Wines",
+            "desc": "位于新南威尔士州奥兰治产区的家族酒庄，成立于1995年。品酒室设在1866年建成的历史建筑March Schoolhouse中，被Good Food评为新南威尔士州15佳品酒室之一。生产凉爽气候葡萄酒，包括长相思、雷司令、霞多丽、黑皮诺、梅洛、赤霞珠和西拉。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "780 Burrendong Way, Orange NSW"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "0447 148 520 / sales@mortimerswines.com.au"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "周四至周五 12pm–5pm；周六至周日 10am–5pm"
+              }
+            ],
+            "tags": [
+              "Sauvignon Blanc",
+              "Riesling",
+              "Chardonnay",
+              "Pinot Noir",
+              "Merlot",
+              "Cabernet Sauvignon",
+              "Shiraz",
+              "Cellar Door",
+              "Accommodation"
+            ]
+          }
+        },
+        {
+          "title": "Nashdale Lane Wines",
+          "img": "",
+          "enTitle": "Nashdale Lane Wines",
+          "info": {
+            "name": "Nashdale Lane Wines",
+            "desc": "位于新南威尔士州奥兰治产区的家族酒庄，致力于可持续种植和手工酿造。生产雷司令、霞多丽、长相思、灰皮诺、阿内斯、黑皮诺、西拉、丹魄等红白葡萄酒及桃红。提供品酒室、豪华露营和葡萄酒俱乐部。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "Orange NSW（具体门牌待补充）"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "通过官网联系"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "周五、周六 11am–5pm；周日、周一 11am–4pm；周二至周四休息"
+              }
+            ],
+            "tags": [
+              "Riesling",
+              "Chardonnay",
+              "Sauvignon Blanc",
+              "Pinot Gris",
+              "Arneis",
+              "Pinot Noir",
+              "Shiraz",
+              "Syrah",
+              "Tempranillo",
+              "Rosé",
+              "Sustainable",
+              "Glamping"
+            ]
+          }
+        },
+        {
+          "title": "Cargo Road Wines",
+          "img": "",
+          "enTitle": "Cargo Road Wines",
+          "info": {
+            "name": "Cargo Road Wines",
+            "desc": "位于新南威尔士州奥兰治产区Mount Canobolas北坡的家族酒庄，成立于1983年。采用再生农业和整体管理实践，生态成果验证（EOV）认证。生产雷司令、琼瑶浆、长相思、起泡酒、桃红及多种红葡萄酒，包括赤霞珠、西拉、内比奥罗、拉格雷恩、仙粉黛、巴贝拉等。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "1064 Cargo Road, Lidster, Orange NSW 2800"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "通过官网联系"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "每日 11am–5pm（最后品酒 4pm）"
+              }
+            ],
+            "tags": [
+              "Riesling",
+              "Gewürztraminer",
+              "Sauvignon Blanc",
+              "Sparkling",
+              "Rosé",
+              "Cabernet Sauvignon",
+              "Shiraz",
+              "Nebbiolo",
+              "Lagrein",
+              "Zinfandel",
+              "Barbera",
+              "Regenerative",
+              "EOV Certified"
+            ]
+          }
+        },
+        {
+          "title": "Strawhouse Wines",
+          "img": "",
+          "enTitle": "Strawhouse Wines",
+          "info": {
+            "name": "Strawhouse Wines",
+            "desc": "位于新南威尔士州奥兰治产区Lidster的精品家族酒庄，由Justin Byrne和Meg Simpson经营。小批量生产凉爽气候葡萄酒，包括起泡酒、赛美容、长相思、绿维特利纳、霞多丽、梅洛、赤霞珠、西拉、歌海娜等。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "Boree Lane, Lidster via Orange, NSW 2800 Australia"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "+61 (0)402 498 419 / info@strawhousewines.com.au"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "需预约（品酒室开放）"
+              }
+            ],
+            "tags": [
+              "Sparkling",
+              "Semillon",
+              "Sauvignon Blanc",
+              "Gruner Veltliner",
+              "Chardonnay",
+              "Merlot",
+              "Cabernet",
+              "Shiraz",
+              "Grenache",
+              "Rosé",
+              "Cool Climate"
+            ]
+          }
+        },
+        {
+          "title": "Heifer Station Wines",
+          "img": "",
+          "enTitle": "Heifer Station Wines",
+          "info": {
+            "name": "Heifer Station Wines",
+            "desc": "位于新南威尔士州奥兰治产区Borenore的家族酒庄，生产单一园凉爽气候葡萄酒。拥有品酒室、住宿（Loft House）和婚礼场地。产品包括起泡酒、霞多丽、灰皮诺、黑皮诺、梅洛、西拉、桃红及红混酿。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "1034 The Escort Way, Borenore NSW"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "(02) 6365 2275"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "需预约（品酒室开放）"
+              }
+            ],
+            "tags": [
+              "Chardonnay",
+              "Pinot Gris",
+              "Pinot Noir",
+              "Merlot",
+              "Shiraz",
+              "Rosé",
+              "Sparkling",
+              "Red Blend",
+              "Cellar Door",
+              "Accommodation"
+            ]
+          }
+        },
+        {
+          "title": "Robert Stein Winery & Vineyard",
+          "img": "",
+          "enTitle": "Robert Stein Winery & Vineyard",
+          "info": {
+            "name": "Robert Stein Winery & Vineyard",
+            "desc": "位于新南威尔士州马奇产区的家族酒庄，成立于1976年，家族酿酒历史可追溯至1838年。James Halliday五星红五星评级。生产红葡萄酒、白葡萄酒、起泡酒、加强型葡萄酒及甜酒，采用再生农业实践。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "62 Quarry Lane, Mudgee NSW 2850"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "+61 2 6373 3991"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "每日 10am–4:30pm（品酒室及午餐）"
+              }
+            ],
+            "tags": [
+              "Riesling",
+              "Shiraz",
+              "Chardonnay",
+              "Cabernet Sauvignon",
+              "Merlot",
+              "Semillon",
+              "Gewürztraminer",
+              "Sparkling",
+              "Rosé",
+              "Fortified",
+              "Tawny",
+              "Five Red Stars"
+            ]
+          }
+        },
+        {
+          "title": "Stockman's Ridge Wines",
+          "img": "",
+          "enTitle": "Stockman's Ridge Wines",
+          "info": {
+            "name": "Stockman's Ridge Wines",
+            "desc": "位于新南威尔士州奥兰治产区Lidster的家族酒庄，拥有品酒室、住宿和婚礼场地。生产绿维特利纳、黑皮诺、灰皮诺、梅洛、赤霞珠、西拉、仙粉黛等多种凉爽气候葡萄酒及起泡酒。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "21 Boree Lane, Lidster NSW 2800"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "+61 2 6365 6212 / enquiry@stockmansridge.com.au"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "需预约（品酒室开放）"
+              }
+            ],
+            "tags": [
+              "Pinot Noir",
+              "Shiraz",
+              "Cabernet Sauvignon",
+              "Merlot",
+              "Gruner Veltliner",
+              "Pinot Gris",
+              "Zinfandel",
+              "Rosé",
+              "Sparkling",
+              "Cellar Door",
+              "Accommodation"
+            ]
+          }
+        },
+        {
+          "title": "Orange Mountain Wines",
+          "img": "",
+          "enTitle": "Orange Mountain Wines",
+          "info": {
+            "name": "Orange Mountain Wines",
+            "desc": "位于新南威尔士州奥兰治产区Mount Canobolas附近的家族酒庄，采用传统酿造工艺（手工采摘、小容器发酵、篮式压榨等）。生产多种凉爽气候葡萄酒，包括灰皮诺、绿维特利纳、雷司令、长相思、阿内斯、维欧尼、霞多丽、西拉、黑皮诺、赤霞珠等，同时生产樱桃利口酒和苹果醋。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "Escort Way, Orange NSW（距离Orange 10公里）"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "通过官网联系"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "需预约（品酒室开放）"
+              }
+            ],
+            "tags": [
+              "Pinot Gris",
+              "Gruner Veltliner",
+              "Riesling",
+              "Sauvignon Blanc",
+              "Arneis",
+              "Viognier",
+              "Chardonnay",
+              "Syrah",
+              "Pinot Noir",
+              "Cabernet Sauvignon",
+              "Rosé",
+              "Sparkling",
+              "Liqueur",
+              "Traditional Methods"
+            ]
+          }
+        },
+        {
+          "title": "Ross Hill Wines",
+          "img": "",
+          "enTitle": "Ross Hill Wines",
+          "info": {
+            "name": "Ross Hill Wines",
+            "desc": "位于新南威尔士州奥兰治产区的家族酒庄，澳大利亚首家Climate Active碳中和认证酒庄。生产多个系列的凉爽气候葡萄酒，包括起泡酒、霞多丽、长相思、灰皮诺、雷司令、黑皮诺、赤霞珠、品丽珠、西拉、丹魄等。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "134 Wallace Lane, Orange NSW 2800"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "+61 2 6365 3223"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "需预约（品酒室开放）"
+              }
+            ],
+            "tags": [
+              "Chardonnay",
+              "Sauvignon Blanc",
+              "Pinot Gris",
+              "Riesling",
+              "Pinot Noir",
+              "Cabernet Franc",
+              "Cabernet Sauvignon",
+              "Shiraz",
+              "Tempranillo",
+              "Rosé",
+              "Sparkling",
+              "Carbon Neutral"
+            ]
+          }
+        },
+        {
+          "title": "Rock Forest Vineyard",
+          "img": "",
+          "enTitle": "Rock Forest Vineyard",
+          "info": {
+            "name": "Rock Forest Vineyard",
+            "desc": "位于新南威尔士州中央高原产区的凉爽气候酒庄，海拔800米，土壤为花岗岩沙土。采用手工采摘、最小干预酿造，生产长相思、霞多丽、西拉、黑皮诺及桃红葡萄酒。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "Central Tablelands, near Bathurst, NSW"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "通过官网联系"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "需预约"
+              }
+            ],
+            "tags": [
+              "Sauvignon Blanc",
+              "Chardonnay",
+              "Shiraz",
+              "Pinot Noir",
+              "Rosé",
+              "Cool Climate",
+              "Minimal Intervention"
+            ]
+          }
+        },
+        {
+          "title": "Mad Hatter Bev Co",
+          "img": "",
+          "enTitle": "Mad Hatter Bev Co",
+          "info": {
+            "name": "Mad Hatter Bev Co",
+            "desc": "位于新南威尔士州奥兰治的精品酒饮品牌，生产葡萄酒、精酿鸡尾酒、啤酒、苹果酒等。设有Drink Lab，提供咖啡、酒饮和餐食。产品包括霞多丽、黑皮诺、赤霞珠、桃红、起泡酒、桑格利亚、苹果酒、拉格啤酒等。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "147 Lords Place, Orange, NSW 2800"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "0494 186 939"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "咖啡：周一至周三 6am–11:30am，周四至周五 6am–2pm，周六 7am–11:30am，周日 8am–11:30am；酒饮：周四至周六 4pm–late"
+              }
+            ],
+            "tags": [
+              "Chardonnay",
+              "Pinot Gris",
+              "Shiraz",
+              "Cabernet Sauvignon",
+              "Rosé",
+              "Prosecco",
+              "Sparkling",
+              "Sangria",
+              "Cider",
+              "Lager"
+            ]
+          }
+        },
+        {
+          "title": "Slow Wine Co",
+          "img": "",
+          "enTitle": "Slow Wine Co",
+          "info": {
+            "name": "Slow Wine Co",
+            "desc": "位于新南威尔士州Millthorpe的家族酒庄，葡萄园Bantry Grove自1936年由Johnson家族经营。生产凉爽气候葡萄酒，包括起泡酒、霞多丽、雷司令、灰皮诺、琼瑶浆、黑皮诺、梅洛等。设有品酒室和西班牙小吃餐厅（周五、周六晚）。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "24 Victoria Street, Millthorpe NSW 2798"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "0437 409 811 / sales@slowwineco.com.au"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "周三至周日 11am–3pm；周五至周六 11am–5pm；Tapas：周五至周六 5pm–9:30pm"
+              }
+            ],
+            "tags": [
+              "Chardonnay",
+              "Pinot Noir",
+              "Riesling",
+              "Pinot Gris",
+              "Gewürztraminer",
+              "Sauvignon Blanc",
+              "Merlot",
+              "Rosé",
+              "Sparkling",
+              "Blanc de Blancs",
+              "Blanc de Noirs"
+            ]
+          }
+        },
+        {
+          "title": "De Bortoli Wines",
+          "img": "",
+          "enTitle": "De Bortoli Wines",
+          "info": {
+            "name": "De Bortoli Wines",
+            "desc": "澳大利亚家族酒庄，由Vittorio De Bortoli于1928年创立，总部位于新南威尔士州Riverina的Bilbul。在多个产区拥有葡萄园，包括Riverina、Yarra Valley、King Valley、Heathcote、Hunter Valley、Rutherglen。以Noble One Botrytis Semillon等加强型甜酒闻名，同时生产霞多丽、黑皮诺、西拉、灰皮诺、内比奥罗等多种葡萄酒。设有多个品酒室、餐厅、住宿和婚礼场地。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "De Bortoli Road, Bilbul NSW 2680（总部）"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "02 6966 0100"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "各品酒室开放时间不同，请查询官网"
+              }
+            ],
+            "tags": [
+              "Chardonnay",
+              "Pinot Noir",
+              "Shiraz",
+              "Noble One",
+              "Botrytis Semillon",
+              "Fortified",
+              "Cellar Door",
+              "Restaurant",
+              "Accommodation"
+            ]
+          }
+        },
+        {
+          "title": "Brindabella Hills Winery",
+          "img": "",
+          "enTitle": "Brindabella Hills Winery",
+          "info": {
+            "name": "Brindabella Hills Winery",
+            "desc": "成立于1986年，坐落在花岗岩山脊上，周围群山环抱。生产优质葡萄酒，包括起泡酒、霞多丽、雷司令、玛珊-瑚珊-维欧尼混酿等。设有酒窖品酒室、周末餐厅，并可举办婚礼和活动。曾获James Halliday 4.5星评级及多项奖项。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "156 Woodgrove Cl, Wallaroo NSW 2618, Australia"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "电话：02 6188 5405 / 通过网站联系表单发送邮件"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "周末及公共假期10:00-17:00（品酒与销售），工作日仅销售"
+              }
+            ],
+            "tags": [
+              "起泡酒",
+              "James Halliday 4.5星",
+              "婚礼场地",
+              "酒庄餐厅",
+              "凉爽气候"
+            ]
+          }
+        },
+        {
+          "title": "Eden Road Wines",
+          "img": "../assets/img/categoryImgs/newSouthWales/edenroadwines.jpg",
+          "enTitle": "Eden Road Wines",
+          "info": {
+            "name": "Eden Road Wines",
+            "desc": "成立于2006年，专注于优质凉爽气候葡萄酒，拥有两个超过50年树龄的庄园葡萄园，并从堪培拉、Tumbarumba和Gundagai采购葡萄。酿酒师Celine Rousseau来自法国，曾获Jimmy Watson Trophy等多项顶级奖项。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "3182 Barton Highway, Murrumbateman NSW 2582"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "电话：0466 226 808；邮箱：enquiries@edenroadwines.com.au"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "周四至周日 10:00 - 16:30"
+              }
+            ],
+            "tags": [
+              "凉爽气候",
+              "Jimmy Watson Trophy",
+              "老藤",
+              "法籍酿酒师",
+              "品酒体验"
+            ]
+          }
+        },
+        {
+          "title": "Four Winds Vineyard",
+          "img": "",
+          "enTitle": "Four Winds Vineyard",
+          "info": {
+            "name": "Four Winds Vineyard",
+            "desc": "成立于1998年的家族酒庄，位于Murrumbateman。以优质凉爽气候葡萄酒和木柴披萨闻名，曾获2024年Jimmy Watson Memorial Trophy，被评为Halliday五星酒庄。开放7天，设有酒窖品酒室、葡萄酒俱乐部，提供免费配送（6瓶以上）。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "9 Patemans Lane, Murrumbateman NSW 2582"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "电话：(02) 6227-0189；邮箱：hello@fourwindsvineyard.com.au"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "周一至周五 11:00-16:00，周六至周日 11:00-17:00"
+              }
+            ],
+            "tags": [
+              "木柴披萨",
+              "Jimmy Watson Trophy",
+              "五星酒庄",
+              "葡萄酒俱乐部",
+              "家庭酒庄",
+              "凉爽气候"
+            ]
+          }
+        },
+        {
+          "title": "Barton Estate",
+          "img": "",
+          "enTitle": "Barton Estate",
+          "info": {
+            "name": "Barton Estate",
+            "desc": "成立于1997年的小型家族酒庄，位于Murrumbateman凉爽气候葡萄酒产区。从庄园种植的葡萄中手工酿造优质堪培拉地区葡萄酒。种植品种包括霞多丽、长相思、维欧尼、雷司令、西拉、桑娇维塞以及独特的马尔贝克、小维多等。周末开放品酒，品酒费$10/人。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "2307 Barton Hwy, Murrumbateman NSW, Australia"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "通过网站联系表单；Facebook / Instagram"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "周六至周日 10:00 - 17:00"
+              }
+            ],
+            "tags": [
+              "手工酿造",
+              "小众品种",
+              "小维多",
+              "马尔贝克",
+              "家族酒庄",
+              "凉爽气候"
+            ]
+          }
+        },
+        {
+          "title": "Pankhurst Wines",
+          "img": "",
+          "enTitle": "Pankhurst Wines",
+          "info": {
+            "name": "Pankhurst Wines",
+            "desc": "成立于1986年的家族酒庄，位于Wallaroo。坚持使用自有庄园葡萄，采用低环境影响种植方式。生产黑比诺、玛珊、霞多丽、丹魄、赤霞珠等葡萄酒，多次获得奖牌。周末及公共假期开放品酒，建议提前预约。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "56 Woodgrove Close, Wallaroo NSW 2618"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "电话：0418 667 433；邮箱：allanandchristine@pankhurstwines.com.au"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "周六至周日及公共假期 10:00 - 17:00"
+              }
+            ],
+            "tags": [
+              "庄园种植",
+              "获奖酒款",
+              "环保种植",
+              "预约品酒",
+              "老藤黑比诺"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "subNavName": "洋酒酒庄",
+      "subNavPath": "Spirits",
+      "isShow": true,
+      "itemData": [
+        {
+          "title": "新南威尔士州洋酒酒庄示例1",
+          "img": "",
+          "enTitle": "New South Wales Spirits Example 1",
+          "info": {
+            "name": "新南威尔士州洋酒酒庄文本1",
+            "desc": "新南威尔士州洋酒酒庄描述1",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "addr"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "电话",
+                "desc": "phone"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "opening time"
+              }
+            ],
+            "tags": [
+              "tag1",
+              "tag2",
+              "tag3"
+            ]
+          }
+        },
+        {
+          "title": "Parrot Distilling Co.",
+          "img": "",
+          "enTitle": "Parrot Distilling Co.",
+          "info": {
+            "name": "Parrot Distilling Co.",
+            "desc": "位于新南威尔士州奥兰治的精品蒸馏厂，以手工金酒闻名，同时生产朗姆酒、利口酒、威士忌等烈酒。提供品酒室、披萨外卖和活动场地。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "66 Endsleigh Ave, Orange NSW 2800, Australia"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "1300 PARROT"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "需预约（品酒室开放）"
+              }
+            ],
+            "tags": [
+              "Gin",
+              "Rum",
+              "Whisky",
+              "Liqueur",
+              "Limoncello",
+              "Mandarincello",
+              "Craft Distillery"
+            ]
+          }
+        },
+        {
+          "title": "Jones & Smith Distillery",
+          "img": "",
+          "enTitle": "Jones & Smith Distillery",
+          "info": {
+            "name": "Jones & Smith Distillery",
+            "desc": "位于新南威尔士州中央西部的家族蒸馏厂，生产单一麦芽威士忌、金酒、黑刺李金酒、樱桃金酒等烈酒。屡获澳洲金酒大奖，包括Best in Show等殊荣。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "4617 Mitchell Highway, Lucknow Tavern, Lucknow NSW 2800"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "+61 428 237 400 / info@jonesandsmithdistillery.com.au"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "需预约（品酒室开放）"
+              }
+            ],
+            "tags": [
+              "Whisky",
+              "Single Malt",
+              "Gin",
+              "Sloe Gin",
+              "Navy Strength Gin",
+              "Barrel Aged Gin",
+              "Award Winning"
+            ]
+          }
+        },
+        {
+          "title": "Baker Williams Distillery",
+          "img": "",
+          "enTitle": "Baker Williams Distillery",
+          "info": {
+            "name": "Baker Williams Distillery",
+            "desc": "位于新南威尔士州马奇Eurunderee的微型蒸馏厂，成立于2011年。小批量生产金酒、利口酒、威士忌、朗姆酒及混合烈酒，使用本地优质原料。设有品酒室，需预约。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "194 Henry Lawson Drive, Eurunderee (Mudgee) NSW"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "通过官网联系"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "需预约（品酒室）"
+              }
+            ],
+            "tags": [
+              "Gin",
+              "Rum",
+              "Liqueur",
+              "Whisky",
+              "Small Batch"
+            ]
+          }
+        },
+        {
+          "title": "Central Coast Distilling Co.",
+          "img": "",
+          "enTitle": "Central Coast Distilling Co.",
+          "info": {
+            "name": "Central Coast Distilling Co.",
+            "desc": "位于新南威尔士州中央海岸Morisset的小型手工蒸馏厂，使用100%澳大利亚原料，现场糖化和发酵。生产金酒、伏特加、利口酒等。蒸馏酒窖开放时间为周三至周日。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "Unit 21/14 Kam Close, Morisset NSW 2264"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "通过官网联系"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "周三至周四 11am–3pm；周五 12pm–7pm；周六 12pm–6pm；周日 12pm–5pm"
+              }
+            ],
+            "tags": [
+              "Gin",
+              "Vodka",
+              "Liqueur",
+              "Small Batch",
+              "Craft Distillery"
+            ]
+          }
+        },
+        {
+          "title": "The Old Shed Distillery",
+          "img": "",
+          "enTitle": "The Old Shed Distillery",
+          "info": {
+            "name": "The Old Shed Distillery",
+            "desc": "位于新南威尔士州蓝山Bilpin的小型手工蒸馏厂，使用本地种植的苹果、蓝莓及原生植物，生产金酒、威士忌、伏特加及风味利口酒（咖啡利口酒、苹果切罗、柑橘切罗等）。设有品酒室/酒吧。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "2419 Bells Line of Road, Bilpin NSW 2758"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "0432 508 747 / theoldsheddistillery@gmail.com"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "需查询Google Maps获取最新营业时间"
+              }
+            ],
+            "tags": [
+              "Gin",
+              "Whisky",
+              "Vodka",
+              "Liqueur",
+              "Applecello",
+              "Citruscello",
+              "Craft Distillery",
+              "Local Botanicals"
+            ]
+          }
+        },
+        {
+          "title": "Port Jackson Distilling Co.",
+          "img": "",
+          "enTitle": "Port Jackson Distilling Co.",
+          "info": {
+            "name": "Port Jackson Distilling Co.",
+            "desc": "位于悉尼Cremorne的小型手工蒸馏厂，使用本地原料和传统蒸馏方法，小批量生产金酒、伏特加、利口酒等。产品包括悉尼干金酒、野粉红金酒、试飞员金酒、双蒸馏伏特加、柠檬切罗。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "237 Military Road, Cremorne NSW 2090"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "(02) 9128 9814 / info@portjacksondistillingco.com.au"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "待补充（可查询官网）"
+              }
+            ],
+            "tags": [
+              "Gin",
+              "Vodka",
+              "Limoncello",
+              "Craft Distillery",
+              "Sydney"
+            ]
+          }
+        },
+        {
+          "title": "FAR Distilling",
+          "img": "",
+          "enTitle": "FAR Distilling",
+          "info": {
+            "name": "FAR Distilling",
+            "desc": "位于新南威尔士州猎人谷Pokolbin的小型手工蒸馏厂，家族拥有和经营。使用当地原料，结合传统与创新工艺，生产金酒、利口酒等。产品包括签名混合金酒、猎人谷干金酒、赛美蓉风味金酒、西拉金酒、桶陈金酒、柠檬切罗。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "989 Hermitage Road, Pokolbin NSW 2320"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "0401 328 394"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "需预约品鉴"
+              }
+            ],
+            "tags": [
+              "Gin",
+              "Limoncello",
+              "Craft Distillery",
+              "Hunter Valley"
+            ]
+          }
+        },
+        {
+          "title": "Moonshiner",
+          "img": "",
+          "enTitle": "Moonshiner",
+          "info": {
+            "name": "Moonshiner",
+            "desc": "位于悉尼内西区的小型手工金酒蒸馏厂，以当地街道命名，生产风味金酒、预调鸡尾酒、利口酒等。产品包括澳洲原生金酒、樱桃金酒、金橘金酒、石榴金酒、梨青柠金酒、桶陈金酒、海军强度金酒、浓缩咖啡马天尼预调酒、内格罗尼预调酒、巧克力利口酒等。设有金酒吧和品鉴体验。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "悉尼内西区（具体地址待补充）"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "info@moonshiner.com.au"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "待补充（设有金酒吧）"
+              }
+            ],
+            "tags": [
+              "Gin",
+              "RTD Cocktails",
+              "Liqueur",
+              "Craft Distillery",
+              "Sydney"
+            ]
+          }
+        },
+        {
+          "title": "Sydney Rum Distillery",
+          "img": "",
+          "enTitle": "Sydney Rum Distillery",
+          "info": {
+            "name": "Sydney Rum Distillery",
+            "desc": "位于新南威尔士州猎人谷Muswellbrook的朗姆酒蒸馏厂，拥有铜壶和柱式蒸馏设备，计划生产优质朗姆酒。产品系列包括Welcome Stranger（亚太混合朗姆）、Natural Born（100%澳大利亚朗姆）、Cargo Cult（干香料朗姆、香蕉朗姆、海军强度朗姆等）。目前产品即将推出。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "Lot 1 Hunter Street, Muswellbrook NSW 2333（需预约）"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "+61 405 349 811 / hello@sydrum.com"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "需预约（产品即将上市）"
+              }
+            ],
+            "tags": [
+              "Rum",
+              "Australian Rum",
+              "Craft Distillery",
+              "Hunter Valley"
+            ]
+          }
+        },
+        {
+          "title": "Bluestill Distillery",
+          "img": "",
+          "enTitle": "Bluestill Distillery",
+          "info": {
+            "name": "Bluestill Distillery",
+            "desc": "位于新南威尔士州Young的蒸馏厂，自1995年起使用本地水果酿造优质威士忌和烈酒。产品包括威士忌、威士忌利口酒、波本威士忌（蜂蜜、酸醪、樱桃）、朗姆酒、金酒、樱桃利口酒、樱桃波特酒等。提供品鉴和门市销售。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "Young, NSW（具体地址未显示）"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "Steve: 0429 844 265；Rodney: 0409 080 739"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "周一至周五 10am–2pm；周六至周日关闭"
+              }
+            ],
+            "tags": [
+              "Whisky",
+              "Bourbon",
+              "Rum",
+              "Gin",
+              "Liqueur",
+              "Cherry Port",
+              "Craft Distillery"
+            ]
+          }
+        },
+        {
+          "title": "DNA Distillery",
+          "img": "",
+          "enTitle": "DNA Distillery",
+          "info": {
+            "name": "DNA Distillery",
+            "desc": "五世代传承的家族蒸馏厂，生产高品质 Rakija（水果白兰地）。产品包括经典、金、梨、李子等多种风味，屡获殊荣。坚持从田间到瓶子的可持续生产方式。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "待补充"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "通过官网联系"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "待补充"
+              }
+            ],
+            "tags": [
+              "Rakija",
+              "Fruit Brandy",
+              "Craft Distillery",
+              "Australian"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "subNavName": "其它酒类酒庄",
+      "subNavPath": "other-spirits",
+      "isShow": true,
+      "itemData": [
+        {
+          "title": "新南威尔士州其它洋酒酒庄示例1",
+          "img": "",
+          "enTitle": "New South Wales Other Spirits Example 1",
+          "info": {
+            "name": "新南威尔士州其它洋酒酒庄文本1",
+            "desc": "新南威尔士州其它洋酒酒庄描述1",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "addr"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "电话",
+                "desc": "phone"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "opening time"
+              }
+            ],
+            "tags": [
+              "tag1",
+              "tag2",
+              "tag3"
+            ]
+          }
+        },
+        {
+          "title": "Badlands Brewery",
+          "img": "",
+          "enTitle": "Badlands Brewery",
+          "info": {
+            "name": "Badlands Brewery",
+            "desc": "位于新南威尔士州奥兰治的精酿啤酒厂，生产多种风格的啤酒，包括拉格、IPA、淡色艾尔、波特、科隆啤酒、姜汁啤酒等。设有酒窖（Taproom），提供品饮和外带服务。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "153 Summer St, Orange NSW 2800"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "(+61) 0421 455 325 / taproom@badlandsbrewery.com.au"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "酒窖：周三至周四 4pm–10pm，周五至周六 12pm–late，周日 2pm–8pm；外带：周一至周四 10am–4pm，周五 10am–9pm，周六 12pm–9pm，周日 2pm–8pm"
+              }
+            ],
+            "tags": [
+              "Lager",
+              "IPA",
+              "Pale Ale",
+              "Pilsner",
+              "Porter",
+              "Kölsch",
+              "Ginger Beer",
+              "NEIPA",
+              "XPA",
+              "Taproom"
+            ]
+          }
+        },
+        {
+          "title": "Mad Hatter Bev Co",
+          "img": "",
+          "enTitle": "Mad Hatter Bev Co",
+          "info": {
+            "name": "Mad Hatter Bev Co",
+            "desc": "位于新南威尔士州奥兰治的精品酒饮品牌，生产葡萄酒、精酿鸡尾酒、啤酒、苹果酒等。设有Drink Lab，提供咖啡、酒饮和餐食。产品包括霞多丽、黑皮诺、赤霞珠、桃红、起泡酒、桑格利亚、苹果酒、拉格啤酒等。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "147 Lords Place, Orange, NSW 2800"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "0494 186 939"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "咖啡：周一至周三 6am–11:30am，周四至周五 6am–2pm，周六 7am–11:30am，周日 8am–11:30am；酒饮：周四至周六 4pm–late"
+              }
+            ],
+            "tags": [
+              "Cider",
+              "Lager",
+              "Sangria",
+              "Spritz",
+              "Cocktail"
+            ]
+          }
+        },
+        {
+          "title": "Small Acres Cyder",
+          "img": "",
+          "enTitle": "Small Acres Cyder",
+          "info": {
+            "name": "Small Acres Cyder",
+            "desc": "位于新南威尔士州奥兰治Borenore的家族手工苹果酒庄，生产传统工艺苹果酒、梨酒、非酒精苹果酒及加强型苹果酒。屡获日本苹果酒杯、澳洲苹果酒奖等殊荣。设有品酒室、住宿小屋，周末开放。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "12 Akhurst Rd, Borenore NSW 2800"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "02 6365 2286 / info@smallacrescyder.com.au"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "周六至周日 11am–4pm（需预约）"
+              }
+            ],
+            "tags": [
+              "Cider",
+              "Perry",
+              "Methode Traditionelle",
+              "Non-Alcoholic Cider",
+              "Fortified Cider",
+              "Award Winning"
+            ]
+          }
+        },
+        {
+          "title": "Reckless Brewing Co.",
+          "img": "",
+          "enTitle": "Reckless Brewing Co.",
+          "info": {
+            "name": "Reckless Brewing Co.",
+            "desc": "位于新南威尔士州巴瑟斯特的精酿啤酒厂，由好友共同创立，生产100%全天然、未过滤、无防腐剂的啤酒。核心产品包括淡色艾尔、拉格、IPA、红色IPA、世涛等。设有品酒室（Taproom），周三至周日开放。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "2a Piper Street, Bathurst NSW"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "0497 913 635 / gday@recklessbrewingco.com.au"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "周三至周四 12pm–9pm；周五至周六 12pm–10pm；周日 12pm–9pm"
+              }
+            ],
+            "tags": [
+              "Hazy Pale",
+              "Lager",
+              "IPA",
+              "Red IPA",
+              "XPA",
+              "Stout",
+              "Gose",
+              "Pilsner",
+              "Craft Beer"
+            ]
+          }
+        },
+        {
+          "title": "2 Halfs Brewing & Distilling",
+          "img": "",
+          "enTitle": "2 Halfs Brewing & Distilling",
+          "info": {
+            "name": "2 Halfs Brewing & Distilling",
+            "desc": "位于悉尼Alexandria的家族经营小型啤酒厂和蒸馏厂，狗友好，生产多种精酿啤酒（拉格、艾尔、IPA等）以及金酒、白兰地等烈酒。设有品酒室和厨房，提供披萨。",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "地址",
+                "desc": "Alexandria, NSW（具体地址未显示）"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "联系方式",
+                "desc": "info@2halfs.com.au"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "营业时间",
+                "desc": "周四 1pm–9pm；周五 1pm–10pm；周六 1pm–10pm；周日 12pm–6pm（周一至周三关闭）"
+              }
+            ],
+            "tags": [
+              "Brewery",
+              "Craft Beer",
+              "Lager",
+              "Ale",
+              "IPA",
+              "Dog Friendly"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
