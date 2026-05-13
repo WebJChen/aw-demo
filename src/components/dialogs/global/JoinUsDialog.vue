@@ -25,7 +25,7 @@ const closeDialog = () => dialogStore.closeDialog('joinUs')
     :z-index="Z_INDEX.dialog.base"
     class="join-us-dialog" @close="closeDialog">
     <template #header>
-      <div style="font-weight:700; letter-spacing:2px; color:#33b1a3;">加入我们</div>
+      <div style="font-weight:700; letter-spacing:2px; color:#c92a52;">加入我们</div>
     </template>
     <div class="join-us-modal">
       <div class="join-us-modal-info">

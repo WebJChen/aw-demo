@@ -8,6 +8,7 @@ import { useDeviceStore } from '@/stores/deviceStore'
 import defaultImg from '@/assets/img/default.png'
 import { resolveDataImage } from '@/utils/dataImageResolver'
 import { saveSearchTarget } from '@/utils/searchUtils'
+import { withRandomLoading } from '@/utils/loadingUtils'
 
 const cartStore = useCartStore()
 const { cartItems, selectedQuantity, selectedAmount, isAllSelected } = storeToRefs(cartStore)
@@ -27,6 +28,7 @@ const pagedItems = computed(() => {
 
 onMounted(() => {
   deviceStore.startListen()
+  void withRandomLoading(undefined, { min: 0, max: 500 })
 })
 
 onUnmounted(() => {
@@ -208,7 +210,7 @@ const goCheckout = () => {
     bottom: 16px;
     width: 4px;
     border-radius: 0;
-    background: #33b1a3;
+    background: #c92a52;
   }
 
   h1 {
@@ -244,7 +246,7 @@ const goCheckout = () => {
   grid-template-columns: 2.5fr 1fr 1.1fr 1.1fr .8fr .6fr;
   align-items: center;
   min-height: 46px;
-  padding: 0 10px;
+  padding: 0 16px;
   border-radius: 0;
   background: #f3f4f6;
   color: #4b5563;
@@ -256,13 +258,14 @@ const goCheckout = () => {
   display: grid;
   grid-template-columns: 2.5fr 1fr 1.1fr 1.1fr .8fr .6fr;
   align-items: center;
-  padding: 20px 10px;
+  padding: 20px 16px;
   border-bottom: 1px solid #f1f5f9;
   gap: 8px;
+  background: #fff;
 }
 
 .cart-row.selected {
-  background: #f0fdfa;
+  background: #fff1f5;
 }
 
 .row-product {
@@ -298,17 +301,17 @@ const goCheckout = () => {
 }
 
 .title-link:hover {
-  color: #1f6f66;
+  color: #b6193e;
 }
 
 .row-price,
 .row-subtotal {
-  color: #111827;
+  color: #d43a60;
   font-weight: 600;
 }
 
 .row-subtotal {
-  color: #1f6f66;
+  color: #b6193e;
 }
 
 .card-cover {
@@ -348,7 +351,12 @@ const goCheckout = () => {
 }
 
 .card-meta {
-  color: #0f766e;
+  // display: inline-flex;
+  // align-items: center;
+  // padding: 2px 8px;
+  // border: 1px solid #f3b4c6;
+  // background: #ffe8ef;
+  color: #8f1239;
   font-size: 14px;
   line-height: 1.5;
 }
@@ -363,9 +371,10 @@ const goCheckout = () => {
 
 .row-select {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   align-self: stretch;
+  padding-left: 4px;
 }
 
 .row-select :deep(.el-checkbox) {
@@ -392,6 +401,8 @@ const goCheckout = () => {
 
 .action-select :deep(.el-checkbox__inner),
 .all-select :deep(.el-checkbox__inner) {
+  position: relative;
+  display: block;
   width: 24px;
   height: 24px;
   margin: 0;
@@ -400,22 +411,29 @@ const goCheckout = () => {
 
 .action-select :deep(.el-checkbox__input.is-checked .el-checkbox__inner),
 .all-select :deep(.el-checkbox__input.is-checked .el-checkbox__inner) {
-  background-color: #279486;
-  border-color: #279486;
+  background-color: #a8163c;
+  border-color: #a8163c;
 }
 
 .action-select :deep(.el-checkbox__inner::after),
 .all-select :deep(.el-checkbox__inner::after) {
-  left: 8px;
-  top: 2px;
+  left: 50%;
+  top: 50%;
   width: 6px;
   height: 12px;
   border-width: 2.5px;
+  transform: translate(-50%, -58%) rotate(45deg) scaleY(0);
+  transform-origin: center;
+}
+
+.action-select :deep(.el-checkbox__input.is-checked .el-checkbox__inner::after),
+.all-select :deep(.el-checkbox__input.is-checked .el-checkbox__inner::after) {
+  transform: translate(-50%, -58%) rotate(45deg) scaleY(1);
 }
 
 .action-select :deep(.el-checkbox__input.is-focus .el-checkbox__inner),
 .all-select :deep(.el-checkbox__input.is-focus .el-checkbox__inner) {
-  border-color: #279486;
+  border-color: #a8163c;
 }
 
 .cart-main-select {
@@ -482,7 +500,7 @@ const goCheckout = () => {
 }
 
 .summary-row.selected strong {
-  color: #1f6f66;
+  color: #b6193e;
 }
 
 .summary-row--selected-amount span {
@@ -538,19 +556,19 @@ const goCheckout = () => {
 :deep(.el-pagination) {
   .el-pager li {
     &.is-active {
-      background-color: #279486;
+      background-color: #a8163c;
       color: white;
     }
 
     &:hover {
-      color: #279486;
+      color: #a8163c;
     }
   }
 
   .btn-prev,
   .btn-next {
     &:hover {
-      color: #279486;
+      color: #a8163c;
     }
   }
 }

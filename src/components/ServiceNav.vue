@@ -171,8 +171,8 @@ watch(() => route.query.s, () => {
         padding: 8px 10px;
         align-items: center;
         justify-content: center;
-        background: linear-gradient(180deg, #ffffff 0%, #e6f7f6 100%);
-        color: #33b1a3;
+        background: linear-gradient(180deg, #ffffff 0%, #fce7ec 100%);
+        color: #c92a52;
         user-select: none;
         box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 1px 1px rgba(0, 0, 0, 0.03) inset;
         text-decoration: none;
@@ -206,9 +206,9 @@ watch(() => route.query.s, () => {
         padding: 8px 10px;
         align-items: center;
         justify-content: center;
-        background: linear-gradient(180deg, #33b1a3 0%, #279486 100%);
+        background: linear-gradient(180deg, #c92a52 0%, #a8163c 100%);
         color: #fff;
-        box-shadow: 0 6px 16px rgba(61, 199, 190, 0.26);
+        box-shadow: 0 6px 16px rgba(168, 22, 60, 0.26);
         width: 100%;
         box-sizing: border-box;
         line-height: 1.4;
@@ -292,6 +292,7 @@ watch(() => route.query.s, () => {
   .search-nav {
     .search-card {
       .search-tags {
+
         .tag-pill,
         .active,
         .disabled {

@@ -12,7 +12,7 @@ const loadingState = computed(() => fullscreenLoading.value)
 <template>
   <div>
     <ServiceNav />
-    <div v-loading.fullscreen="loadingState" element-loading-spinner-color="#279486"
+    <div v-loading.fullscreen="loadingState" element-loading-spinner-color="#a8163c"
       element-loading-background="rgba(255, 255, 255, 0.8)"></div>
     <div class="content-box">
       <RouterView />

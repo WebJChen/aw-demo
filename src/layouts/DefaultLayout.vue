@@ -200,7 +200,7 @@ const getFooterImg = name => new URL(`../assets/img/footer/${name}`, import.meta
 .el-header .ul-css .el-dropdown {
   // position: relative;
   color: #111;
-  font-size: 12px;
+  font-size: 16px;
 }
 
 .el-dropdown-menu {
@@ -209,6 +209,9 @@ const getFooterImg = name => new URL(`../assets/img/footer/${name}`, import.meta
 
 /* 统一处理语言下拉触发器的焦点样式，避免偶发黑框 */
 .el-header .language-dropdown .el-dropdown-link {
+  display: inline-block;
+  line-height: 70px;
+  vertical-align: middle;
   outline: none;
   border: 0;
   box-shadow: none;
@@ -264,12 +267,13 @@ const getFooterImg = name => new URL(`../assets/img/footer/${name}`, import.meta
           float: left;
           height: 55px;
           margin-left: 30px;
-          transition: all 0.3s ease;
+          transition: color 0.3s ease, border-color 0.3s ease;
+          border-bottom: 1px transparent solid;
         }
 
         li:not(.dropdown):hover {
-          color: #2da099;
-          border-bottom: 1px #2da099 solid;
+          color: #b6193e;
+          border-bottom: 1px #b6193e solid;
         }
       }
 
@@ -277,7 +281,7 @@ const getFooterImg = name => new URL(`../assets/img/footer/${name}`, import.meta
         display: inline-block;
         height: 40px;
         line-height: 70px;
-        font-size: 14px;
+        font-size: 12px;
       }
     }
 
@@ -403,7 +407,7 @@ const getFooterImg = name => new URL(`../assets/img/footer/${name}`, import.meta
             .el-icon {
               margin-right: 8px;
               font-size: 18px;
-              color: #33b1a3;
+              color: #c92a52;
             }
 
             i {
@@ -432,7 +436,7 @@ const getFooterImg = name => new URL(`../assets/img/footer/${name}`, import.meta
           .title-underline {
             width: 36px;
             height: 2px;
-            background-color: #33b1a3;
+            background-color: #c92a52;
           }
         }
 
@@ -445,7 +449,7 @@ const getFooterImg = name => new URL(`../assets/img/footer/${name}`, import.meta
         .news-date {
           font-size: 12px;
           text-align: right;
-          color: #33b1a3;
+          color: #c92a52;
         }
 
         .nav-links {
@@ -461,12 +465,12 @@ const getFooterImg = name => new URL(`../assets/img/footer/${name}`, import.meta
             transition: color 0.3s ease;
 
             &:hover {
-              color: #2da099;
+              color: #b6193e;
             }
 
             // 英文部分使用指定颜色
             span {
-              color: #33b1a3;
+              color: #c92a52;
               margin-left: 8px;
             }
           }
@@ -834,7 +838,7 @@ const getFooterImg = name => new URL(`../assets/img/footer/${name}`, import.meta
                 margin-right: 6px;
                 font-size: 14px;
                 flex-shrink: 0;
-                color: #33b1a3;
+                color: #c92a52;
               }
 
               span {

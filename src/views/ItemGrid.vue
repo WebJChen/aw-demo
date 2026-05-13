@@ -506,8 +506,8 @@ onUnmounted(() => {
   <div ref="gridRef" class="info-list">
     <div v-for="(data, idx) in visibleDataList" :key="idx" class="info-item pointer" @click="openItemDialog(data, idx)"
       :data-title="data.title" :data-hit-key="buildHitKey(idx)">
-      <img :src="resolveImageUrl(data.img)" :alt="data.title" class="w100" :loading="getImageLoading(idx)" decoding="async"
-        :fetchpriority="getImageFetchPriority(idx)">
+      <img :src="resolveImageUrl(data.img)" :alt="data.title" class="w100" :loading="getImageLoading(idx)"
+        decoding="async" :fetchpriority="getImageFetchPriority(idx)">
       <div class="info-title fs16" :title="data.title">{{ data.title }}</div>
       <div v-if="data.enTitle" class="info-sub" :title="data.enTitle">{{ data.enTitle }}</div>
     </div>
@@ -543,7 +543,7 @@ onUnmounted(() => {
       padding: 10px 16px;
       border-radius: 8px;
       background: #fff;
-      color: #33b1a3;
+      color: #c92a52;
       border: 1px solid #e5e7eb;
       transition: all .2s ease;
       white-space: nowrap;
@@ -559,10 +559,10 @@ onUnmounted(() => {
     }
 
     .subnav-item.active {
-      background: linear-gradient(180deg, #33b1a3 0%, #279486 100%);
+      background: linear-gradient(180deg, #c92a52 0%, #a8163c 100%);
       color: #fff;
       border-color: transparent;
-      box-shadow: 0 6px 16px rgba(61, 199, 190, 0.26);
+      box-shadow: 0 6px 16px rgba(168, 22, 60, 0.26);
     }
   }
 }
@@ -630,8 +630,8 @@ onUnmounted(() => {
   }
 
   .info-item.search-hit-active {
-    border-color: #33b1a3;
-    box-shadow: 0 0 0 3px rgba(51, 177, 163, 0.22), 0 10px 26px rgba(51, 177, 163, 0.24);
+    border-color: #c92a52;
+    box-shadow: 0 0 0 3px rgba(201, 42, 82, 0.22), 0 10px 26px rgba(201, 42, 82, 0.24);
     animation: hitPulse 1.6s ease;
     transform: translateY(-2px);
   }
@@ -656,7 +656,7 @@ onUnmounted(() => {
 
       .page-num {
         font-size: 20px;
-        color: #279486;
+        color: #a8163c;
         line-height: 24px;
       }
     }
@@ -683,34 +683,34 @@ onUnmounted(() => {
 :deep(.el-pagination) {
   .el-pager li {
     &.is-active {
-      background-color: #279486;
+      background-color: #a8163c;
       color: white;
     }
 
     &:hover {
-      color: #279486;
+      color: #a8163c;
     }
   }
 
   .btn-prev,
   .btn-next {
     &:hover {
-      color: #279486;
+      color: #a8163c;
     }
   }
 }
 
 @keyframes hitPulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(51, 177, 163, 0.45), 0 8px 18px rgba(51, 177, 163, 0.16);
+    box-shadow: 0 0 0 0 rgba(201, 42, 82, 0.45), 0 8px 18px rgba(201, 42, 82, 0.16);
   }
 
   60% {
-    box-shadow: 0 0 0 10px rgba(51, 177, 163, 0.08), 0 14px 30px rgba(51, 177, 163, 0.24);
+    box-shadow: 0 0 0 10px rgba(201, 42, 82, 0.08), 0 14px 30px rgba(201, 42, 82, 0.24);
   }
 
   100% {
-    box-shadow: 0 0 0 3px rgba(51, 177, 163, 0.22), 0 10px 26px rgba(51, 177, 163, 0.24);
+    box-shadow: 0 0 0 3px rgba(201, 42, 82, 0.22), 0 10px 26px rgba(201, 42, 82, 0.24);
   }
 }
 

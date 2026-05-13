@@ -175,7 +175,7 @@ const closeDialog = () => dialogStore.closeDialog('termsAndConditions')
     font-size: 16px;
     font-weight: bold;
     margin: 15px 0 10px 0;
-    color: #33b1a3;
+    color: #c92a52;
 }
 
 .policy-section h3 {
@@ -218,7 +218,7 @@ const closeDialog = () => dialogStore.closeDialog('termsAndConditions')
 
 .tips {
     background-color: #f0f9ff;
-    border-left: 4px solid #33b1a3;
+    border-left: 4px solid #c92a52;
     padding: 10px;
     margin: 15px 0;
     border-radius: 4px;

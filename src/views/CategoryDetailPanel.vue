@@ -289,7 +289,8 @@ const handleSubNavClick = (subNav) => {
           <ArrowDown />
         </el-icon>
       </div>
-      <div class="subnav-item" :class="{ 'active': hasVisibleData && activeCategoryType === '洋酒酒庄' }" @click="handleSubNavClick('洋酒酒庄')">
+      <div class="subnav-item" :class="{ 'active': hasVisibleData && activeCategoryType === '洋酒酒庄' }"
+        @click="handleSubNavClick('洋酒酒庄')">
         <span class="subnav-text">点击展示洋酒酒庄</span>
         <el-icon class="toggle-icon" :class="{ 'rotate': hasVisibleData && activeCategoryType === '洋酒酒庄' }">
           <ArrowDown />
@@ -357,11 +358,11 @@ const handleSubNavClick = (subNav) => {
     align-items: center;
     justify-content: center;
     padding: 12px 24px;
-    background: linear-gradient(180deg, #33b1a3 0%, #279486 100%);
+    background: linear-gradient(180deg, #c92a52 0%, #a8163c 100%);
     color: #fff;
     border-radius: 8px;
     transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(51, 177, 163, 0.3);
+    box-shadow: 0 2px 8px rgba(201, 42, 82, 0.3);
     font-size: 16px;
     font-weight: 500;
     user-select: none;
@@ -415,14 +416,14 @@ const handleSubNavClick = (subNav) => {
       }
 
       &:hover {
-        background: linear-gradient(180deg, #e6f7f6 0%, #d4f1ef 100%);
-        color: #33b1a3;
+        background: linear-gradient(180deg, #fce7ec 0%, #f5d0d9 100%);
+        color: #c92a52;
       }
 
       &.active {
-        background: linear-gradient(180deg, #33b1a3 0%, #279486 100%);
+        background: linear-gradient(180deg, #c92a52 0%, #a8163c 100%);
         color: #fff;
-        box-shadow: 0 2px 4px rgba(51, 177, 163, 0.3);
+        box-shadow: 0 2px 4px rgba(201, 42, 82, 0.3);
       }
     }
   }
@@ -449,7 +450,7 @@ const handleSubNavClick = (subNav) => {
       .category-title {
         font-size: 22px;
         font-weight: 600;
-        color: #33b1a3;
+        color: #c92a52;
         margin: 0 0 20px 0;
         padding-bottom: 12px;
         border-bottom: 2px solid #f0f0f0;
@@ -470,14 +471,14 @@ const handleSubNavClick = (subNav) => {
           cursor: pointer;
 
           &:hover {
-            background: linear-gradient(180deg, #e6f7f6 0%, #d4f1ef 100%);
+            background: linear-gradient(180deg, #fce7ec 0%, #f5d0d9 100%);
             transform: translateY(-4px);
-            box-shadow: 0 4px 12px rgba(51, 177, 163, 0.2);
+            box-shadow: 0 4px 12px rgba(201, 42, 82, 0.2);
           }
 
           &.search-hit-active {
-            border-color: #33b1a3;
-            box-shadow: 0 0 0 3px rgba(51, 177, 163, 0.22), 0 10px 26px rgba(51, 177, 163, 0.24);
+            border-color: #c92a52;
+            box-shadow: 0 0 0 3px rgba(201, 42, 82, 0.22), 0 10px 26px rgba(201, 42, 82, 0.24);
             animation: panelHitPulse 1.6s ease;
           }
 
@@ -533,12 +534,12 @@ const handleSubNavClick = (subNav) => {
           gap: 16px;
 
           .page-btn {
-            background: linear-gradient(180deg, #33b1a3 0%, #279486 100%);
+            background: linear-gradient(180deg, #c92a52 0%, #a8163c 100%);
             border: none;
             color: #fff;
 
             &:hover:not(:disabled) {
-              background: linear-gradient(180deg, #2da099 0%, #238377 100%);
+              background: linear-gradient(180deg, #b6193e 0%, #9a1432 100%);
             }
 
             &:disabled {
@@ -556,7 +557,7 @@ const handleSubNavClick = (subNav) => {
 
             .page-num {
               font-weight: 600;
-              color: #33b1a3;
+              color: #c92a52;
               font-size: 18px;
             }
 
@@ -572,15 +573,15 @@ const handleSubNavClick = (subNav) => {
 
 @keyframes panelHitPulse {
   0% {
-    box-shadow: 0 0 0 0 rgba(51, 177, 163, 0.45), 0 8px 18px rgba(51, 177, 163, 0.16);
+    box-shadow: 0 0 0 0 rgba(201, 42, 82, 0.45), 0 8px 18px rgba(201, 42, 82, 0.16);
   }
 
   60% {
-    box-shadow: 0 0 0 10px rgba(51, 177, 163, 0.08), 0 14px 30px rgba(51, 177, 163, 0.24);
+    box-shadow: 0 0 0 10px rgba(201, 42, 82, 0.08), 0 14px 30px rgba(201, 42, 82, 0.24);
   }
 
   100% {
-    box-shadow: 0 0 0 3px rgba(51, 177, 163, 0.22), 0 10px 26px rgba(51, 177, 163, 0.24);
+    box-shadow: 0 0 0 3px rgba(201, 42, 82, 0.22), 0 10px 26px rgba(201, 42, 82, 0.24);
   }
 }
 

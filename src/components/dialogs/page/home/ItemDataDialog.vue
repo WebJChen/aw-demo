@@ -349,9 +349,15 @@ watch(dialogVisible, (visible) => {
   align-items: center;
   gap: 8px;
 
+  :deep(.el-input-number) {
+    display: inline-flex;
+    align-items: center;
+  }
+
   .el-button {
     border-radius: 8px;
     padding: 0 18px;
+    margin-top: 0;
   }
 }
 
@@ -383,10 +389,6 @@ watch(dialogVisible, (visible) => {
   }
 }
 
-.dlg-footer .el-button {
-  margin-top: 24px;
-}
-
 @media (max-width: 768px) {
   .dlg-banner {
     height: 220px;
@@ -405,7 +407,8 @@ watch(dialogVisible, (visible) => {
     position: relative;
     right: auto;
     bottom: auto;
-    margin-top: 8px;
+    margin-top: 0;
+    margin-bottom: 12px;
     display: flex;
     justify-content: flex-end;
   }

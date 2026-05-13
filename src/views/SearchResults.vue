@@ -141,7 +141,7 @@ const openResult = (result) => {
       </div>
     </div>
 
-    <div class="results-section" v-loading.fullscreen="pageLoading" element-loading-spinner-color="#279486"
+    <div class="results-section" v-loading.fullscreen="pageLoading" element-loading-spinner-color="#a8163c"
       element-loading-background="rgba(255, 255, 255, 0.8)">
       <div v-if="hasResults" class="results-list">
         <article v-for="result in pagedResults" :key="result.id" class="result-card">
@@ -225,7 +225,7 @@ const openResult = (result) => {
   gap: 16px;
   padding: 22px;
   border-radius: 16px;
-  background: linear-gradient(135deg, #f8fafc 0%, #eef2ff 100%);
+  background: linear-gradient(135deg, #fef7f9 0%, #fce7ec 100%);
   box-shadow: 0 10px 30px rgba(148, 163, 184, 0.2);
 }
 
@@ -282,8 +282,8 @@ const openResult = (result) => {
 }
 
 .meta-sub {
-  background: #ecfeff;
-  color: #0f766e;
+  background: #fce7ec;
+  color: #b6193e;
   padding: 4px 10px;
   border-radius: 999px;
   font-weight: 500;
@@ -319,7 +319,7 @@ const openResult = (result) => {
 }
 
 .result-title-highlight {
-  color: #33b1a3;
+  color: #c92a52;
   font-weight: 700;
 }
 
@@ -341,8 +341,8 @@ const openResult = (result) => {
   align-items: center;
   padding: 4px 10px;
   border-radius: 999px;
-  background: #ecfdf5;
-  color: #166534;
+  background: #fce7ec;
+  color: #b6193e;
   font-size: 12px;
   font-weight: 600;
 }

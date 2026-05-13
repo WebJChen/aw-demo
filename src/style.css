@@ -1,5 +1,5 @@
 body {
-    color: #fff
+    color: #fff;
 }
 
 * {
@@ -92,8 +92,8 @@ a:hover {
 }
 
 .clicked {
-    color: #2da099;
-    border-bottom: 1px #2da099 solid
+    color: #b6193e;
+    border-bottom: 1px #b6193e solid
 }
 
 .clearfix::after {

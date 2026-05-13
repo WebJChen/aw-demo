@@ -1,16 +1,21 @@
 <script setup>
-import { computed, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { ElMessage } from 'element-plus'
 import { ArrowLeft, CircleCheckFilled, CircleCloseFilled, WarningFilled } from '@element-plus/icons-vue'
 import { useCartStore } from '@/stores/cartStore'
+import { useLoadingStore } from '@/stores/loadingStore'
 import defaultImg from '@/assets/img/default.png'
 import { resolveDataImage } from '@/utils/dataImageResolver'
+import { withRandomLoading } from '@/utils/loadingUtils'
 
 const router = useRouter()
 const cartStore = useCartStore()
 const { selectedItems, selectedQuantity, selectedAmount } = storeToRefs(cartStore)
+const loadingStore = useLoadingStore()
+const { fullscreenLoading } = storeToRefs(loadingStore)
+const loadingState = computed(() => fullscreenLoading.value)
 
 const checkoutFormRef = ref(null)
 const submitLoading = ref(false)
@@ -66,7 +71,8 @@ const resetResult = () => {
 }
 
 const goBackCart = () => {
-  router.push({ name: 'Cart' })
+  const href = router.resolve({ name: 'Cart' }).href
+  window.open(href, '_blank', 'noopener,noreferrer')
 }
 
 const backButtonProps = {
@@ -107,10 +113,16 @@ const viewOrderMock = () => {
 }
 
 const resolveImageUrl = (img) => resolveDataImage(img, defaultImg, { variant: 'thumb' })
+
+onMounted(() => {
+  void withRandomLoading(undefined, { min: 0, max: 500 })
+})
 </script>
 
 <template>
   <div class="checkout-page">
+    <div v-loading.fullscreen="loadingState" element-loading-spinner-color="#a8163c"
+      element-loading-background="rgba(255, 255, 255, 0.8)"></div>
     <div class="checkout-header">
       <h1>订单结算</h1>
       <p>请确认信息后完成支付，当前为模拟支付流程。</p>
@@ -207,9 +219,9 @@ const resolveImageUrl = (img) => resolveDataImage(img, defaultImg, { variant: 't
 .paying-thumb { width: 42px; height: 42px; border-radius: 2px; display: block; }
 .paying-title { color: #0f172a; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
 .summary-row { display: flex; justify-content: space-between; margin-bottom: 10px; color: #475569; }
-.summary-row.total strong { color: #1f6f66; font-size: 20px; }
+.summary-row.total strong { color: #b6193e; font-size: 20px; }
 .submit-btn { width: 100%; margin-top: 8px; }
-.summary-back-btn { margin-left: auto; display: inline-flex; }
+.summary-back-btn { margin-left: auto; display: inline-flex; justify-content: flex-end; width: 100%; }
 .result-panel { background: #fff; border: 1px solid #e5e7eb; padding: 22px; }
 .result-panel.success { border-left: 4px solid #16a34a; }
 .result-panel.fail { border-left: 4px solid #dc2626; }
@@ -246,7 +258,7 @@ const resolveImageUrl = (img) => resolveDataImage(img, defaultImg, { variant: 't
   .result-icon { font-size: 24px; }
   .result-actions { flex-direction: column; align-items: stretch; }
   .result-back-btn { margin-left: 0; }
-  .summary-back-btn { margin-left: 0; align-self: flex-end; }
+  .summary-back-btn { margin-left: auto; align-self: flex-end; }
   .paying-item { grid-template-columns: 36px 1fr; }
   .paying-thumb { width: 36px; height: 36px; }
 }

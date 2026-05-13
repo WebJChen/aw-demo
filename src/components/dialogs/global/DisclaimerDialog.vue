@@ -13,7 +13,7 @@ const acceptDisclaimer = () => {
   <el-dialog v-model="dialogStore.dialogs.disclaimer.show" align-center width="520px" :close-on-click-modal="false"
     :show-close="false" :append-to-body="true" :lock-scroll="true" :z-index="Z_INDEX.dialog.base">
     <template #header>
-      <div style="font-weight:700; letter-spacing:2px; color:#33b1a3;">免责条款提示</div>
+      <div style="font-weight:700; letter-spacing:2px; color:#c92a52;">免责条款提示</div>
     </template>
     <div style="color:#333; line-height:1.8; text-align:justify;">
       【免责条款】本网站之全部内容，不对任何本网站的使用者（以下简称使用者）构成任何的旅行建议或行程建议。

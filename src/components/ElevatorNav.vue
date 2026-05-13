@@ -52,7 +52,8 @@ const togglePosition = () => {
 }
 
 const goToCart = () => {
-  router.push({ name: 'Cart' })
+  const href = router.resolve({ name: 'Cart' }).href
+  window.open(href, '_blank', 'noopener,noreferrer')
 }
 
 // 窗口大小变化处理
@@ -163,7 +164,7 @@ onUnmounted(() => {
 
     .el-icon {
       font-size: 20px !important;
-      color: #33b1a3 !important;
+      color: #c92a52 !important;
     }
   }
 
@@ -179,7 +180,7 @@ onUnmounted(() => {
     line-height: 16px;
     text-align: center;
     color: #fff;
-    background: #33b1a3;
+    background: #c92a52;
   }
 }
 

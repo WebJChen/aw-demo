@@ -85,7 +85,7 @@ const closeDialog = () => dialogStore.closeDialog('aboutUs')
     text-align: center;
     margin-top: 24px;
     font-weight: bold;
-    color: #33b1a3;
+    color: #c92a52;
     font-size: 16px;
   }
 }
