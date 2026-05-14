@@ -1,12 +1,11 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted, watch, nextTick } from 'vue';
+import { ref, computed, onMounted, onUnmounted, watch, nextTick, defineAsyncComponent } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useRoute, useRouter } from 'vue-router';
-import { ItemDataDialog } from '@/components/dialogs/page/home';
+const ItemDataDialog = defineAsyncComponent(() => import('@/components/dialogs/page/home/ItemDataDialog.vue'))
 import { useDeviceStore } from '@/stores/deviceStore';
 import { useNavStore } from '@/stores/navStore';
 import { useCartStore } from '@/stores/cartStore'
-import defaultImg from '@/assets/img/default.png';
 import navData from '@/data/split/nav.json';
 import { readSearchTarget, saveSearchTarget } from '@/utils/searchUtils'
 import { resolveDataImage } from '@/utils/dataImageResolver'
@@ -409,7 +408,7 @@ const resolveImageUrl = (img) => {
   if (resolvedImagePathCache.has(cacheKey)) {
     return resolvedImagePathCache.get(cacheKey)
   }
-  const resolved = resolveDataImage(img, defaultImg, { variant: 'thumb' })
+  const resolved = resolveDataImage(img, undefined, { variant: 'thumb' })
   resolvedImagePathCache.set(cacheKey, resolved)
   return resolved
 }
@@ -520,7 +519,7 @@ onUnmounted(() => {
         totalPages }} 页</div>
     </div>
   </div>
-  <ItemDataDialog v-model:visible="itemDialogVisible" :title="selectedItem?.title || ''"
+  <ItemDataDialog v-if="itemDialogVisible" v-model:visible="itemDialogVisible" :title="selectedItem?.title || ''"
     :en-title="selectedItem?.enTitle || ''" :banner="resolveImageUrl(selectedItem?.img)"
     :item-data="selectedItem ? [selectedItem] : []" @add-cart="addToCart" />
 </template>
@@ -542,9 +541,9 @@ onUnmounted(() => {
       cursor: pointer;
       padding: 10px 16px;
       border-radius: 8px;
-      background: #fff;
+      background: linear-gradient(180deg, #ffffff 0%, #fce7ec 100%);
       color: #c92a52;
-      border: 1px solid #e5e7eb;
+      // border: 1px solid #e5e7eb;
       transition: all .2s ease;
       white-space: nowrap;
       user-select: none;

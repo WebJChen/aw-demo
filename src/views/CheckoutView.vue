@@ -6,7 +6,6 @@ import { ElMessage } from 'element-plus'
 import { ArrowLeft, CircleCheckFilled, CircleCloseFilled, WarningFilled } from '@element-plus/icons-vue'
 import { useCartStore } from '@/stores/cartStore'
 import { useLoadingStore } from '@/stores/loadingStore'
-import defaultImg from '@/assets/img/default.png'
 import { resolveDataImage } from '@/utils/dataImageResolver'
 import { withRandomLoading } from '@/utils/loadingUtils'
 
@@ -112,7 +111,7 @@ const viewOrderMock = () => {
   ElMessage.info('订单详情页暂未接入，这里为模拟结算流程。')
 }
 
-const resolveImageUrl = (img) => resolveDataImage(img, defaultImg, { variant: 'thumb' })
+const resolveImageUrl = (img) => resolveDataImage(img, undefined, { variant: 'thumb' })
 
 onMounted(() => {
   void withRandomLoading(undefined, { min: 0, max: 500 })

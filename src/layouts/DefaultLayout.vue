@@ -2,6 +2,7 @@
 import { Location, Phone, Message, ArrowUp, ArrowDown, ChatRound } from '@element-plus/icons-vue'
 import { useDialogStore } from '@/stores/dialogStore';
 import { Z_INDEX } from '@/constants/zIndex';
+import { resolveDataImage } from '@/utils/dataImageResolver'
 
 const dialogStore = useDialogStore()
 const openComingSoonDialog = () => dialogStore.openDialog('comingSoon')
@@ -38,7 +39,11 @@ function handleHeaderLogoError(event) {
 
 //获取footer的六张图片
 const imgs = ['bgfooter1.jpg', 'bgfooter2.jpg', 'footer1.jpg', 'footer2.jpg', 'footer3.jpg', 'footer4.jpg']
-const getFooterImg = name => new URL(`../assets/img/footer/${name}`, import.meta.url).href
+const headerLogo = resolveDataImage('@/assets/img/header_logo.png', '', { variant: 'thumb' }) || resolveDataImage('@/assets/img/header_logo.png')
+const getFooterImg = (name) => (
+  resolveDataImage(`../assets/img/footer/${name}`, '', { variant: 'thumb' })
+  || resolveDataImage(`../assets/img/footer/${name}`)
+)
 </script>
 
 <template>
@@ -47,7 +52,7 @@ const getFooterImg = name => new URL(`../assets/img/footer/${name}`, import.meta
       <span class="logo fowe7 no-select pointer">
         <!-- <RouterLink to="/DemoForTTO/trips/freeinfo"> -->
         <RouterLink to="/">
-          <img src="@/assets/img/header_logo.png" alt="TasTrips.Online" class="logo-img logo-desktop"
+          <img :src="headerLogo" alt="TasTrips.Online" class="logo-img logo-desktop"
             @error="handleHeaderLogoError" />
         </RouterLink>
       </span>
@@ -84,7 +89,7 @@ const getFooterImg = name => new URL(`../assets/img/footer/${name}`, import.meta
         <!-- 关于我们 -->
         <div class="footer-section">
           <div class="logo-section">
-            <div class="company-name"><img src="@/assets/img/header_logo.png" alt="TasTrips.Online"
+            <div class="company-name"><img :src="headerLogo" alt="TasTrips.Online"
                 class="logo-img logo-desktop" />
             </div>
           </div>

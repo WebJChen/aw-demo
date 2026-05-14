@@ -1,12 +1,11 @@
 <script setup>
-import { ref, computed, onUnmounted, nextTick, watch } from 'vue'
+import { ref, computed, onUnmounted, nextTick, watch, defineAsyncComponent } from 'vue'
 import { ArrowDown } from '@element-plus/icons-vue'
 import { storeToRefs } from 'pinia'
 import { useNavStore } from '@/stores/navStore'
 import { useDeviceStore } from '@/stores/deviceStore'
 import { useCartStore } from '@/stores/cartStore'
-import { ItemDataDialog } from '@/components/dialogs/page/home'
-import defaultImg from '@/assets/img/default.png'
+const ItemDataDialog = defineAsyncComponent(() => import('@/components/dialogs/page/home/ItemDataDialog.vue'))
 import navData from '@/data/split/nav.json'
 import { resolveDataImage } from '@/utils/dataImageResolver'
 import { getItemRegionByPath } from '@/utils/dataRepository'
@@ -23,6 +22,7 @@ const deviceStore = useDeviceStore()
 const { isPhone, isTablet } = storeToRefs(deviceStore)
 const cartStore = useCartStore()
 const currentRegionData = ref(null)
+const loadedRegionPath = ref('')
 
 onUnmounted(() => {
   clearPanelHitState()
@@ -72,6 +72,20 @@ const syncCurrentRegionData = async () => {
       subNavList: Array.isArray(navRegion.subNavList) ? navRegion.subNavList : []
     }
     : null
+}
+
+const ensureCurrentRegionData = async () => {
+  const regionPath = currentRegionPath.value
+  if (!regionPath) {
+    currentRegionData.value = null
+    loadedRegionPath.value = ''
+    return
+  }
+  if (currentRegionData.value && loadedRegionPath.value === regionPath) return
+  await syncCurrentRegionData()
+  if (currentRegionPath.value === regionPath) {
+    loadedRegionPath.value = regionPath
+  }
 }
 
 // 获取所有项目数据
@@ -219,6 +233,7 @@ const focusByHit = async (hitKey) => {
 
   isExpanded.value = true
   navStore.setActiveCategoryType(getAlcoholTypeBySubNavName(subNav.subNavName || ''))
+  await ensureCurrentRegionData()
   await nextTick()
 
   const allIndex = allItems.value.findIndex((item) => item.__hitKey === hitKey)
@@ -243,11 +258,21 @@ defineExpose({
 })
 
 watch(() => currentRegionPath.value, () => {
-  void syncCurrentRegionData()
+  loadedRegionPath.value = ''
+  if (!isExpanded.value) {
+    currentRegionData.value = null
+    return
+  }
+  void ensureCurrentRegionData()
+})
+
+watch(() => isExpanded.value, (expanded) => {
+  if (!expanded) return
+  void ensureCurrentRegionData()
 }, { immediate: true })
 
 const resolveImageUrl = (img) => {
-  return resolveDataImage(img, defaultImg)
+  return resolveDataImage(img)
 }
 
 const prevPage = () => {
@@ -265,12 +290,16 @@ const nextPage = () => {
 const handleSubNavClick = (subNav) => {
   if (activeCategoryType.value === subNav) {
     isExpanded.value = !isExpanded.value
-    if (isExpanded.value) resetPage()
+    if (isExpanded.value) {
+      resetPage()
+      void ensureCurrentRegionData()
+    }
     return
   }
   navStore.setActiveCategoryType(subNav)
   isExpanded.value = true
   resetPage() // 切换子导航时重置页码
+  void ensureCurrentRegionData()
 }
 </script>
 
@@ -342,7 +371,7 @@ const handleSubNavClick = (subNav) => {
       </div>
     </div>
   </div>
-  <ItemDataDialog v-model:visible="itemDialogVisible" :title="selectedItem?.title || ''"
+  <ItemDataDialog v-if="itemDialogVisible" v-model:visible="itemDialogVisible" :title="selectedItem?.title || ''"
     :en-title="selectedItem?.enTitle || ''" :banner="resolveImageUrl(selectedItem?.img)"
     :item-data="selectedItem ? [selectedItem] : []" @add-cart="addToCart" />
 </template>
@@ -388,8 +417,8 @@ const handleSubNavClick = (subNav) => {
       flex: 1;
       padding: 10px 20px;
       text-align: center;
-      background: linear-gradient(180deg, #f8f9fa 0%, #e9ecef 100%);
-      color: #666;
+      background: linear-gradient(180deg, #ffffff 0%, #fce7ec 100%);
+      color: #c92a52;
       font-size: 14px;
       font-weight: 500;
       cursor: pointer;
@@ -515,6 +544,7 @@ const handleSubNavClick = (subNav) => {
               line-height: 1.5;
               display: -webkit-box;
               -webkit-line-clamp: 2;
+              line-clamp: 2;
               -webkit-box-orient: vertical;
               overflow: hidden;
             }

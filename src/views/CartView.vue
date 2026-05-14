@@ -5,7 +5,6 @@ import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { useCartStore } from '@/stores/cartStore'
 import { useDeviceStore } from '@/stores/deviceStore'
-import defaultImg from '@/assets/img/default.png'
 import { resolveDataImage } from '@/utils/dataImageResolver'
 import { saveSearchTarget } from '@/utils/searchUtils'
 import { withRandomLoading } from '@/utils/loadingUtils'
@@ -46,7 +45,7 @@ const handlePageChange = (page) => {
   currentPage.value = page
 }
 
-const resolveImageUrl = (img) => resolveDataImage(img, defaultImg, { variant: 'thumb' })
+const resolveImageUrl = (img) => resolveDataImage(img, undefined, { variant: 'thumb' })
 const formatMoney = (value) => {
   const amount = Number(value)
   if (!Number.isFinite(amount)) return '0.00'

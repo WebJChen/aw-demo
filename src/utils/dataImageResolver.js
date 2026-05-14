@@ -1,4 +1,5 @@
 import defaultImg from '@/assets/img/default.png'
+import defaultThumb from '@/assets/.optimized/img/default.thumb.webp'
 
 const baseAssetModules = import.meta.glob('/src/assets/**/*.{png,jpg,jpeg,JPG,JPEG,gif,webp,svg,avif,AVIF}', {
   eager: true,
@@ -14,6 +15,14 @@ const assetModules = {
   ...baseAssetModules,
   ...optimizedAssetModules
 }
+
+const lowerFileNameAssetMap = Object.entries(assetModules).reduce((acc, [key, value]) => {
+  const fileName = key.split('/').pop()?.toLowerCase()
+  if (fileName && !acc[fileName]) {
+    acc[fileName] = value
+  }
+  return acc
+}, {})
 
 const normalizeAssetPath = (inputPath) => {
   const raw = String(inputPath || '').trim()
@@ -41,8 +50,7 @@ const resolveAssetModule = (inputPath) => {
   const fileName = normalized.split('/').pop()?.toLowerCase()
   if (!fileName) return ''
 
-  const fuzzyKey = Object.keys(assetModules).find((key) => key.toLowerCase().endsWith(`/${fileName}`))
-  return fuzzyKey ? assetModules[fuzzyKey] : ''
+  return lowerFileNameAssetMap[fileName] || ''
 }
 
 const getOptimizedAssetPath = (normalizedAssetPath, variant = 'thumb') => {
@@ -54,7 +62,9 @@ const getOptimizedAssetPath = (normalizedAssetPath, variant = 'thumb') => {
   return `/src/assets/.optimized/${pathWithoutExt}.${variant}.webp`
 }
 
-const resolveDataImage = (inputPath, fallback = defaultImg, options = {}) => {
+const DEFAULT_FALLBACK = defaultThumb || defaultImg
+
+const resolveDataImage = (inputPath, fallback = DEFAULT_FALLBACK, options = {}) => {
   const raw = String(inputPath || '').trim()
   if (!raw) return fallback
 
