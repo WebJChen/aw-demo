@@ -52,8 +52,7 @@ const getFooterImg = (name) => (
       <span class="logo fowe7 no-select pointer">
         <!-- <RouterLink to="/DemoForTTO/trips/freeinfo"> -->
         <RouterLink to="/">
-          <img :src="headerLogo" alt="TasTrips.Online" class="logo-img logo-desktop"
-            @error="handleHeaderLogoError" />
+          <img :src="headerLogo" alt="TasTrips.Online" class="logo-img logo-desktop" @error="handleHeaderLogoError" />
         </RouterLink>
       </span>
       <span class="btns no-select">
@@ -89,8 +88,7 @@ const getFooterImg = (name) => (
         <!-- 关于我们 -->
         <div class="footer-section">
           <div class="logo-section">
-            <div class="company-name"><img :src="headerLogo" alt="TasTrips.Online"
-                class="logo-img logo-desktop" />
+            <div class="company-name"><img :src="headerLogo" alt="TasTrips.Online" class="logo-img logo-desktop" />
             </div>
           </div>
           <div class="about-text">
@@ -221,6 +219,7 @@ const getFooterImg = (name) => (
   border: 0;
   box-shadow: none;
   -webkit-tap-highlight-color: transparent;
+  font-weight: 400;
 }
 
 .el-header .language-dropdown .el-dropdown-link:focus,
@@ -560,14 +559,6 @@ const getFooterImg = (name) => (
 /* 仅PC端（>=1025）应用对齐后的字体与图片尺寸 */
 @media (min-width: 1025px) {
   .el-container {
-    .el-header {
-      .logo {
-        .logo-img {
-          width: 198px;
-        }
-      }
-    }
-
     .el-footer {
       .footer-content {
         .footer-section {
@@ -619,7 +610,6 @@ const getFooterImg = (name) => (
       padding: 8px 0 12px 8px;
 
       .logo {
-        font-size: 20px;
         text-align: left;
 
         :deep(.logo-fallback-text) {
@@ -650,6 +640,19 @@ const getFooterImg = (name) => (
             height: 40px;
             margin-left: 0;
             padding: 0 6px;
+          }
+
+          li.dropdown {
+            .el-dropdown-link {
+              display: inline-flex;
+              align-items: center;
+              gap: 4px;
+              height: 100%;
+              line-height: 1;
+              font-size: 16px;
+              font-weight: 400;
+              white-space: nowrap;
+            }
           }
         }
 
@@ -700,7 +703,6 @@ const getFooterImg = (name) => (
       position: relative;
 
       .logo {
-        font-size: 18px;
         text-align: left;
 
         :deep(.logo-fallback-text) {
@@ -785,7 +787,10 @@ const getFooterImg = (name) => (
       padding: 6px 8px;
 
       .logo {
-        font-size: 16px;
+        :deep(.logo-fallback-text) {
+          line-height: 32px;
+          font-size: 16px;
+        }
       }
 
       .btns {
@@ -797,6 +802,18 @@ const getFooterImg = (name) => (
           li {
             height: 36px;
             padding: 0 4px;
+          }
+
+          li.dropdown {
+            .el-dropdown-link {
+              display: inline-flex;
+              align-items: center;
+              gap: 4px;
+              height: 100%;
+              line-height: 1;
+              font-size: 16px;
+              font-weight: 400;
+            }
           }
         }
       }
@@ -952,7 +969,10 @@ const getFooterImg = (name) => (
       padding: 4px 6px;
 
       .logo {
-        font-size: 14px;
+        :deep(.logo-fallback-text) {
+          line-height: 28px;
+          font-size: 14px;
+        }
       }
 
       .btns {
@@ -965,6 +985,19 @@ const getFooterImg = (name) => (
             height: 32px;
             padding: 0 2px;
             font-size: 11px;
+          }
+
+          li.dropdown {
+            .el-dropdown-link {
+              display: inline-flex;
+              align-items: center;
+              gap: 4px;
+              height: 100%;
+              line-height: 1;
+              font-size: 11px;
+              font-weight: 400;
+              white-space: nowrap;
+            }
           }
         }
       }

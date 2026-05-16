@@ -381,11 +381,12 @@ watch(() => route.query.s, () => {
 @media (max-width: 767px) {
   .search-nav {
     position: static;
+    width: 100%;
     transform: none;
     z-index: auto;
-    width: 100%;
     padding: 8px 12px 20px;
     top: auto;
+    margin-bottom: 0;
 
     .search-card {
       max-width: 95vw;
@@ -393,12 +394,13 @@ watch(() => route.query.s, () => {
 
       .search-tags {
         gap: 6px;
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         width: 100%;
 
         .tag-pill {
           font-size: 16px;
-          width: 150px;
+          width: 100%;
+          min-width: 0;
         }
 
         .tag-pill,
@@ -492,7 +494,8 @@ watch(() => route.query.s, () => {
       max-width: 99vw;
 
       .search-tags {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 4px;
       }
 
       .tag-pill,
