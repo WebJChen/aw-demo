@@ -1,5 +1,6 @@
 import { computed, ref, watch } from 'vue'
 import { defineStore } from 'pinia'
+import { buildWineDisplay, resolveWineCartUnitPrice } from '@/utils/wineGridExtras'
 
 const DEFAULT_PRICE = 188
 const STORAGE_KEY = 'aw_cart_items'
@@ -15,6 +16,17 @@ const extractDesc = (item) => {
   if (typeof item?.wineData?.desc === 'string' && item.wineData.desc.trim()) return item.wineData.desc.trim()
   if (typeof item?.info?.desc === 'string' && item.info.desc.trim()) return item.info.desc.trim()
   return ''
+}
+
+/** 与网格 `buildWineDisplay` 一致的产地 / 年份，用于购物车文案 */
+const extractWineOriginVintage = (item, cartRegionNavName) => {
+  const d = buildWineDisplay(item, { regionNavName: typeof cartRegionNavName === 'string' ? cartRegionNavName : '' })
+  const o = String(d?.origin ?? '').trim()
+  const v = String(d?.vintage ?? '').trim()
+  return {
+    wineOrigin: normalizeText(o, ''),
+    wineVintage: normalizeText(v, '')
+  }
 }
 
 const normalizeLoadedItem = (item) => {
@@ -105,14 +117,29 @@ export const useCartStore = defineStore('cart', () => {
     return `${regionPath || 'unknown'}__${subNavPath || 'unknown'}__${title || 'unknown'}`
   }
 
-  // 购物车仅允许加入带有 cartTestEnabled 标记的测试酒款，避免与其它业务数据联动
-  const addCartItem = ({ item, regionPath, regionName, subNavPath, subNavName, quantity = 1 }) => {
-    if (!item?.cartTestEnabled) return 'invalid'
+  /** 酒款网格 / 类目酒庄等条目均可加购（无后端，本地 Pinia）；无标题则拒绝 */
+  const addCartItem = ({
+    item,
+    regionPath,
+    regionName,
+    subNavPath,
+    subNavName,
+    quantity = 1,
+    cartRegionNavName = ''
+  }) => {
+    if (!item || typeof item !== 'object') return 'invalid'
+    const rawTitle =
+      normalizeText(item.title, '') ||
+      normalizeText(item.dialogInfoTitle || item.dialogTitle || item.name || item.cnTitle, '')
+    if (!rawTitle) return 'invalid'
 
     const addQuantity = Math.max(1, Number(quantity) || 1)
-    const title = normalizeText(item.title, '测试酒款')
+    const title = rawTitle || '商品'
     const sourceHitKey = normalizeText(item?.__hitKey || item?.sourceHitKey)
     const cartId = buildCartId({ regionPath, subNavPath, title, sourceHitKey })
+    const unitPrice = resolveWineCartUnitPrice(item, { regionNavName: cartRegionNavName })
+    const { wineOrigin, wineVintage } = extractWineOriginVintage(item, cartRegionNavName)
+
     const existed = cartItems.value.find((cartItem) => cartItem.cartId === cartId)
     if (existed) {
       existed.quantity += addQuantity
@@ -120,7 +147,9 @@ export const useCartStore = defineStore('cart', () => {
       existed.enTitle = normalizeText(item.enTitle)
       existed.desc = extractDesc(item)
       existed.img = normalizeText(item.img)
-      existed.price = Number(item.testPrice) || existed.price || DEFAULT_PRICE
+      existed.price = unitPrice || existed.price || DEFAULT_PRICE
+      existed.wineOrigin = wineOrigin || existed.wineOrigin || ''
+      existed.wineVintage = wineVintage || existed.wineVintage || ''
       existed.regionPath = normalizeText(regionPath) || existed.regionPath
       existed.regionName = normalizeText(regionName) || existed.regionName
       existed.subNavPath = normalizeText(subNavPath) || existed.subNavPath
@@ -139,7 +168,9 @@ export const useCartStore = defineStore('cart', () => {
       enTitle: normalizeText(item.enTitle),
       desc: extractDesc(item),
       img: normalizeText(item.img),
-      price: Number(item.testPrice) || DEFAULT_PRICE,
+      wineOrigin,
+      wineVintage,
+      price: unitPrice || DEFAULT_PRICE,
       quantity: addQuantity,
       regionPath: normalizeText(regionPath),
       regionName: normalizeText(regionName),

@@ -16,6 +16,7 @@
                         "enTitle": "Cart Test - tasmania - red-wine",
                         "cartTestEnabled": true,
                         "testPrice": 104,
+                        "originalPrice": 268,
                         "wineData": {
                             "name": "塔斯马尼亚州红酒购物车测试酒款",
                             "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",

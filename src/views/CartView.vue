@@ -127,6 +127,10 @@ const goCheckout = () => {
               <h3 class="title-link" @click="openItemLocation(item)">{{ item.title }}</h3>
               <span v-if="item.enTitle" class="en-title">{{ item.enTitle }}</span>
               <p v-if="item.desc" class="card-desc">{{ item.desc }}</p>
+              <div v-if="item.wineOrigin || item.wineVintage" class="card-wine-meta">
+                <span v-if="item.wineOrigin" class="wine-meta-line">产地：{{ item.wineOrigin }}</span>
+                <span v-if="item.wineVintage" class="wine-meta-line">年份：{{ item.wineVintage }}</span>
+              </div>
               <div class="card-meta">{{ item.regionName }} / {{ item.subNavName }}</div>
             </div>
           </div>
@@ -178,7 +182,7 @@ const goCheckout = () => {
 
     <div class="cart-content cart-content--empty" v-else>
       <div class="empty-state">
-        <p>购物车为空，可在酒款详情弹窗右下角点击“加入购物车”。</p>
+        <p>购物车为空时，可从酒款网格卡片或详情弹窗中点击「加入购物车」；侧边电梯也可直达本页。</p>
       </div>
     </div>
   </div>
@@ -347,6 +351,20 @@ const goCheckout = () => {
   text-overflow: ellipsis;
   display: -webkit-box;
   -webkit-box-orient: vertical;
+}
+
+.card-wine-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 6px 0 4px;
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.45;
+}
+
+.card-wine-meta .wine-meta-line {
+  white-space: nowrap;
 }
 
 .card-meta {

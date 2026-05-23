@@ -70,8 +70,7 @@ const resetResult = () => {
 }
 
 const goBackCart = () => {
-  const href = router.resolve({ name: 'Cart' }).href
-  window.open(href, '_blank', 'noopener,noreferrer')
+  router.push({ name: 'Cart' })
 }
 
 const backButtonProps = {
@@ -90,20 +89,26 @@ const submitCheckout = async () => {
   submitLoading.value = true
   await new Promise((resolve) => setTimeout(resolve, 900))
 
+  const paidAmountSnapshot = Number(selectedAmount.value || 0)
+  const paidQuantitySnapshot = selectedQuantity.value
+
   const result = scenarioMap[form.scenario] || scenarioMap.success
   paymentResult.value = {
     ...result,
     orderNo: orderNo.value,
-    paidAmount: Number(selectedAmount.value || 0).toFixed(2),
-    paidQuantity: selectedQuantity.value
+    paidAmount: paidAmountSnapshot.toFixed(2),
+    paidQuantity: paidQuantitySnapshot
+  }
+
+  if (result.status === 'success') {
+    cartStore.removeSelectedItems()
+    ElMessage.success('支付成功，已结算的商品已从购物车移除')
   }
 
   submitLoading.value = false
 }
 
 const finishSuccess = () => {
-  cartStore.removeSelectedItems()
-  ElMessage.success('支付成功，已从购物车移除已结算商品')
   goBackCart()
 }
 
@@ -143,7 +148,7 @@ onMounted(() => {
         <div class="kv-item"><span>支付数量</span><strong>{{ paymentResult.paidQuantity }} 件</strong></div>
       </div>
       <div class="result-actions">
-        <el-button v-if="paymentResult.status === 'success'" type="primary" @click="finishSuccess">完成并返回购物车</el-button>
+        <el-button v-if="paymentResult.status === 'success'" type="primary" @click="finishSuccess">前往购物车</el-button>
         <el-button v-else type="primary" @click="resetResult">重新支付</el-button>
         <el-button @click="viewOrderMock">查看订单（模拟）</el-button>
         <el-button v-if="paymentResult.status !== 'success'" class="result-back-btn" v-bind="backButtonProps" @click="goBackCart">返回购物车</el-button>

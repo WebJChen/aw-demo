@@ -5,7 +5,8 @@ import { storeToRefs } from 'pinia'
 import { useNavStore } from '@/stores/navStore'
 import { useDeviceStore } from '@/stores/deviceStore'
 import { useCartStore } from '@/stores/cartStore'
-const ItemDataDialog = defineAsyncComponent(() => import('@/components/dialogs/page/home/ItemDataDialog.vue'))
+import { useDialogStore } from '@/stores/dialogStore'
+const WineryItemDialog = defineAsyncComponent(() => import('@/components/dialogs/page/home/WineryItemDialog.vue'))
 import navData from '@/data/split/nav.json'
 import { resolveDataImage } from '@/utils/dataImageResolver'
 import { getItemRegionByPath } from '@/utils/dataRepository'
@@ -13,7 +14,12 @@ import { getItemRegionByPath } from '@/utils/dataRepository'
 const isExpanded = ref(false)
 const navStore = useNavStore()
 const { activeNav, activeCategoryType } = storeToRefs(navStore)
-const itemDialogVisible = ref(false)
+const dialogStore = useDialogStore()
+const itemDialogVisible = computed({
+  get: () => dialogStore.dialogs.wineryItemDetail?.show === true,
+  set: (v) =>
+    v ? dialogStore.openDialog('wineryItemDetail') : dialogStore.closeDialog('wineryItemDetail')
+})
 const selectedItem = ref(null)
 const currentPage = ref(1)
 const panelRef = ref(null)
@@ -147,8 +153,9 @@ const panelTitleText = computed(() => `${activeNav.value || ''}全部相关酒�
 const hasVisibleData = computed(() => isExpanded.value && allItems.value.length > 0)
 
 const openWineryDetail = (item) => {
+  dialogStore.closeDialog('wineItemDetail')
   selectedItem.value = item || null
-  itemDialogVisible.value = true
+  dialogStore.openDialog('wineryItemDetail')
 }
 
 const addToCart = (payload) => {
@@ -166,7 +173,8 @@ const addToCart = (payload) => {
       regionName: activeNav.value || '',
       subNavPath: inferredSubNavPath,
       subNavName: item?.subNavName || '',
-      quantity
+      quantity,
+      cartRegionNavName: activeNav.value || ''
     })
     onResult?.(result, { maxCartItems: cartStore.MAX_CART_ITEMS })
   } catch (_) {
@@ -371,7 +379,7 @@ const handleSubNavClick = (subNav) => {
       </div>
     </div>
   </div>
-  <ItemDataDialog v-if="itemDialogVisible" v-model:visible="itemDialogVisible" :title="selectedItem?.title || ''"
+  <WineryItemDialog v-if="itemDialogVisible" v-model:visible="itemDialogVisible" :title="selectedItem?.title || ''"
     :en-title="selectedItem?.enTitle || ''" :banner="resolveImageUrl(selectedItem?.img)"
     :item-data="selectedItem ? [selectedItem] : []" @add-cart="addToCart" />
 </template>

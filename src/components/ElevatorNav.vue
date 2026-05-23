@@ -54,8 +54,7 @@ const togglePosition = () => {
 
 const goToCart = () => {
   void withRandomLoading(undefined, { min: 160, max: 300 })
-  const href = router.resolve({ name: 'Cart' }).href
-  window.open(href, '_blank', 'noopener,noreferrer')
+  router.push({ name: 'Cart' })
 }
 
 // 窗口大小变化处理

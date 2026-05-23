@@ -5,6 +5,10 @@ export const useDialogStore = defineStore('dialog', () => {
   //敬请期待弹窗
   const dialogs = reactive({
     comingSoon: { show: false },
+    /** ItemGrid · 瓶装酒款详情 */
+    wineItemDetail: { show: false },
+    /** CategoryDetail ·「全部相关酒庄」条目详情 */
+    wineryItemDetail: { show: false },
     aboutUs: { show: false },
     joinUs: { show: false },
     contactUs: { show: false },
