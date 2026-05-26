@@ -6,14 +6,63 @@ import { ElMessage } from 'element-plus'
 import { useCartStore } from '@/stores/cartStore'
 import { useDeviceStore } from '@/stores/deviceStore'
 import { resolveDataImage } from '@/utils/dataImageResolver'
+/** 【样式测试·可删】塔斯购物车封面轮换；正式发布前移除本 import 与 cartCoverSrc 等（见 tasmaniaGridStyleTestThumbs.js） */
+import { tasGridStyleTestThumbByIndex } from '@/utils/tasmaniaGridStyleTestThumbs'
 import { saveSearchTarget } from '@/utils/searchUtils'
+
 import { withRandomLoading } from '@/utils/loadingUtils'
 
 const cartStore = useCartStore()
 const { cartItems, selectedQuantity, selectedAmount, isAllSelected } = storeToRefs(cartStore)
 const deviceStore = useDeviceStore()
-const { isPhone } = storeToRefs(deviceStore)
+const { isPhone, isMobile } = storeToRefs(deviceStore)
 const router = useRouter()
+
+const cartTableRef = ref(null)
+
+const enrichedFilteredCart = computed(() =>
+  cartItems.value.map((item) => ({
+    ...item,
+    _sortPrice: Number(item.price) || 0,
+    _sortQty: Number(item.quantity) || 0,
+    _sortLine: (Number(item.price) || 0) * (Number(item.quantity) || 0),
+    _sortTitle: String(item.title || '')
+  }))
+)
+
+/** 与 el-table 表头排序一致：先排全量再分页 */
+const sortProp = ref('_sortLine')
+const sortOrder = ref('descending')
+
+const sortMultiplier = computed(() => (sortOrder.value === 'ascending' ? 1 : -1))
+
+const sortedFullCartRows = computed(() => {
+  const rows = [...enrichedFilteredCart.value]
+  const prop = sortProp.value
+  const mul = sortMultiplier.value
+  if (!sortOrder.value || !prop) return rows
+
+  rows.sort((a, b) => {
+    if (prop === '_sortTitle') {
+      return mul * String(a.title || '').localeCompare(String(b.title || ''), 'zh-CN')
+    }
+    const va = Number(a[prop]) || 0
+    const vb = Number(b[prop]) || 0
+    return mul * (va - vb)
+  })
+  return rows
+})
+
+const onSortChange = ({ prop, order }) => {
+  if (!prop) return
+  if (!order) {
+    sortProp.value = '_sortLine'
+    sortOrder.value = 'descending'
+    return
+  }
+  sortProp.value = prop
+  sortOrder.value = order
+}
 
 const currentPage = ref(1)
 const pageSize = computed(() => (isPhone.value ? 4 : 8))
@@ -22,7 +71,7 @@ const totalPages = computed(() => Math.max(1, Math.ceil(totalItems.value / pageS
 
 const pagedItems = computed(() => {
   const start = (currentPage.value - 1) * pageSize.value
-  return cartItems.value.slice(start, start + pageSize.value)
+  return sortedFullCartRows.value.slice(start, start + pageSize.value)
 })
 
 onMounted(() => {
@@ -46,6 +95,24 @@ const handlePageChange = (page) => {
 }
 
 const resolveImageUrl = (img) => resolveDataImage(img, undefined, { variant: 'thumb' })
+
+/** 【样式测试·可删】仅 regionPath=tasmania 的条目：购物车封面两张图按购物车内顺序轮换（与 ItemGrid 同源素材） */
+const isCartTasmaniaStyleTestCover = (item) => item?.regionPath === 'tasmania'
+
+const cartCoverSrc = (item) => {
+  if (item?.demoPersistent && typeof item?.img === 'string' && item.img.trim()) {
+    return resolveImageUrl(item.img)
+  }
+  if (!isCartTasmaniaStyleTestCover(item)) return resolveImageUrl(item?.img)
+  const idx = cartItems.value.findIndex((x) => x.cartId === item.cartId)
+  return tasGridStyleTestThumbByIndex(idx >= 0 ? idx : 0)
+}
+
+const cartCoverFit = (item) => {
+  if (item?.demoPersistent && typeof item?.img === 'string' && item.img.trim()) return 'cover'
+  return isCartTasmaniaStyleTestCover(item) ? 'contain' : 'cover'
+}
+
 const formatMoney = (value) => {
   const amount = Number(value)
   if (!Number.isFinite(amount)) return '0.00'
@@ -92,6 +159,21 @@ const openItemLocation = (item) => {
   window.open(href, '_blank', 'noopener,noreferrer')
 }
 
+const tryRemoveCartLine = (item) => {
+  if (item?.demoPersistent) {
+    ElMessage.info('内置演示备货不可移除，可在列表中勾选后去结算（支付后本条仍会留在购物车）。')
+    return
+  }
+  cartStore.removeCartItem(item.cartId)
+}
+
+const cartRowClassName = ({ row }) => {
+  const parts = []
+  if (row.selected) parts.push('cart-row--selected')
+  if (row.demoPersistent) parts.push('cart-row--demo-pinned')
+  return parts.join(' ')
+}
+
 const goCheckout = () => {
   if (!selectedQuantity.value) {
     ElMessage.warning('请先勾选要结算的商品')
@@ -99,61 +181,149 @@ const goCheckout = () => {
   }
   router.push({ name: 'Checkout' })
 }
+
 </script>
 
 <template>
   <div class="cart-page">
     <div class="cart-header">
       <h1>购物车</h1>
-      <p>已选择 {{ selectedQuantity }} 件，可在本地临时保存。</p>
+      <p>
+        列表顶部为<strong>内置演示备货</strong>（不写本地快照，清空/支付卸货后仍存在），可直接勾选后「去结算」；其余行为与您从酒款中加购的商品相同。
+      </p>
+      <p class="cart-header-sub">
+        已选 {{ selectedQuantity }} 件 · 勾选金额 ¥ {{ formatMoney(selectedAmount) }}
+      </p>
     </div>
 
-    <div class="cart-content" v-if="totalItems > 0">
-      <section class="cart-main-panel">
-        <div class="cart-table-head">
-          <span>商品信息</span>
-          <span>单价（元）</span>
-          <span>数量</span>
-          <span>小计（元）</span>
-          <span>操作</span>
-          <span>选择</span>
-        </div>
+    <div class="cart-content">
+      <div class="cart-main-column w100">
+        <section class="cart-main-panel">
+          <template v-if="cartItems.length">
+            <div class="cart-table-shell">
+              <el-table
+                ref="cartTableRef"
+                :data="pagedItems"
+                stripe
+                border
+                row-key="cartId"
+                class="cart-el-table"
+                table-layout="fixed"
+                :default-sort="{ prop: '_sortLine', order: 'descending' }"
+                :row-class-name="cartRowClassName"
+                @sort-change="onSortChange"
+              >
+                <el-table-column
+                  label="商品信息"
+                  prop="_sortTitle"
+                  sortable="custom"
+                  :min-width="isMobile ? 188 : 276"
+                  :fixed="isMobile ? undefined : 'left'"
+                  class-name="cart-col-product"
+                >
+                  <template #default="{ row }">
+                    <div class="row-product">
+                      <el-image
+                        :src="cartCoverSrc(row)"
+                        :alt="row.title"
+                        class="card-cover bgfff"
+                        :class="{ 'card-cover--tas-thumb-test': isCartTasmaniaStyleTestCover(row) && !row.demoPersistent }"
+                        :fit="cartCoverFit(row)"
+                        :preview-src-list="[cartCoverSrc(row)]"
+                        :preview-teleported="true"
+                      />
+                      <div class="product-info">
+                        <span v-if="row.demoPersistent && row.stateLabel" class="demo-pin-chip">{{ row.stateLabel }}</span>
+                        <h3 class="title-link" @click.stop="openItemLocation(row)">{{ row.title }}</h3>
+                        <span v-if="row.enTitle" class="en-title">{{ row.enTitle }}</span>
+                        <p v-if="row.desc" class="card-desc">{{ row.desc }}</p>
+                        <div v-if="row.wineOrigin || row.wineVintage" class="card-wine-meta">
+                          <span v-if="row.wineOrigin" class="wine-meta-line">产地：{{ row.wineOrigin }}</span>
+                          <span v-if="row.wineVintage" class="wine-meta-line">年份：{{ row.wineVintage }}</span>
+                        </div>
+                        <div class="card-meta">{{ row.regionName }} / {{ row.subNavName }}</div>
+                      </div>
+                    </div>
+                  </template>
+                </el-table-column>
 
-        <article v-for="item in pagedItems" :key="item.cartId" class="cart-row" :class="{ selected: item.selected }">
-          <div class="row-product">
-            <el-image :src="resolveImageUrl(item.img)" :alt="item.title" class="card-cover" fit="cover"
-              :preview-src-list="[resolveImageUrl(item.img)]" :preview-teleported="true" />
-            <div class="product-info">
-              <h3 class="title-link" @click="openItemLocation(item)">{{ item.title }}</h3>
-              <span v-if="item.enTitle" class="en-title">{{ item.enTitle }}</span>
-              <p v-if="item.desc" class="card-desc">{{ item.desc }}</p>
-              <div v-if="item.wineOrigin || item.wineVintage" class="card-wine-meta">
-                <span v-if="item.wineOrigin" class="wine-meta-line">产地：{{ item.wineOrigin }}</span>
-                <span v-if="item.wineVintage" class="wine-meta-line">年份：{{ item.wineVintage }}</span>
-              </div>
-              <div class="card-meta">{{ item.regionName }} / {{ item.subNavName }}</div>
-            </div>
+                <el-table-column label="单价（元）" prop="_sortPrice" sortable="custom" :min-width="isMobile ? 84 : 112" align="right">
+                  <template #default="{ row }">¥ {{ formatMoney(row.price) }}</template>
+                </el-table-column>
+
+                <el-table-column label="数量" prop="_sortQty" sortable="custom" :width="isMobile ? 118 : 132" align="center">
+                  <template #default="{ row }">
+                    <div class="row-qty" @click.stop>
+                      <el-input-number
+                        :model-value="row.quantity"
+                        :min="1"
+                        :step="1"
+                        size="small"
+                        @update:model-value="(value) => cartStore.updateQuantity(row.cartId, value)"
+                      />
+                    </div>
+                  </template>
+                </el-table-column>
+
+                <el-table-column label="小计（元）" prop="_sortLine" sortable="custom" :min-width="isMobile ? 96 : 112" align="right">
+                  <template #default="{ row }">
+                    ¥ {{ formatMoney((Number(row.price) || 0) * (Number(row.quantity) || 0)) }}
+                  </template>
+                </el-table-column>
+
+                <el-table-column v-if="!isMobile" label="操作" width="92" fixed="right" align="center" class-name="cart-col-act">
+                  <template #default="{ row }">
+                    <el-button text type="danger" @click.stop="tryRemoveCartLine(row)">移除</el-button>
+                  </template>
+                </el-table-column>
+
+                <el-table-column v-if="!isMobile" label="选择" width="76" fixed="right" align="center" class-name="cart-col-select">
+                  <template #default="{ row }">
+                    <el-checkbox
+                      class="action-select"
+                      :model-value="row.selected"
+                      @change="(checked) => cartStore.setItemSelected(row.cartId, checked)"
+                      @click.stop
+                    />
+                  </template>
+                </el-table-column>
+
+                <el-table-column v-else label="" width="64" align="center" class-name="cart-col-mobile-combo">
+                  <template #header><span class="cart-mobile-combo-head">勾选</span></template>
+                  <template #default="{ row }">
+                    <div class="cart-mobile-act-stack" @click.stop>
+                      <el-checkbox
+                        class="action-select"
+                        :model-value="row.selected"
+                        @change="(checked) => cartStore.setItemSelected(row.cartId, checked)"
+                      />
+                      <el-button text type="danger" size="small" class="cart-mobile-remove-btn" @click.stop="tryRemoveCartLine(row)">
+                        移除
+                      </el-button>
+                    </div>
+                  </template>
+                </el-table-column>
+              </el-table>
           </div>
 
-          <div class="row-price">¥ {{ formatMoney(item.price) }}</div>
-          <div class="row-qty">
-            <el-input-number :model-value="item.quantity" :min="1" :step="1" size="small"
-              @update:model-value="(value) => cartStore.updateQuantity(item.cartId, value)" />
+          <div class="pagination-wrapper" v-if="totalItems > pageSize">
+            <el-pagination
+              :current-page="currentPage"
+              :page-size="pageSize"
+              :total="totalItems"
+              :small="isPhone"
+              layout="prev, pager, next"
+              background
+              @current-change="handlePageChange"
+            />
           </div>
-          <div class="row-subtotal">¥ {{ formatMoney((Number(item.price) || 0) * (Number(item.quantity) || 0)) }}</div>
-          <div class="row-action">
-            <el-button text type="danger" @click="cartStore.removeCartItem(item.cartId)">移除</el-button>
+        </template>
+        <template v-else>
+          <div class="cart-filter-empty">
+            <p>购物车暂无商品。</p>
           </div>
-          <div class="row-select">
-            <el-checkbox class="action-select" :model-value="item.selected"
-              @change="(checked) => cartStore.setItemSelected(item.cartId, checked)" />
-          </div>
-        </article>
-
-        <div class="pagination-wrapper" v-if="totalItems > pageSize">
-          <el-pagination :current-page="currentPage" :page-size="pageSize" :total="totalItems"
-            layout="prev, pager, next" background @current-change="handlePageChange" />
-        </div>
+        </template>
+        </section>
 
         <div class="cart-main-select">
           <el-button text type="danger" class="clear-cart-btn" @click="cartStore.clearCart()">清空购物车</el-button>
@@ -162,7 +332,7 @@ const goCheckout = () => {
             <el-checkbox class="all-select" :model-value="isAllSelected" @change="handleSelectAllChange" />
           </div>
         </div>
-      </section>
+      </div>
 
       <aside class="cart-side-panel">
         <div class="side-header">
@@ -179,22 +349,18 @@ const goCheckout = () => {
         <el-button type="primary" class="checkout-btn" @click="goCheckout">去结算</el-button>
       </aside>
     </div>
-
-    <div class="cart-content cart-content--empty" v-else>
-      <div class="empty-state">
-        <p>购物车为空时，可从酒款网格卡片或详情弹窗中点击「加入购物车」；侧边电梯也可直达本页。</p>
-      </div>
-    </div>
   </div>
 </template>
 
 <style scoped lang="scss">
 .cart-page {
   width: 90%;
+  max-width: 100%;
   margin: 40px auto 80px;
   display: flex;
   flex-direction: column;
   gap: 24px;
+  box-sizing: border-box;
 }
 
 .cart-header {
@@ -229,46 +395,157 @@ const goCheckout = () => {
     color: #6b7280;
     font-size: 14px;
   }
+
+  .cart-header-sub {
+    margin-top: 10px !important;
+    font-size: 13px !important;
+    color: #1f2937 !important;
+    font-weight: 500;
+  }
 }
 
+.demo-pin-chip {
+  display: inline-block;
+  margin-bottom: 6px;
+  padding: 2px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #0369a1;
+  background: #e0f2fe;
+  border: 1px solid #bae6fd;
+  border-radius: 4px;
+}
 .cart-content {
   display: grid;
   grid-template-columns: 1fr 320px;
   gap: 18px;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.cart-main-column {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  max-width: 100%;
+  gap: 0;
+  box-sizing: border-box;
 }
 
 .cart-main-panel {
   background: #fff;
-  border: none;
+  border: 1px solid #e5e7eb;
   border-radius: 0;
+  padding: 0;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.cart-filter-empty {
+  padding: 36px 20px;
+  text-align: center;
+  color: #64748b;
+  font-size: 14px;
+
+  p {
+    margin: 0 0 14px;
+  }
+}
+
+.cart-table-shell {
+  overflow-x: auto;
+  overflow-y: hidden;
   padding: 0;
 }
 
-.cart-table-head {
-  display: grid;
-  grid-template-columns: 2.5fr 1fr 1.1fr 1.1fr .8fr .6fr;
-  align-items: center;
-  min-height: 46px;
-  padding: 0 16px;
-  border-radius: 0;
-  background: #f3f4f6;
-  color: #4b5563;
-  font-size: 13px;
+.cart-el-table {
+  width: max(860px, 100%);
+  --ol-table-header-bg: #f6e8ed;
+  --ol-table-muted-bg: #fcf3f6;
+  --ol-table-row-hover: #fff8fa;
+}
+
+.cart-el-table :deep(.el-table thead th.el-table__cell) {
+  background-color: var(--ol-table-header-bg) !important;
+  color: #3f1a24;
   font-weight: 600;
 }
 
-.cart-row {
-  display: grid;
-  grid-template-columns: 2.5fr 1fr 1.1fr 1.1fr .8fr .6fr;
-  align-items: center;
-  padding: 20px 16px;
-  border-bottom: 1px solid #f1f5f9;
-  gap: 8px;
-  background: #fff;
+.cart-el-table :deep(.el-table__body tr.el-table__row--striped td.el-table__cell) {
+  background-color: var(--ol-table-muted-bg) !important;
 }
 
-.cart-row.selected {
-  background: #fff1f5;
+.cart-el-table :deep(.el-table__body tr:hover > td.el-table__cell) {
+  background-color: var(--ol-table-row-hover) !important;
+}
+
+.cart-el-table :deep(.el-table__fixed-right-patch),
+.cart-el-table :deep(.el-table__fixed-patch) {
+  background-color: var(--ol-table-header-bg) !important;
+}
+
+.cart-el-table :deep(tr.cart-row--demo-pinned td.el-table__cell) {
+  background-color: #fafbfc !important;
+}
+
+.cart-el-table :deep(tr.cart-row--selected td.el-table__cell) {
+  background-color: #fff1f5 !important;
+}
+
+.cart-el-table :deep(tr.cart-row--selected.cart-row--demo-pinned td.el-table__cell) {
+  background-color: #fff1f5 !important;
+}
+
+.cart-el-table :deep(.cart-col-product .cell),
+.cart-el-table :deep(.cart-col-act .cell),
+.cart-el-table :deep(.cart-col-select .cell) {
+  cursor: default;
+}
+
+.cart-el-table :deep(.cart-col-act .cell),
+.cart-el-table :deep(.cart-col-select .cell) {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cart-el-table :deep(.cart-col-act .el-button),
+.cart-el-table :deep(.cart-col-select .el-checkbox) {
+  margin: 0;
+}
+
+.cart-el-table :deep(.cart-col-product .title-link) {
+  cursor: pointer;
+}
+
+.cart-el-table :deep(.cart-col-mobile-combo .cell) {
+  vertical-align: middle;
+  cursor: default;
+}
+
+.cart-mobile-combo-head {
+  font-size: 12px;
+  color: #3f1a24;
+  font-weight: 600;
+}
+
+.cart-mobile-act-stack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 2px 0;
+}
+
+.cart-mobile-remove-btn {
+  padding: 0 !important;
+  font-size: 12px !important;
+  line-height: 1.3 !important;
 }
 
 .row-product {
@@ -313,10 +590,6 @@ const goCheckout = () => {
   font-weight: 600;
 }
 
-.row-subtotal {
-  color: #b6193e;
-}
-
 .card-cover {
   width: 94px;
   height: 94px;
@@ -331,6 +604,15 @@ const goCheckout = () => {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+/* 【样式测试·可删】塔斯购物车封面：contain + 底色，与 ItemGrid --tas-thumb-test 一致 */
+// .card-cover.card-cover--tas-thumb-test {
+//   background: #f3f0ec;
+// }
+
+.card-cover.card-cover--tas-thumb-test :deep(img) {
+  object-fit: contain;
 }
 
 .en-title {
@@ -382,35 +664,6 @@ const goCheckout = () => {
   width: 110px;
 }
 
-.row-action :deep(.el-button) {
-  padding: 0;
-}
-
-.row-select {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  align-self: stretch;
-  padding-left: 4px;
-}
-
-.row-select :deep(.el-checkbox) {
-  margin: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 1;
-}
-
-.row-select :deep(.el-checkbox__input) {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: 0;
-  vertical-align: middle;
-  line-height: 1;
-}
-
 .action-select :deep(.el-checkbox__label),
 .all-select :deep(.el-checkbox__label) {
   display: none;
@@ -457,7 +710,11 @@ const goCheckout = () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 0 0;
+  padding: 12px 0 0;
+  margin: 0;
+  border: none;
+  background: transparent;
+  box-shadow: none;
 }
 
 .all-select-wrap {
@@ -590,29 +847,91 @@ const goCheckout = () => {
   }
 }
 
+@media (max-width: 1024px) {
+  .cart-table-shell {
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+  }
+
+  /*
+   * 与订单列表一致：表格保持不小于列宽总和，外层 shell 横向滚动，
+   * 避免 width:100%+min-width:0 把整表压在视口内导致「固定死在窄宽度」观感。
+   */
+  .cart-el-table {
+    width: max(860px, 100%);
+  }
+
+  .row-qty :deep(.el-input-number) {
+    width: 100%;
+    max-width: 118px;
+  }
+}
+
 @media (max-width: 768px) {
   .cart-page {
     width: 95%;
     margin-top: 28px;
+    margin-bottom: 56px;
+    gap: 18px;
   }
 
   .cart-content {
     grid-template-columns: 1fr;
   }
 
-  .cart-table-head {
-    display: none;
+  .cart-header {
+    padding: 14px 16px;
   }
 
-  .cart-row {
-    grid-template-columns: 1fr;
+  .cart-header h1 {
+    font-size: 24px;
+  }
+
+  .cart-header p:first-of-type {
+    font-size: 13px;
+  }
+
+  /* 与订单列表 od-card-like 一致：整块主栏为白底描边卡片，表格在内部横向滑动 */
+  .cart-main-panel {
+    background: #fff;
     border: 1px solid #e5e7eb;
-    border-radius: 0;
-    margin-bottom: 10px;
+    box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
   }
 
-  .row-select {
-    justify-content: flex-end;
+  .cart-table-shell {
+    border: none;
+    margin: 0;
+    padding: 0;
+    background: transparent;
+  }
+
+  .title-link {
+    max-width: none;
+  }
+
+  .product-info h3 {
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+    -webkit-line-clamp: unset;
+    line-clamp: unset;
+    display: block;
+    font-size: 15px;
+  }
+
+  .card-cover {
+    width: 76px;
+    height: 76px;
+    min-width: 76px;
+    min-height: 76px;
+    flex: 0 0 76px;
+  }
+
+  .row-product {
+    min-height: 96px;
+    gap: 10px;
   }
 }
 
@@ -625,11 +944,6 @@ const goCheckout = () => {
   .cart-content {
     grid-template-columns: 1fr 280px;
     gap: 14px;
-  }
-
-  .cart-table-head,
-  .cart-row {
-    grid-template-columns: 2.2fr .9fr 1fr 1fr .8fr .6fr;
   }
 
   .title-link {

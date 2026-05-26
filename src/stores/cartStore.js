@@ -1,6 +1,7 @@
 import { computed, ref, watch } from 'vue'
 import { defineStore } from 'pinia'
 import { buildWineDisplay, resolveWineCartUnitPrice } from '@/utils/wineGridExtras'
+import { createDemoPinnedCartRows, isDemoPinnedCartId } from '@/utils/demoStaticCartShowcase'
 
 const DEFAULT_PRICE = 188
 const STORAGE_KEY = 'aw_cart_items'
@@ -38,40 +39,54 @@ const normalizeLoadedItem = (item) => {
     cartId: sourceHitKey || fallbackCartId,
     quantity: Math.max(1, Number(item.quantity) || 1),
     selected: item.selected === true,
-    sourceHitKey
+    sourceHitKey,
+    demoPersistent: item.demoPersistent === true
   }
 }
 
 export const useCartStore = defineStore('cart', () => {
-  const loadCartItems = () => {
+  /** 仅从 localStorage 读取（过滤内置演示 cartId，避免与种子重复） */
+  const loadStoredCartOnly = () => {
     if (typeof window === 'undefined') return []
     try {
       const stored = localStorage.getItem(STORAGE_KEY)
-      if (stored) {
-        const parsed = JSON.parse(stored)
-        if (!Array.isArray(parsed)) return []
-        return parsed.map(normalizeLoadedItem).filter(Boolean)
-      }
+      if (!stored) return []
+      const parsed = JSON.parse(stored)
+      if (!Array.isArray(parsed)) return []
+      return parsed
+        .map(normalizeLoadedItem)
+        .filter(Boolean)
+        .filter((item) => !isDemoPinnedCartId(item.cartId))
     } catch (error) {
       console.error('加载购物车数据失败:', error)
     }
     return []
   }
 
-  const saveCartItems = (items) => {
+  const mergeWithDemoPinnedRows = () => [
+    ...createDemoPinnedCartRows(),
+    ...loadStoredCartOnly()
+  ]
+
+  const savePersistedSlice = (items) => {
     if (typeof window === 'undefined') return
     try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(items))
+      const payload = items.filter((item) => !item.demoPersistent)
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload))
     } catch (error) {
       console.error('保存购物车数据失败:', error)
     }
   }
 
-  const cartItems = ref(loadCartItems())
+  const cartItems = ref(mergeWithDemoPinnedRows())
 
-  watch(cartItems, (newVal) => {
-    saveCartItems(newVal)
-  }, { deep: true })
+  watch(
+    cartItems,
+    (newVal) => {
+      savePersistedSlice(newVal)
+    },
+    { deep: true }
+  )
 
   const totalQuantity = computed(() => {
     return cartItems.value.reduce((sum, item) => sum + (Number(item.quantity) || 0), 0)
@@ -190,15 +205,24 @@ export const useCartStore = defineStore('cart', () => {
   }
 
   const removeCartItem = (cartId) => {
+    if (isDemoPinnedCartId(cartId)) return
     cartItems.value = cartItems.value.filter((item) => item.cartId !== cartId)
   }
 
   const clearCart = () => {
-    cartItems.value = []
+    cartItems.value = createDemoPinnedCartRows()
   }
 
+  /**
+   * 移除已勾选的普通商品（模拟支付成功后）；内置演示备货始终保留，并取消其勾选以免影响下次。
+   */
   const removeSelectedItems = () => {
-    cartItems.value = cartItems.value.filter((item) => !item.selected)
+    cartItems.value = cartItems.value.filter(
+      (item) => item.demoPersistent || !item.selected
+    )
+    cartItems.value.forEach((item) => {
+      if (item.demoPersistent) item.selected = false
+    })
   }
 
   const setItemSelected = (cartId, selected) => {

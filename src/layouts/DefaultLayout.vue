@@ -1,11 +1,34 @@
 <script setup>
+import { computed } from 'vue'
 import { Location, Phone, Message, ArrowUp, ArrowDown, ChatRound } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { useRoute, useRouter } from 'vue-router'
+import { storeToRefs } from 'pinia'
 import { useDialogStore } from '@/stores/dialogStore';
+import { useUserStore } from '@/stores/userStore'
 import { Z_INDEX } from '@/constants/zIndex';
 import { resolveDataImage } from '@/utils/dataImageResolver'
 
 const dialogStore = useDialogStore()
-const openComingSoonDialog = () => dialogStore.openDialog('comingSoon')
+const userStore = useUserStore()
+const { loggedIn, userId } = storeToRefs(userStore)
+const router = useRouter()
+const route = useRoute()
+
+/** 支付成功查看订单快照（见 OrderDetail consumeFreshQuery）：不显示全站顶栏与页脚 */
+const hideGlobalChrome = computed(
+  () => route.name === 'OrderDetail' && route.query.snapshot === '1'
+)
+
+const handleDemoLogin = () => {
+  userStore.loginDemo()
+  ElMessage.success('已为模拟登录（本地演示，未连接真实账号体系）')
+}
+
+const goPersonalCart = () => router.push({ name: 'Cart' })
+const goOrderList = () => router.push({ name: 'OrderList' })
+
+const openMemberComingSoon = () => dialogStore.openDialog('comingSoon')
 
 const showRefundPolicy = () => dialogStore.openDialog('refundPolicy')
 const showPrivacyPolicy = () => dialogStore.openDialog('privacyPolicy')
@@ -47,8 +70,8 @@ const getFooterImg = (name) => (
 </script>
 
 <template>
-  <el-container>
-    <el-header class="fs15 bgfff">
+  <el-container class="default-layout-root" :class="{ 'default-layout-root--no-chrome': hideGlobalChrome }">
+    <el-header v-if="!hideGlobalChrome" class="fs15 bgfff">
       <span class="logo fowe7 no-select pointer">
         <!-- <RouterLink to="/DemoForTTO/trips/freeinfo"> -->
         <RouterLink to="/">
@@ -73,17 +96,33 @@ const getFooterImg = (name) => (
             </el-dropdown>
           </li>
           <li class="pointer" @click="dialogStore.openDialog('comingSoon')">付款与退款</li>
-          <li class="pointer" @click="dialogStore.openDialog('comingSoon')">用户注册/登录</li>
           <li class="pointer" @click="dialogStore.openDialog('comingSoon')">成为会员</li>
           <li class="pointer" @click="dialogStore.openDialog('joinUs')">加入我们</li>
           <li class="pointer" @click="dialogStore.openDialog('contactUs')">联系我们</li>
+          <!-- 最右侧：未登录入口 / 登录后账号下拉（内含会员｜购物车｜订单｜退出） -->
+          <li v-if="!loggedIn" class="pointer" @click="handleDemoLogin">用户注册/登录</li>
+          <li v-else class="pointer dropdown header-user-wrap">
+            <el-dropdown class="header-user-dropdown" trigger="click" teleported>
+              <span class="header-user-trigger el-dropdown-link">
+                {{ userId }}<el-icon class="el-icon--right"><ArrowDown /></el-icon>
+              </span>
+              <template #dropdown>
+                <el-dropdown-menu>
+                  <el-dropdown-item @click="openMemberComingSoon">会员中心</el-dropdown-item>
+                  <el-dropdown-item @click="goPersonalCart">购物车</el-dropdown-item>
+                  <el-dropdown-item @click="goOrderList">我的订单</el-dropdown-item>
+                  <el-dropdown-item divided @click="userStore.logout()">退出登录</el-dropdown-item>
+                </el-dropdown-menu>
+              </template>
+            </el-dropdown>
+          </li>
         </ul>
       </span>
     </el-header>
 
     <RouterView />
 
-    <el-footer>
+    <el-footer v-if="!hideGlobalChrome">
       <div class="footer-content">
         <!-- 关于我们 -->
         <div class="footer-section">
@@ -227,8 +266,58 @@ const getFooterImg = (name) => (
   outline: none;
   box-shadow: none;
 }
+
+.el-header .header-user-dropdown .header-user-trigger {
+  display: inline-block;
+  max-width: min(200px, 28vw);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: middle;
+  line-height: 70px;
+  outline: none;
+  border: 0;
+  box-shadow: none;
+  -webkit-tap-highlight-color: transparent;
+  font-weight: 500;
+  color: #111;
+}
+
+.el-header .header-user-dropdown .header-user-trigger:focus,
+.el-header .header-user-dropdown .header-user-trigger:focus-visible {
+  outline: none;
+  box-shadow: none;
+}
+
+@media (max-width: 1024px) {
+  .el-header .header-user-dropdown .header-user-trigger {
+    line-height: 40px;
+    max-width: min(200px, 48vw);
+    font-size: 15px;
+  }
+}
 </style>
 <style scoped lang="scss">
+/**
+ * EP el-container 默认横向 flex：只剩 RouterView 时子项宽度随内容收缩，整块页面会「贴左」。
+ * 无顶栏/底栏快照页只有一个主内容子节点，改为纵向并让该节点占满整行宽。
+ */
+.default-layout-root.default-layout-root--no-chrome {
+  flex-direction: column !important;
+  align-items: stretch;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  min-height: 100vh;
+}
+
+.default-layout-root.default-layout-root--no-chrome > * {
+  width: 100% !important;
+  max-width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
 .el-container {
   min-height: 100vh;
 

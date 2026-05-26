@@ -15,6 +15,8 @@ import { resolveDataImage } from '@/utils/dataImageResolver'
 import { getWineRegionByPath } from '@/utils/dataRepository'
 import { Z_INDEX } from '@/constants/zIndex'
 import { buildWineDisplay } from '@/utils/wineGridExtras'
+/** 【样式测试·可删】见 @/utils/tasmaniaGridStyleTestThumbs.js；正式环境移除该 import 与本页 isTasmaniaGridStyleTestThumb、gridItemThumbSrc、相关 class/样式 */
+import { tasGridStyleTestThumbByIndex } from '@/utils/tasmaniaGridStyleTestThumbs'
 
 const GRID_PRICE_COLOR = '#a8163c'
 
@@ -177,6 +179,17 @@ const currentSubNav = computed(() => {
   const byStore = enabledSubNavs.value.find((subNav) => subNav.subNavName === activeSubNav.value)
   return byStore || enabledSubNavs.value[0] || allSubNavs.value[0]
 })
+
+/** 【样式测试·可删】塔斯马尼亚任意子栏：列表缩略图用 tasGridStyleTestThumbByIndex；发布前与本 import、gridItemThumbSrc、--tas-thumb-test 样式一并删 */
+const isTasmaniaGridStyleTestThumb = computed(() => currentRegionPath.value === 'tasmania')
+
+/** 【样式测试·可删】仅塔斯马尼亚「白葡萄酒」：封面 2:3；发布前删本 computed 与 .info-img-wrap--tas-white-aspect-test */
+const isTasmaniaWhiteWineGridStyleTest = computed(
+  () =>
+    currentRegionPath.value === 'tasmania' &&
+    (currentSubNav.value?.subNavPath === 'white-wine' ||
+      currentSubNav.value?.subNavName === '白葡萄酒')
+)
 
 const dataList = computed(() => currentSubNav.value?.itemData || [])
 
@@ -733,6 +746,14 @@ const resolveImageUrl = (img) => {
   return resolved
 }
 
+/** 【样式测试·可删】塔斯马尼亚全栏轮换测试图；发布前与 isTasmaniaGridStyleTestThumb 一并移除 */
+const gridItemThumbSrc = (row) => {
+  if (!isTasmaniaGridStyleTestThumb.value) {
+    return resolveImageUrl(row?.data?.img)
+  }
+  return tasGridStyleTestThumbByIndex(row.idx)
+}
+
 const applySubNavFromRoute = () => {
   const routeName = typeof route.name === 'string' ? route.name : ''
   const firstSubNav = enabledSubNavs.value[0]?.subNavName || subNavList.value[0] || ''
@@ -881,7 +902,11 @@ onUnmounted(() => {
       <div v-for="row in gridRows" :key="`${currentRegionPath}-${currentSubNav?.subNavPath || ''}-${row.idx}`"
         class="info-item pointer" @click="openItemDialog(row.data, row.idx)" :data-title="row.data.title"
         :data-hit-key="buildHitKey(row.idx)">
-        <div class="info-img-wrap">
+        <!-- 【样式测试·可删】塔斯全栏：测试图 + contain；仅白葡萄酒加 2:3；发布前删下列 class 与 gridItemThumbSrc -->
+        <div class="info-img-wrap" :class="['bgfff', {
+          'info-img-wrap--tas-thumb-test': isTasmaniaGridStyleTestThumb,
+          'info-img-wrap--tas-white-aspect-test': isTasmaniaWhiteWineGridStyleTest
+        }]">
           <div class="info-img-top-bar">
             <div v-if="row.wine.promoBadges?.length" class="info-promo-row">
               <span v-for="(pb, pi) in row.wine.promoBadges" :key="pi" class="promo-chip"
@@ -889,8 +914,8 @@ onUnmounted(() => {
             </div>
             <span v-else class="info-img-top-bar-spacer" aria-hidden="true"></span>
           </div>
-          <img :src="resolveImageUrl(row.data.img)" :alt="row.data.title" class="w100"
-            :loading="getImageLoading(row.idx)" decoding="async" :fetchpriority="getImageFetchPriority(row.idx)">
+          <img :src="gridItemThumbSrc(row)" :alt="row.data.title" class="w100" :loading="getImageLoading(row.idx)"
+            decoding="async" :fetchpriority="getImageFetchPriority(row.idx)">
         </div>
         <div class="info-title fs16" :title="row.data.title">{{ row.data.title }}</div>
         <div v-if="row.data.enTitle" class="info-sub info-sub--under-title" :title="row.data.enTitle">{{
@@ -1183,10 +1208,6 @@ onUnmounted(() => {
   gap: 16px;
   padding: 8px 0 40px;
 
-  img {
-    height: 240px;
-  }
-
   .info-item {
     display: flex;
     border-radius: 12px;
@@ -1205,7 +1226,7 @@ onUnmounted(() => {
       object-fit: cover;
       display: block;
       width: 100%;
-      height: 240px;
+      height: 100%;
       transition: transform 0.45s cubic-bezier(0.33, 1, 0.68, 1);
       transform-origin: center center;
     }
@@ -1242,8 +1263,28 @@ onUnmounted(() => {
 
     .info-img-wrap {
       position: relative;
+      width: 100%;
       border-radius: 10px;
       overflow: hidden;
+    }
+
+    /* 参考 300×400：宽:高 = 3:4 */
+    .info-img-wrap:not(.info-img-wrap--tas-white-aspect-test) {
+      aspect-ratio: 3 / 4;
+    }
+
+    /* 【样式测试·可删】塔斯马尼亚「白葡萄酒」：2:3 比例实验（勿让桌面 5:6 改写，故与 :not 拆分） */
+    .info-img-wrap--tas-white-aspect-test {
+      aspect-ratio: 2 / 3;
+    }
+
+    /* 【样式测试·可删】塔斯全栏测试缩略图：contain 完整显示，避免 cover 裁切显得「太大/不全」 */
+    .info-img-wrap--tas-thumb-test {
+      // background: #f3f0ec;
+
+      img {
+        object-fit: contain;
+      }
     }
 
     .info-img-top-bar {
@@ -1722,6 +1763,14 @@ onUnmounted(() => {
   }
 }
 
+@media (min-width: 1025px) {
+
+  /* 参考 500×600：宽:高 = 5:6 */
+  .info-list .info-item .info-img-wrap:not(.info-img-wrap--tas-white-aspect-test) {
+    aspect-ratio: 5 / 6;
+  }
+}
+
 @media (min-width: 769px) and (max-width: 1024px) {
   .subnav-box {
     .subnav-list {
@@ -1770,10 +1819,6 @@ onUnmounted(() => {
 
     .info-item {
       gap: 8px;
-    }
-
-    img {
-      height: 180px;
     }
   }
 }

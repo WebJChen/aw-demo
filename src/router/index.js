@@ -18,6 +18,15 @@ const routes = [
 		name: 'Checkout',
 		component: () => import("@/views/CheckoutView.vue")
 	},
+	/** 兼容旧书签：统一到带顶栏底部的订单详情 */
+	{
+		path: '/order/:orderNo',
+		redirect: (to) => ({
+			name: 'OrderDetail',
+			params: to.params,
+			query: to.query
+		})
+	},
 	{
 		path: '/',
 		component: () => import('@/layouts/DefaultLayout.vue'),
@@ -40,6 +49,16 @@ const routes = [
 						path: 'cart',
 						name: 'Cart',
 						component: () => import("@/views/CartView.vue")
+					},
+					{
+						path: 'account/orders',
+						name: 'OrderList',
+						component: () => import("@/views/OrderListView.vue")
+					},
+					{
+						path: 'account/order/:orderNo',
+						name: 'OrderDetail',
+						component: () => import("@/views/OrderDetailView.vue")
 					}
 				]
 			},

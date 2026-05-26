@@ -40,6 +40,7 @@ const tagRoutes = computed(() => navItems.value.map((item) => ({
 })))
 const isSearchRoute = computed(() => route.name === 'SearchResults')
 const isCartRoute = computed(() => route.name === 'Cart')
+const isOrderNeutralRoute = computed(() => route.name === 'OrderList' || route.name === 'OrderDetail')
 
 const handleTagClick = (item, event) => {
   // 禁用项仅展示样式，不允许新开页面
@@ -86,6 +87,7 @@ onUnmounted(() => {
 })
 
 watch(() => route.name, (name) => {
+  if (name === 'OrderList' || name === 'OrderDetail') return
   if (typeof name === 'string' && slugTagMap.value[name]) {
     navStore.setActiveNav(slugTagMap.value[name])
     return
@@ -104,7 +106,7 @@ watch(() => route.query.s, () => {
       <div class="search-tags">
         <a v-for="item in tagRoutes" :key="item.tag" :href="item.href" target="_blank" rel="noopener noreferrer"
           class="tag-pill w100 pointer"
-          :class="{ active: !isSearchRoute && !isCartRoute && activeNav === item.tag, disabled: !item.available }"
+          :class="{ active: !isSearchRoute && !isCartRoute && !isOrderNeutralRoute && activeNav === item.tag, disabled: !item.available }"
           @click="handleTagClick(item, $event)">
           <span class="tag-content">
             {{ item.tag }}
@@ -114,7 +116,7 @@ watch(() => route.query.s, () => {
           </span>
         </a>
       </div>
-      <CategoryDetailPanel v-if="!isSearchRoute && !isCartRoute" ref="categoryPanelRef" />
+      <CategoryDetailPanel v-if="!isSearchRoute && !isCartRoute && !isOrderNeutralRoute" ref="categoryPanelRef" />
       <div class="search-container">
         <el-input v-model="keyword" placeholder="搜索全站..." class="search-input" size="large" clearable
           @keyup.enter="onSearchEnter">
