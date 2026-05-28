@@ -25,7 +25,13 @@ const handleDemoLogin = () => {
   ElMessage.success('已为模拟登录（本地演示，未连接真实账号体系）')
 }
 
-const goPersonalCart = () => router.push({ name: 'Cart' })
+const goPersonalCart = () => {
+  if (!loggedIn.value) {
+    dialogStore.openDialog('loginPrompt')
+    return
+  }
+  router.push({ name: 'Cart' })
+}
 const goOrderList = () => router.push({ name: 'OrderList' })
 
 const openMemberComingSoon = () => dialogStore.openDialog('comingSoon')
@@ -99,17 +105,19 @@ const getFooterImg = (name) => (
           <li class="pointer" @click="dialogStore.openDialog('comingSoon')">成为会员</li>
           <li class="pointer" @click="dialogStore.openDialog('joinUs')">加入我们</li>
           <li class="pointer" @click="dialogStore.openDialog('contactUs')">联系我们</li>
-          <!-- 最右侧：未登录入口 / 登录后账号下拉（内含会员｜购物车｜订单｜退出） -->
-          <li v-if="!loggedIn" class="pointer" @click="handleDemoLogin">用户注册/登录</li>
+          <li class="pointer" @click="goPersonalCart">购物车</li>
+          <!-- 最右侧：未登录入口 / 登录后账号下拉（内含会员｜订单｜退出） -->
+          <li v-if="!loggedIn" class="pointer header-user-login-wrap" @click="handleDemoLogin">用户注册/登录</li>
           <li v-else class="pointer dropdown header-user-wrap">
             <el-dropdown class="header-user-dropdown" trigger="click" teleported>
               <span class="header-user-trigger el-dropdown-link">
-                {{ userId }}<el-icon class="el-icon--right"><ArrowDown /></el-icon>
+                {{ userId }}<el-icon class="el-icon--right">
+                  <ArrowDown />
+                </el-icon>
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
                   <el-dropdown-item @click="openMemberComingSoon">会员中心</el-dropdown-item>
-                  <el-dropdown-item @click="goPersonalCart">购物车</el-dropdown-item>
                   <el-dropdown-item @click="goOrderList">我的订单</el-dropdown-item>
                   <el-dropdown-item divided @click="userStore.logout()">退出登录</el-dropdown-item>
                 </el-dropdown-menu>
@@ -296,6 +304,14 @@ const getFooterImg = (name) => (
     font-size: 15px;
   }
 }
+
+@media (min-width: 1025px) {
+  /* 与 header 同高 line-height，沿用改动前 inline-block 垂直对齐方式 */
+  .el-header .language-dropdown .el-dropdown-link,
+  .el-header .header-user-dropdown .header-user-trigger {
+    line-height: 62px;
+  }
+}
 </style>
 <style scoped lang="scss">
 /**
@@ -311,7 +327,7 @@ const getFooterImg = (name) => (
   min-height: 100vh;
 }
 
-.default-layout-root.default-layout-root--no-chrome > * {
+.default-layout-root.default-layout-root--no-chrome>* {
   width: 100% !important;
   max-width: 100%;
   min-width: 0;
@@ -648,6 +664,37 @@ const getFooterImg = (name) => (
 /* 仅PC端（>=1025）应用对齐后的字体与图片尺寸 */
 @media (min-width: 1025px) {
   .el-container {
+    .el-header {
+      height: 62px;
+      line-height: 62px;
+
+      .logo {
+        .logo-img {
+          width: 182px;
+        }
+
+        :deep(.logo-fallback-text) {
+          line-height: 42px;
+          font-size: 18px;
+        }
+      }
+
+      .btns {
+        right: 40px;
+
+        .ul-css {
+          li {
+            height: 48px;
+            margin-left: 30px;
+          }
+        }
+
+        i {
+          line-height: 62px;
+        }
+      }
+    }
+
     .el-footer {
       .footer-content {
         .footer-section {
@@ -823,6 +870,23 @@ const getFooterImg = (name) => (
             margin-left: 0;
             padding: 0 6px;
           }
+
+          li.header-user-wrap,
+          li.header-user-login-wrap {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            z-index: 2;
+            display: inline-flex;
+            align-items: center;
+            justify-content: flex-end;
+            width: auto;
+            height: 40px;
+            margin-left: 0;
+            padding: 0;
+            white-space: nowrap;
+            float: none;
+          }
         }
 
         i {
@@ -891,6 +955,23 @@ const getFooterImg = (name) => (
           li {
             height: 36px;
             padding: 0 4px;
+          }
+
+          li.header-user-wrap,
+          li.header-user-login-wrap {
+            position: absolute;
+            top: 6px;
+            right: 8px;
+            z-index: 2;
+            display: inline-flex;
+            align-items: center;
+            justify-content: flex-end;
+            width: auto;
+            height: 36px;
+            margin-left: 0;
+            padding: 0;
+            white-space: nowrap;
+            float: none;
           }
 
           li.dropdown {
@@ -1074,6 +1155,23 @@ const getFooterImg = (name) => (
             height: 32px;
             padding: 0 2px;
             font-size: 11px;
+          }
+
+          li.header-user-wrap,
+          li.header-user-login-wrap {
+            position: absolute;
+            top: 4px;
+            right: 6px;
+            z-index: 2;
+            display: inline-flex;
+            align-items: center;
+            justify-content: flex-end;
+            width: auto;
+            height: 32px;
+            margin-left: 0;
+            padding: 0;
+            white-space: nowrap;
+            float: none;
           }
 
           li.dropdown {

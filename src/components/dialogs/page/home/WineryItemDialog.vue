@@ -25,7 +25,7 @@ const { isPhone, isTablet } = storeToRefs(deviceStore)
 const dialogWidth = computed(() => {
   if (isPhone.value) return 'calc(100vw - 20px)'
   if (isTablet.value) return 'min(760px, 94vw)'
-  return '980px'
+  return '920px'
 })
 
 const dlgBannerHeight = computed(() => (isPhone.value ? 220 : 350))
@@ -417,6 +417,109 @@ onUnmounted(() => deviceStore.stopListen())
 
   &:hover .info-icon {
     color: #6b7280;
+  }
+}
+
+@media (min-width: 1025px) {
+  .wine-item-dialog.winery-item-dialog {
+    :deep(.el-dialog__header) {
+      padding: 14px 18px 10px;
+    }
+
+    :deep(.el-dialog__body) {
+      padding: 0 0 6px 0;
+    }
+
+    .dlg-title {
+      font-size: 20px;
+      letter-spacing: 1px;
+    }
+
+    .dlg-section {
+      max-height: 520px;
+
+      .section-title,
+      .section-desc,
+      .feature-grid,
+      .tag-row {
+        margin-left: 18px;
+        margin-right: 18px;
+      }
+
+      .section-title {
+        margin-top: 14px;
+        font-size: 18px;
+        margin-bottom: 10px;
+      }
+
+      .section-desc {
+        font-size: 15px;
+        margin-bottom: 14px;
+      }
+
+      .feature-grid {
+        gap: 12px;
+
+        .feature-card {
+          border-radius: 10px;
+          padding: 14px;
+
+          .icon {
+            width: 34px;
+            height: 34px;
+            margin-bottom: 8px;
+          }
+
+          .f-title {
+            font-size: 14px;
+            margin-bottom: 4px;
+          }
+
+          .f-desc {
+            font-size: 13px;
+            line-height: 1.6;
+          }
+        }
+      }
+
+      .tag-row {
+        margin-top: 16px;
+        margin-bottom: 8px;
+        gap: 6px;
+
+        .mini-tag {
+          padding: 5px 8px;
+          font-size: 11px;
+        }
+      }
+    }
+
+    .dlg-banner {
+      height: 320px !important;
+    }
+
+    .dlg-footer {
+      padding: 6px 10px 12px;
+      margin-top: 8px;
+      gap: 8px;
+
+      .cart-action-row {
+        gap: 6px;
+
+        .el-button {
+          padding: 0 14px;
+          border-radius: 6px;
+        }
+      }
+
+      .info-disclaimer {
+        font-size: 11px;
+
+        .info-icon {
+          font-size: 13px;
+        }
+      }
+    }
   }
 }
 

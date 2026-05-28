@@ -580,6 +580,117 @@ const formatMoney = (value) => {
   margin: 0 0 16px;
 }
 
+@media (min-width: 1025px) {
+  .order-detail-page {
+    width: 86%;
+    margin-top: 32px;
+    margin-bottom: 72px;
+    gap: 18px;
+  }
+
+  .order-detail-page--pay-snapshot {
+    max-width: min(880px, 100%);
+  }
+
+  .order-detail-head-inner {
+    padding: 16px 20px;
+  }
+
+  .od-top-actions {
+    gap: 6px 14px;
+  }
+
+  .back-link {
+    font-size: 13px;
+  }
+
+  .order-detail-titles h1 {
+    font-size: 24px;
+  }
+
+  .order-detail-titles p {
+    font-size: 13px;
+  }
+
+  .od-card {
+    padding: 14px 16px;
+  }
+
+  .od-card-title {
+    font-size: 15px;
+    margin-bottom: 10px;
+  }
+
+  .od-kv-grid {
+    gap: 10px 16px;
+  }
+
+  .od-kv span {
+    font-size: 12px;
+  }
+
+  .od-kv strong {
+    font-size: 14px;
+  }
+
+  .od-line {
+    gap: 12px;
+    padding: 12px 0;
+  }
+
+  .od-line-thumb {
+    width: 56px;
+    height: 56px;
+  }
+
+  .od-line-info {
+    gap: 4px;
+  }
+
+  .od-line-title {
+    font-size: 14px;
+  }
+
+  .od-line-wine-meta,
+  .od-line-nav-meta,
+  .od-line-qty-price {
+    font-size: 12px;
+  }
+
+  .od-line-qty-price strong {
+    font-size: 14px;
+  }
+
+  .od-summary-bar {
+    margin-top: 14px;
+    padding-top: 14px;
+    font-size: 13px;
+  }
+
+  .od-total strong {
+    font-size: 18px;
+  }
+
+  .od-footer-actions {
+    gap: 8px;
+    margin-top: 16px;
+  }
+
+  .od-footer-actions--from-list {
+    gap: 10px;
+    padding: 12px 0 6px;
+    margin-top: 16px;
+  }
+
+  .od-footer-tip {
+    font-size: 12px;
+  }
+
+  .order-detail-empty {
+    padding: 32px 18px;
+  }
+}
+
 @media (max-width: 640px) {
   .od-kv-grid {
     grid-template-columns: 1fr;

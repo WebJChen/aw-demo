@@ -609,6 +609,97 @@ const handleSubNavClick = (subNav) => {
   }
 }
 
+@media (min-width: 1025px) {
+  .category-detail-panel {
+    max-width: 1120px;
+    margin: 24px auto 0;
+    padding: 0 16px;
+
+    .toggle-btn {
+      padding: 10px 20px;
+      font-size: 15px;
+    }
+
+    .alcohol-subnav {
+      margin-top: 10px;
+
+      .subnav-item {
+        padding: 9px 16px;
+        font-size: 13px;
+
+        .toggle-icon {
+          font-size: 15px;
+        }
+      }
+    }
+
+    .category-content {
+      &.expanded {
+        margin-top: 16px;
+      }
+
+      .category-section {
+        padding: 20px;
+        margin-bottom: 16px;
+
+        .category-title {
+          font-size: 20px;
+          margin: 0 0 16px 0;
+          padding-bottom: 10px;
+        }
+
+        .items-grid {
+          gap: 12px;
+          margin-bottom: 16px;
+
+          .item-card {
+            padding: 14px;
+
+            .item-header {
+              margin-bottom: 10px;
+
+              .item-title {
+                font-size: 15px;
+              }
+
+              .item-en-title {
+                font-size: 12px;
+              }
+            }
+
+            .item-body {
+              .item-info-title {
+                font-size: 12px;
+                margin: 0 0 6px 0;
+              }
+
+              .item-desc {
+                font-size: 12px;
+              }
+            }
+          }
+        }
+
+        .pagination-section {
+          padding-top: 16px;
+
+          .custom-pagination {
+            gap: 12px;
+
+            .page-indicator {
+              font-size: 15px;
+
+              .page-num {
+                font-size: 17px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 @keyframes panelHitPulse {
   0% {
     box-shadow: 0 0 0 0 rgba(201, 42, 82, 0.45), 0 8px 18px rgba(201, 42, 82, 0.16);

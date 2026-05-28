@@ -716,6 +716,87 @@ const onOrderMobileMenuCommand = (cmd, row) => {
   justify-content: flex-end;
 }
 
+@media (min-width: 1025px) {
+  .order-list-page {
+    width: 86%;
+    margin-top: 32px;
+    margin-bottom: 72px;
+    gap: 18px;
+  }
+
+  .ol-head {
+    padding: 16px 20px;
+
+    h1 {
+      font-size: 24px;
+    }
+
+    p {
+      font-size: 13px;
+    }
+  }
+
+  .ol-toolbar {
+    padding: 12px 16px;
+  }
+
+  .ol-toolbar-inner {
+    gap: 10px 16px;
+  }
+
+  .ol-toolbar-title {
+    font-size: 13px;
+  }
+
+  .ol-toolbar-select {
+    width: min(100%, 188px);
+    min-width: 136px;
+  }
+
+  .ol-table-shell {
+    padding: 0;
+  }
+
+  .ol-el-table {
+    width: max(900px, 100%);
+  }
+
+  .ol-product-inner {
+    gap: 10px;
+  }
+
+  .ol-snippet-thumb {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+  }
+
+  .ol-snippet-title {
+    font-size: 13px;
+  }
+
+  .ol-snippet-meta {
+    font-size: 12px;
+  }
+
+  .ol-snippet-qty,
+  .ol-order-no-muted {
+    font-size: 11px;
+  }
+
+  .ol-act-wrap {
+    min-height: 32px;
+  }
+
+  .ol-act-btn {
+    font-size: 12px;
+  }
+
+  .ol-empty {
+    padding: 36px 20px;
+  }
+}
+
 @media (max-width: 1024px) {
   .ol-table-shell {
     overflow-x: auto;

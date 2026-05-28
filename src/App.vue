@@ -9,7 +9,8 @@ import {
   DisclaimerDialog,
   PrivacyPolicyDialog,
   TermsandConditionsDialog,
-  TipsDialog
+  TipsDialog,
+  LoginPromptDialog
 } from './components/dialogs/global';
 
 </script>
@@ -26,6 +27,7 @@ import {
   <PrivacyPolicyDialog />
   <TermsandConditionsDialog />
   <TipsDialog />
+  <LoginPromptDialog />
 </template>
 
 <style scoped lang="scss">

@@ -292,30 +292,45 @@ watch(() => route.query.s, () => {
 /* PC端统一字号（不影响平板和手机） */
 @media (min-width: 1025px) {
   .search-nav {
+    top: 18px;
+    margin-bottom: 28px;
+
     .search-card {
       .search-tags {
+        width: 760px;
+        gap: 10px;
+
+        .tag-pill {
+          height: 76px;
+          padding: 6px 10px;
+        }
+
+        .active,
+        .disabled {
+          padding: 6px 10px;
+        }
 
         .tag-pill,
         .active,
         .disabled {
           font-size: var(--aw-font-16);
         }
-
-        .tag-pill {
-          height: 73px;
-        }
       }
 
       .search-container {
+        width: 1120px;
+        margin-top: 24px;
+
         .search-input {
           :deep(.el-input__wrapper) {
-            height: 46px;
-            font-size: 13px;
+            height: 42px;
+            padding: 4px 12px;
+            font-size: 14px;
           }
         }
 
         .search-btn {
-          height: 46px;
+          height: 42px;
         }
       }
     }

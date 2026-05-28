@@ -16,6 +16,7 @@ export const useDialogStore = defineStore('dialog', () => {
     disclaimer: { show: false },
     privacyPolicy: { show: false },
     termsAndConditions: { show: false },
+    loginPrompt: { show: false },
   })
 
   const ensureDialogState = (name) => {

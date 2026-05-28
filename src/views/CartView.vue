@@ -827,6 +827,112 @@ const goCheckout = () => {
   padding: 20px 0;
 }
 
+@media (min-width: 1025px) {
+  .cart-page {
+    width: 86%;
+    margin-top: 32px;
+    gap: 18px;
+  }
+
+  .cart-header {
+    padding: 16px 20px;
+
+    h1 {
+      font-size: 24px;
+    }
+
+    p {
+      font-size: 13px;
+    }
+
+    .cart-header-sub {
+      margin-top: 8px !important;
+      font-size: 12px !important;
+    }
+  }
+
+  .cart-content {
+    gap: 14px;
+    grid-template-columns: 1fr 288px;
+  }
+
+  .cart-main-panel {
+    box-shadow: 0 6px 16px rgba(15, 23, 42, 0.04);
+  }
+
+  .row-product {
+    gap: 10px;
+    min-height: 98px;
+  }
+
+  .product-info h3 {
+    font-size: 15px;
+  }
+
+  .en-title {
+    font-size: 13px;
+  }
+
+  .card-desc {
+    font-size: 13px;
+    margin: 6px 0;
+  }
+
+  .card-wine-meta {
+    font-size: 12px;
+    gap: 4px 12px;
+  }
+
+  .card-meta {
+    font-size: 13px;
+  }
+
+  .card-cover {
+    width: 82px;
+    height: 82px;
+    min-width: 82px;
+    min-height: 82px;
+    flex: 0 0 82px;
+  }
+
+  .cart-main-select {
+    padding-top: 10px;
+  }
+
+  .all-select-text {
+    font-size: 13px;
+  }
+
+  .cart-side-panel {
+    padding: 14px 14px;
+
+    h3 {
+      font-size: 18px;
+    }
+  }
+
+  .summary-row span {
+    font-size: 12px;
+  }
+
+  .summary-row strong {
+    font-size: 14px;
+  }
+
+  .summary-row--selected-amount span {
+    font-size: 14px;
+  }
+
+  .summary-row--selected-amount strong {
+    font-size: 18px;
+  }
+
+  .checkout-btn {
+    height: 36px;
+    margin-top: 6px;
+  }
+}
+
 :deep(.el-pagination) {
   .el-pager li {
     &.is-active {

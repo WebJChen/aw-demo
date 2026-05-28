@@ -27,21 +27,21 @@ const { isPhone, isTablet, isMobile } = storeToRefs(deviceStore)
 const dialogWidth = computed(() => {
   if (isPhone.value) return 'calc(100vw - 20px)'
   if (isTablet.value) return 'min(760px, 94vw)'
-  return '980px'
+  return '920px'
 })
 
 /** 轮播高度与 tto-demo TripDialog 桌面 `dlg-banner` 一致（手机收紧为 220px） */
 const bannerCarouselHeight = computed(() => {
   if (isPhone.value) return 220
   if (isTablet.value) return 360
-  return 420
+  return 380
 })
 
 /** 正文滚动区高度：移动端用视口比例，桌面用上限 px（与 deviceStore 断点一致） */
 const dlgSectionMaxHeight = computed(() => {
   if (isPhone.value) return 'min(62vh, 520px)'
   if (isTablet.value) return 'min(65vh, 580px)'
-  return 'min(72vh, 620px)'
+  return 'min(70vh, 580px)'
 })
 
 const dialogVisible = computed({
@@ -926,6 +926,244 @@ onUnmounted(() => deviceStore.stopListen())
     .dlg-section {
       .dlg-text .content-with-map .map-image {
         flex: 1;
+      }
+    }
+  }
+}
+
+@media (min-width: 1025px) {
+  .wine-detail-dialog {
+    :deep(.el-dialog__header) {
+      padding: 14px 18px 10px;
+    }
+
+    :deep(.el-dialog__body) {
+      padding-bottom: 6px;
+    }
+
+    .dlg-header {
+      gap: 8px;
+
+      .dlg-title-wrap {
+        .dlg-title {
+          font-size: 20px;
+          letter-spacing: 1px;
+        }
+      }
+
+      .dlg-header-right {
+        .dlg-close {
+          width: 30px;
+          height: 30px;
+          font-size: 20px;
+        }
+      }
+    }
+
+    .dlg-section {
+      .dlg-banner {
+        border-radius: 0;
+      }
+
+      .dlg-text {
+        padding: 20px 18px 8px;
+
+        .content-with-map {
+          gap: 18px;
+          margin-bottom: 18px;
+
+          .content-left {
+            .section-title {
+              font-size: 18px;
+              margin-bottom: 6px;
+              letter-spacing: 1px;
+            }
+
+            .dlg-intro-price-wrap {
+              margin-bottom: 12px;
+              gap: 8px;
+
+              .dlg-discount-band {
+                padding: 8px 10px;
+              }
+
+              .dlg-discount-top {
+                gap: 8px;
+                margin-bottom: 4px;
+              }
+
+              .dlg-discount-badge {
+                font-size: 11px;
+                padding: 3px 8px;
+              }
+
+              .dlg-discount-save {
+                font-size: 12px;
+              }
+
+              .dlg-list-price-row {
+                gap: 6px;
+              }
+
+              .dlg-list-price-caption {
+                font-size: 11px;
+              }
+
+              .dlg-list-price-cross {
+                font-size: 13px;
+              }
+
+              .dlg-sale-price-main {
+                gap: 8px;
+              }
+
+              .dlg-sale-caption {
+                font-size: 12px;
+              }
+
+              .info-price {
+                .info-price-sym {
+                  font-size: clamp(12px, 2.2vw, 14px);
+                }
+
+                .info-price-int {
+                  font-size: clamp(19px, 3.6vw, 25px);
+                }
+
+                .info-price-frac {
+                  font-size: clamp(11px, 2.2vw, 13px);
+                }
+              }
+            }
+
+            .section-desc {
+              font-size: 15px;
+              line-height: 1.72;
+              margin-bottom: 22px;
+            }
+
+            .map-details {
+              margin-top: 12px;
+
+              .map-title {
+                font-size: 18px;
+                margin-bottom: 12px;
+              }
+
+              .detail-item {
+                margin-bottom: 10px;
+                font-size: 13px;
+                line-height: 1.55;
+              }
+            }
+          }
+        }
+
+        .feature-grid {
+          gap: 12px;
+
+          .feature-card {
+            border-radius: 10px;
+            padding: 14px;
+
+            .icon {
+              width: 34px;
+              height: 34px;
+              margin-bottom: 8px;
+            }
+
+            .f-title {
+              font-size: 14px;
+              margin-bottom: 4px;
+            }
+
+            .f-desc {
+              font-size: 13px;
+              line-height: 1.6;
+            }
+          }
+        }
+
+        .price-section {
+          margin-top: 18px;
+          padding: 16px;
+
+          .price-title {
+            font-size: 16px;
+            margin-bottom: 10px;
+          }
+
+          .price-items {
+            gap: 6px;
+            margin-bottom: 12px;
+
+            .price-item {
+              font-size: 14px;
+
+              .child-price {
+                font-size: 13px;
+              }
+            }
+          }
+
+          .price-includes,
+          .price-excludes {
+            margin-bottom: 12px;
+
+            .includes-title,
+            .excludes-title {
+              font-size: 13px;
+              margin-bottom: 6px;
+            }
+
+            .includes-list,
+            .excludes-list {
+              li {
+                font-size: 12px;
+                line-height: 1.65;
+              }
+            }
+          }
+
+          .price-note {
+            font-size: 11px;
+            margin-top: 10px;
+            padding-top: 10px;
+          }
+        }
+
+        .tag-row {
+          margin-top: 16px;
+          gap: 6px;
+
+          .mini-tag {
+            padding: 5px 8px;
+            font-size: 11px;
+          }
+        }
+      }
+    }
+
+    .dlg-footer {
+      padding: 6px 10px 12px;
+      margin-top: 8px;
+      gap: 8px;
+
+      .cart-action-row {
+        gap: 6px;
+
+        .el-button {
+          padding: 0 14px;
+          border-radius: 6px;
+        }
+      }
+
+      .info-disclaimer {
+        font-size: 11px;
+
+        .info-icon {
+          font-size: 13px;
+        }
       }
     }
   }

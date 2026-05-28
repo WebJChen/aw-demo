@@ -1764,10 +1764,194 @@ onUnmounted(() => {
 }
 
 @media (min-width: 1025px) {
+  .subnav-box {
+    width: min(86%, 1400px);
+    margin-top: 30px;
+  }
 
-  /* 参考 500×600：宽:高 = 5:6 */
-  .info-list .info-item .info-img-wrap:not(.info-img-wrap--tas-white-aspect-test) {
-    aspect-ratio: 5 / 6;
+  .wine-filter-bar-wrap {
+    width: min(86%, 1400px);
+    margin: 12px auto 4px;
+
+    .wine-filter-bar {
+      padding: 12px 14px 10px;
+    }
+  }
+
+  .wine-grid-empty-wrap {
+    width: min(86%, 1400px);
+    padding: 22px 18px 48px;
+  }
+
+  .info-list {
+    width: min(86%, 1400px);
+    gap: 12px;
+    padding: 6px 0 34px;
+
+    .info-item {
+      border-radius: 10px;
+      gap: 4px;
+      padding: 5px;
+
+      .info-img-wrap {
+        border-radius: 9px;
+      }
+
+      .info-img-wrap:not(.info-img-wrap--tas-white-aspect-test) {
+        aspect-ratio: 2 / 3;
+      }
+
+      .info-img-top-bar {
+        top: 7px;
+        left: 7px;
+        right: 7px;
+      }
+
+      .info-promo-row {
+        gap: 5px;
+      }
+
+      .promo-chip {
+        font-size: 10px;
+        padding: 2px 6px;
+      }
+
+      .info-meta-line.info-meta-line--labeled {
+        .info-meta-tag {
+          font-size: 11px;
+        }
+
+        .info-meta-strong {
+          font-size: clamp(12px, 2.8vw, 14px);
+        }
+      }
+
+      .grid-price-shell {
+        gap: 8px;
+        margin-top: 2px;
+      }
+
+      .grid-price-txn {
+        font-size: clamp(10px, 2.6vw, 12px);
+      }
+
+      .info-ec-score-row {
+        gap: 3px 5px;
+        margin-top: 3px;
+      }
+
+      .info-ec-score-num {
+        font-size: 13px;
+      }
+
+      .info-ec-star-strip {
+        font-size: 13px;
+      }
+
+      .info-ec-drop {
+        font-size: 9px;
+      }
+
+      .info-ec-review-paren {
+        font-size: 12px;
+      }
+
+      .grid-price-discount-wrap {
+        gap: 6px;
+      }
+
+      .grid-price-inline-row {
+        gap: 8px 10px;
+      }
+
+      .grid-ref-price-muted {
+        font-size: clamp(12px, 2.65vw, 14px);
+      }
+
+      .grid-save-strong {
+        font-size: clamp(13px, 3.1vw, 15px);
+      }
+
+      .grid-cart-stack {
+        gap: 8px;
+        margin-top: 8px;
+
+        .grid-cart-qty {
+          :deep(.el-input-number) {
+            .el-input-number__decrease,
+            .el-input-number__increase {
+              width: 36px;
+              font-size: 15px;
+            }
+
+            .el-input__wrapper {
+              min-height: 38px;
+              padding-top: 4px;
+              padding-bottom: 4px;
+              border-radius: 7px;
+            }
+
+            .el-input__inner {
+              min-height: 24px;
+              line-height: 24px;
+              font-size: 14px;
+            }
+          }
+        }
+
+        .grid-add-cart-btn {
+          min-height: 40px;
+          padding: 8px 16px;
+          font-size: 14px;
+          letter-spacing: 0.5px;
+          border-radius: 8px;
+        }
+      }
+
+      .info-price.grid-sale-price {
+        &.grid-sale-price--accent-only {
+          .info-price-sym {
+            font-size: clamp(13px, 2.95vw, 16px);
+          }
+
+          .info-price-int {
+            font-size: clamp(20px, 4.5vw, 26px);
+          }
+
+          .info-price-frac {
+            font-size: clamp(11px, 2.8vw, 14px);
+          }
+        }
+      }
+
+      .info-title {
+        font-size: 15px;
+        letter-spacing: 1px;
+      }
+
+      .info-price {
+        .info-price-sym {
+          font-size: clamp(12px, 2.7vw, 14px);
+        }
+
+        .info-price-int {
+          font-size: clamp(19px, 4.2vw, 24px);
+        }
+
+        .info-price-frac {
+          font-size: clamp(11px, 2.6vw, 13px);
+        }
+      }
+
+      .info-sub {
+        font-size: 11px;
+        letter-spacing: 1px;
+      }
+
+      .info-sub--under-title {
+        letter-spacing: 0.5px;
+      }
+    }
   }
 }
 
