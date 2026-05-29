@@ -10,9 +10,10 @@ import { useNavStore } from '@/stores/navStore';
 import { useCartStore } from '@/stores/cartStore'
 import { useDialogStore } from '@/stores/dialogStore'
 import navData from '@/data/split/nav.json';
+import itemData from '@/data/item.json';
 import { readSearchTarget, saveSearchTarget } from '@/utils/searchUtils'
 import { resolveDataImage } from '@/utils/dataImageResolver'
-import { getWineRegionByPath } from '@/utils/dataRepository'
+import { getAllWineRegions } from '@/utils/dataRepository'
 import { Z_INDEX } from '@/constants/zIndex'
 import { buildWineDisplay } from '@/utils/wineGridExtras'
 /** 【样式测试·可删】见 @/utils/tasmaniaGridStyleTestThumbs.js；正式环境移除该 import 与本页 isTasmaniaGridStyleTestThumb、gridItemThumbSrc、相关 class/样式 */
@@ -75,8 +76,18 @@ const getGridPriceParts = (item) => {
 }
 */
 const regionRouteNames = navData.map((region) => region.path)
-const fallbackRegionPath = navData[0]?.path || ''
 const fallbackRegionNavName = navData[0]?.navName || '塔斯马尼亚州'
+const navMenuItems = computed(() =>
+  (Array.isArray(itemData) ? itemData : [])
+    .slice(0, 8)
+    .map((region) => ({
+      navName: region?.navName || '',
+      capitalLabel:
+        region?.navName === '堪培拉'
+          ? '（首都领地.ACT）'
+          : `（首府：${region?.capital || ''}）`
+    }))
+)
 const INITIAL_RENDER_COUNT = 24
 const RENDER_STEP_COUNT = 24
 
@@ -104,7 +115,8 @@ const itemDialogVisible = computed({
 })
 const selectedItem = ref(null)
 const resolvedImagePathCache = new Map()
-const currentRegionData = ref(null)
+const allWineRegionsData = ref([])
+const selectedItemRegionNavName = ref('')
 
 const handledSearchHit = ref('')
 let hitClearTimer = null
@@ -151,17 +163,10 @@ const playSearchHitHighlight = (targetEl, fallbackMs = 1800) => {
   })
 }
 
-const currentRegionPath = computed(() => {
-  const routeName = typeof route.name === 'string' ? route.name : ''
-  if (routeName && regionRouteNames.includes(routeName)) return routeName
-  return fallbackRegionPath
-})
 
-const currentRegion = computed(() => {
-  return currentRegionData.value
-})
+const wineSubNavCatalogRegion = computed(() => allWineRegionsData.value[0] || null)
 
-const allSubNavs = computed(() => currentRegion.value?.subNavList || [])
+const allSubNavs = computed(() => wineSubNavCatalogRegion.value?.subNavList || [])
 const enabledSubNavs = computed(() => allSubNavs.value.filter((subNav) => subNav?.isShow !== false))
 
 const subNavList = computed(() => allSubNavs.value.map((subNav) => subNav.subNavName))
@@ -180,18 +185,33 @@ const currentSubNav = computed(() => {
   return byStore || enabledSubNavs.value[0] || allSubNavs.value[0]
 })
 
-/** 【样式测试·可删】塔斯马尼亚任意子栏：列表缩略图用 tasGridStyleTestThumbByIndex；发布前与本 import、gridItemThumbSrc、--tas-thumb-test 样式一并删 */
-const isTasmaniaGridStyleTestThumb = computed(() => currentRegionPath.value === 'tasmania')
+/** 【样式测试·可删】塔斯马尼亚酒款：列表缩略图用 tasGridStyleTestThumbByIndex */
+const isTasmaniaGridEntry = (entry) => entry?.regionPath === 'tasmania'
 
-/** 【样式测试·可删】仅塔斯马尼亚「白葡萄酒」：封面 2:3；发布前删本 computed 与 .info-img-wrap--tas-white-aspect-test */
-const isTasmaniaWhiteWineGridStyleTest = computed(
-  () =>
-    currentRegionPath.value === 'tasmania' &&
-    (currentSubNav.value?.subNavPath === 'white-wine' ||
-      currentSubNav.value?.subNavName === '白葡萄酒')
-)
+const dataList = computed(() => {
+  const subNavPath = currentSubNav.value?.subNavPath
+  if (!subNavPath) return []
 
-const dataList = computed(() => currentSubNav.value?.itemData || [])
+  const rows = []
+  allWineRegionsData.value.forEach((region) => {
+    const subNav = region?.subNavList?.find(
+      (item) => item?.subNavPath === subNavPath && item?.isShow !== false
+    )
+    if (!Array.isArray(subNav?.itemData)) return
+
+    subNav.itemData.forEach((data, sourceItemIndex) => {
+      rows.push({
+        data,
+        regionPath: region.path,
+        regionNavName: region.navName,
+        subNavPath: subNav.subNavPath,
+        subNavName: subNav.subNavName,
+        sourceItemIndex
+      })
+    })
+  })
+  return rows
+})
 
 /** —— 酒款筛选 / 排序（参考 tto-demo TripsGrid 搜索 + 多条件下拉，样式独立）—— */
 const localWineSearchKeyword = ref('')
@@ -287,16 +307,16 @@ const sortWineFacetSlice = (facets, sortByVal) => {
 }
 
 const filteredWineFacetFullList = computed(() => {
-  const nav = currentRegion.value?.navName || ''
   const kw = appliedWineSearchKeyword.value
   const priceT = wineFilterPriceTier.value
   const ratingT = wineFilterRating.value
   const sortVal = wineSortBy.value
 
   const facets = []
-  dataList.value.forEach((data, idx) => {
+  dataList.value.forEach((entry, idx) => {
+    const data = entry.data
     if (!wineMatchesKeyword(data, kw)) return
-    const wine = buildWineDisplay(data, { regionNavName: nav })
+    const wine = buildWineDisplay(data, { regionNavName: entry.regionNavName })
     const price = Number(wine.saleNum)
     const rating = Number(wine.ratingStars)
     const salesApprox = parseWineTxnSalesApprox(wine.transactionLine || '')
@@ -304,6 +324,7 @@ const filteredWineFacetFullList = computed(() => {
     if (!matchesWineRatingTier(rating, ratingT)) return
     facets.push({
       idx,
+      entry,
       data,
       wine,
       price,
@@ -325,24 +346,9 @@ const hasActiveWineFilters = computed(() => {
   )
 })
 
-const syncCurrentRegionData = async () => {
-  const regionPath = currentRegionPath.value
-  const loadedRegion = await getWineRegionByPath(regionPath)
-  if (regionPath !== currentRegionPath.value) return
-
-  if (loadedRegion) {
-    currentRegionData.value = loadedRegion
-    return
-  }
-
-  const navRegion = navData.find((region) => region.path === regionPath) || navData[0] || null
-  currentRegionData.value = navRegion
-    ? {
-      path: navRegion.path,
-      navName: navRegion.navName,
-      subNavList: Array.isArray(navRegion.subNavList) ? navRegion.subNavList : []
-    }
-    : null
+const syncAllWineRegionsData = async () => {
+  const loadedRegions = await getAllWineRegions()
+  allWineRegionsData.value = loadedRegions
 }
 
 const rowCartQty = reactive({})
@@ -354,6 +360,7 @@ const visibleWineFacetSlice = computed(() => {
 
 const gridRows = computed(() =>
   visibleWineFacetSlice.value.map((facet) => ({
+    entry: facet.entry,
     data: facet.data,
     idx: facet.idx,
     wine: facet.wine,
@@ -427,6 +434,11 @@ const handleGridAddCart = (row) => {
   let resultHandled = false
   addToCart({
     item: row.data,
+    regionPath: row.entry?.regionPath || '',
+    regionName: row.entry?.regionNavName || '',
+    subNavPath: row.entry?.subNavPath || currentSubNav.value?.subNavPath || '',
+    subNavName: row.entry?.subNavName || currentSubNav.value?.subNavName || '',
+    cartRegionNavName: row.entry?.regionNavName || '',
     quantity: qty,
     onResult: (result, extra = {}) => {
       resultHandled = true
@@ -466,7 +478,12 @@ const gridSaveAmountText = (row) => {
   return n % 1 === 0 ? String(Math.round(n)) : n.toFixed(2)
 }
 
-const buildHitKey = (itemIndex) => `wine__${currentRegionPath.value}__${currentSubNav.value?.subNavPath || ''}__${itemIndex}`
+const buildHitKeyForEntry = (entry) => {
+  if (!entry) return ''
+  return `wine__${entry.regionPath}__${entry.subNavPath}__${entry.sourceItemIndex}`
+}
+
+const buildHitKey = (listIdx) => buildHitKeyForEntry(dataList.value[listIdx])
 
 const eachPageCount = computed(() => {
   if (isPhone.value) {
@@ -579,12 +596,13 @@ const handleWindowScroll = () => {
   navStore.saveScrollYThrottled(window.scrollY)
 }
 
-const openItemDialog = (item, idx = -1) => {
+const openItemDialog = (item, idx = -1, entry = null) => {
   const nextItem = item ? { ...item } : null
   if (nextItem && Number.isInteger(idx) && idx >= 0) {
     // 保存命中 key，供购物车“回到原位置”能力复用
     nextItem.__hitKey = buildHitKey(idx)
   }
+  selectedItemRegionNavName.value = entry?.regionNavName || ''
   dialogStore.closeDialog('wineryItemDetail')
   selectedItem.value = nextItem
   dialogStore.openDialog('wineItemDetail')
@@ -595,14 +613,17 @@ const addToCart = (payload) => {
   try {
     const item = payload?.item || payload
     const quantity = payload?.quantity || 1
+    const hitKey = typeof item?.__hitKey === 'string' ? item.__hitKey : ''
+    const hitRegionPath = hitKey.startsWith('wine__') ? (hitKey.split('__')[1] || '') : ''
+    const hitSubNavPath = hitKey.startsWith('wine__') ? (hitKey.split('__')[2] || '') : ''
     const result = cartStore.addCartItem({
       item,
-      regionPath: currentRegionPath.value,
-      regionName: currentRegion.value?.navName || '',
-      subNavPath: currentSubNav.value?.subNavPath || '',
-      subNavName: currentSubNav.value?.subNavName || '',
+      regionPath: payload?.regionPath || hitRegionPath,
+      regionName: payload?.regionName || selectedItemRegionNavName.value || '',
+      subNavPath: payload?.subNavPath || hitSubNavPath || currentSubNav.value?.subNavPath || '',
+      subNavName: payload?.subNavName || currentSubNav.value?.subNavName || '',
       quantity,
-      cartRegionNavName: currentRegion.value?.navName || ''
+      cartRegionNavName: payload?.cartRegionNavName || payload?.regionName || selectedItemRegionNavName.value || ''
     })
     onResult?.(result, { maxCartItems: cartStore.MAX_CART_ITEMS })
   } catch (_) {
@@ -699,12 +720,30 @@ const handleSearchTargetFocus = async () => {
     return
   }
 
-  const currentPrefix = `wine__${currentRegionPath.value}__${currentSubNav.value?.subNavPath || ''}__`
+  const currentPrefix = `wine__`
   if (!targetHit.startsWith(currentPrefix)) return
+
+  const targetSubNavPath = targetHit.split('__')[2] || ''
+  if (targetSubNavPath && targetSubNavPath !== currentSubNav.value?.subNavPath) {
+    const targetSubNav = enabledSubNavs.value.find((subNav) => subNav.subNavPath === targetSubNavPath)
+    if (targetSubNav) {
+      navStore.setActiveSubNav(targetSubNav.subNavName)
+      if (typeof route.name === 'string' && regionRouteNames.includes(route.name)) {
+        await router.replace({
+          name: route.name,
+          params: {
+            ...route.params,
+            subNav: targetSubNav.subNavPath
+          }
+        })
+      }
+      return
+    }
+  }
 
   resetWineGridFilters()
 
-  const targetIndex = dataList.value.findIndex((_, idx) => buildHitKey(idx) === targetHit)
+  const targetIndex = dataList.value.findIndex((entry) => buildHitKeyForEntry(entry) === targetHit)
   if (targetIndex < 0) return
 
   const targetVisibleCount = Math.max(
@@ -721,7 +760,7 @@ const handleSearchTargetFocus = async () => {
   targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' })
   void targetEl.offsetWidth
   await playSearchHitHighlight(targetEl)
-  openItemDialog(dataList.value[targetIndex])
+  openItemDialog(dataList.value[targetIndex]?.data, targetIndex, dataList.value[targetIndex])
   notifySearchHitDone()
 
   handledSearchHit.value = targetHit
@@ -746,21 +785,24 @@ const resolveImageUrl = (img) => {
   return resolved
 }
 
-/** 【样式测试·可删】塔斯马尼亚全栏轮换测试图；发布前与 isTasmaniaGridStyleTestThumb 一并移除 */
+/** 【样式测试·可删】塔斯马尼亚酒款轮换测试图；发布前与 isTasmaniaGridEntry 一并移除 */
 const gridItemThumbSrc = (row) => {
-  if (!isTasmaniaGridStyleTestThumb.value) {
+  if (!isTasmaniaGridEntry(row?.entry)) {
     return resolveImageUrl(row?.data?.img)
   }
-  return tasGridStyleTestThumbByIndex(row.idx)
+  return tasGridStyleTestThumbByIndex(row.entry?.sourceItemIndex ?? row.idx)
 }
 
 const applySubNavFromRoute = () => {
   const routeName = typeof route.name === 'string' ? route.name : ''
   const firstSubNav = enabledSubNavs.value[0]?.subNavName || subNavList.value[0] || ''
-  const targetRegion = currentRegion.value
-  if (!targetRegion) return
 
-  navStore.setActiveNav(targetRegion.navName || fallbackRegionNavName)
+  if (routeName && regionRouteNames.includes(routeName)) {
+    const navRegion = navData.find((region) => region.path === routeName)
+    if (navRegion?.navName) navStore.setActiveNav(navRegion.navName)
+  } else if (routeName === 'Home') {
+    navStore.setActiveNav(fallbackRegionNavName)
+  }
 
   const routeSubNavPath = typeof route.params.subNav === 'string' ? route.params.subNav : ''
   const byRouteSubNav = routeSubNavPath
@@ -783,28 +825,34 @@ const applySubNavFromRoute = () => {
 onMounted(() => {
   deviceStore.startListen()
   applySubNavFromRoute()
-  resetRenderLimit()
-  updateHasMore()
+  void syncAllWineRegionsData().then(() => {
+    applySubNavFromRoute()
+    resetRenderLimit()
+    updateHasMore()
+    nextTick(() => {
+      initLoadMoreObserver()
+      handleSearchTargetFocus()
+    })
+  })
   window.addEventListener('scroll', handleWindowScroll, { passive: true })
   requestAnimationFrame(() => {
     window.scrollTo({ top: navStore.scrollY, behavior: 'auto' })
     updateScrollPage()
   })
-  initLoadMoreObserver()
-  handleSearchTargetFocus()
 })
 
-watch(() => currentRegionPath.value, () => {
-  void syncCurrentRegionData()
-}, { immediate: true })
+watch(() => route.name, () => {
+  applySubNavFromRoute()
+})
 
-watch(() => [route.name, route.params.subNav], () => {
+watch(() => route.params.subNav, () => {
   clearSearchHitState()
   applySubNavFromRoute()
   resetWineGridFilters()
   resetRenderLimit()
   updateHasMore()
   selectedItem.value = null
+  selectedItemRegionNavName.value = ''
   nextTick(() => {
     initLoadMoreObserver()
   })
@@ -851,16 +899,6 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="subnav-box center">
-    <ul class="subnav-list">
-      <li v-for="(subItem, idx) in subNavList" :key="idx" class="subnav-item w100"
-        :class="{ active: activeSubNav === subItem, disabled: subNavDisabledMap[subItem] }"
-        @click="handleSubNavClick(subItem)">
-        {{ subItem }}
-      </li>
-    </ul>
-  </div>
-
   <div class="wine-filter-bar-wrap center">
     <div class="wine-filter-bar">
       <div class="wine-filter-toolbar">
@@ -897,15 +935,41 @@ onUnmounted(() => {
     </div>
   </div>
 
+  <div class="subnav-box center">
+    <ul class="subnav-list">
+      <li v-for="(subItem, idx) in subNavList" :key="idx" class="subnav-item w100"
+        :class="{ active: activeSubNav === subItem, disabled: subNavDisabledMap[subItem] }"
+        @click="handleSubNavClick(subItem)">
+        {{ subItem }}
+      </li>
+    </ul>
+  </div>
+
   <template v-if="filteredWineTotal > 0">
     <div ref="gridRef" class="info-list">
-      <div v-for="row in gridRows" :key="`${currentRegionPath}-${currentSubNav?.subNavPath || ''}-${row.idx}`"
-        class="info-item pointer" @click="openItemDialog(row.data, row.idx)" :data-title="row.data.title"
+      <div class="info-item info-item--nav-menu" aria-label="推荐类目">
+        <ul class="nav-menu-list">
+          <li v-for="menuItem in navMenuItems" :key="menuItem.navName" class="nav-menu-row">
+            <span class="nav-menu-name">
+              <span class="nav-menu-wine-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+                  <path d="M7 3h10v2c0 3.87-2.13 6.82-5 7.74V18h3v2H9v-2h3v-5.26C9.13 11.82 7 8.87 7 5V3z"
+                    fill="currentColor" />
+                </svg>
+              </span>
+              <span class="nav-menu-name-text">{{ menuItem.navName }}{{ menuItem.capitalLabel }}</span>
+            </span>
+            <span class="nav-menu-arrow" aria-hidden="true">›</span>
+          </li>
+        </ul>
+      </div>
+      <div v-for="row in gridRows"
+        :key="`${row.entry?.regionPath || ''}-${row.entry?.subNavPath || ''}-${row.entry?.sourceItemIndex ?? row.idx}`"
+        class="info-item pointer" @click="openItemDialog(row.data, row.idx, row.entry)" :data-title="row.data.title"
         :data-hit-key="buildHitKey(row.idx)">
-        <!-- 【样式测试·可删】塔斯全栏：测试图 + contain；仅白葡萄酒加 2:3；发布前删下列 class 与 gridItemThumbSrc -->
+        <!-- 【样式测试·可删】塔斯酒款：测试图 + contain；发布前删下列 class 与 gridItemThumbSrc -->
         <div class="info-img-wrap" :class="['bgfff', {
-          'info-img-wrap--tas-thumb-test': isTasmaniaGridStyleTestThumb,
-          'info-img-wrap--tas-white-aspect-test': isTasmaniaWhiteWineGridStyleTest
+          'info-img-wrap--tas-thumb-test': isTasmaniaGridEntry(row.entry)
         }]">
           <div class="info-img-top-bar">
             <div v-if="row.wine.promoBadges?.length" class="info-promo-row">
@@ -933,7 +997,7 @@ onUnmounted(() => {
           </span>
           <span class="info-ec-drop" aria-hidden="true">⌵</span>
           <span v-if="row.wine.ratingReviewCount != null" class="info-ec-review-paren">({{ row.wine.ratingReviewCount
-          }})</span>
+            }})</span>
         </div>
         <div class="info-meta-line info-meta-line--labeled">
           <span class="info-meta-piece">
@@ -957,7 +1021,7 @@ onUnmounted(() => {
                       <span class="info-price-main">
                         <span class="info-price-int">{{ row.priceParts.intPart }}</span>
                         <span v-if="row.priceParts.fraction" class="info-price-frac">.{{ row.priceParts.fraction
-                        }}</span>
+                          }}</span>
                       </span>
                     </span>
                   </div>
@@ -1012,7 +1076,7 @@ onUnmounted(() => {
   </div>
   <ItemDataDialog v-if="itemDialogVisible" v-model:visible="itemDialogVisible" :title="selectedItem?.title || ''"
     :en-title="selectedItem?.enTitle || ''" :banner="resolveImageUrl(selectedItem?.img)"
-    :item-data="selectedItem ? [selectedItem] : []" :region-nav-name="currentRegion?.navName || ''"
+    :item-data="selectedItem ? [selectedItem] : []" :region-nav-name="selectedItemRegionNavName"
     @add-cart="addToCart" />
 </template>
 
@@ -1020,7 +1084,7 @@ onUnmounted(() => {
 .subnav-box {
   width: 90%;
   padding: 0 20px;
-  margin-top: 40px;
+  margin-top: 14px;
 
   .subnav-list {
     display: flex;
@@ -1073,7 +1137,7 @@ onUnmounted(() => {
 .wine-filter-bar-wrap {
   width: 90%;
   padding: 0 20px;
-  margin: 14px auto 6px;
+  margin: 40px auto 6px;
 
   .wine-filter-bar {
     border-radius: 0;
@@ -1231,7 +1295,7 @@ onUnmounted(() => {
       transform-origin: center center;
     }
 
-    &:hover {
+    &:not(.info-item--nav-menu):hover {
       border-color: rgba(168, 22, 60, 0.42);
       box-shadow: 0 14px 36px rgba(168, 22, 60, 0.16);
       transform: translateY(-4px);
@@ -1258,6 +1322,104 @@ onUnmounted(() => {
         text-decoration-thickness: 1px;
         -webkit-box-decoration-break: clone;
         box-decoration-break: clone;
+      }
+    }
+
+    &.info-item--nav-menu {
+      cursor: default;
+      height: 100%;
+      padding: 0 6px;
+      gap: 0;
+      background: linear-gradient(180deg, #fffdfd 0%, #fff4f7 100%);
+      border-color: rgba(168, 22, 60, 0.16);
+      justify-content: flex-start;
+
+      .nav-menu-list {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        height: 100%;
+        gap: 0;
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        flex: 1;
+      }
+
+      .nav-menu-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto auto;
+        align-items: center;
+        gap: 12px;
+        padding: 4px 0;
+        border-radius: 0;
+        background: transparent;
+        border: 0;
+      }
+
+      .nav-menu-name {
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        min-width: 0;
+        font-size: 13px;
+        font-weight: 800;
+        line-height: 1.15;
+        color: #2f3640;
+        white-space: nowrap;
+        overflow: visible;
+
+        &:has(.nav-menu-name-text:hover) .nav-menu-wine-icon {
+          transform: rotate(-45deg);
+        }
+      }
+
+      .nav-menu-name-text {
+        min-width: 0;
+        overflow: visible;
+        text-overflow: ellipsis;
+        font-size: 13px;
+        line-height: 1.15;
+        color: inherit;
+        cursor: pointer;
+        transition: color 0.2s ease, border-color 0.2s ease;
+        border-bottom: 1px solid transparent;
+
+        &:hover {
+          color: #c92a52;
+          border-bottom-color: #c92a52;
+        }
+      }
+
+      .nav-menu-wine-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex: 0 0 auto;
+        width: 20px;
+        height: 20px;
+        color: #c92a52;
+        transform: rotate(0deg);
+        transition: transform 0.25s ease;
+
+        svg {
+          width: 100%;
+          height: 100%;
+          display: block;
+        }
+      }
+
+      .nav-menu-capital {
+        font-size: 14px;
+        color: #8b5b6a;
+        white-space: nowrap;
+      }
+
+      .nav-menu-arrow {
+        font-size: 20px;
+        // line-height: 1;
+        color: #c92a52;
+        margin-left: 2px;
       }
     }
 
@@ -1325,20 +1487,20 @@ onUnmounted(() => {
       backdrop-filter: blur(10px);
 
       &.promo-chip--hot {
-        color: rgba(127, 29, 29, 0.95);
-        background: rgba(254, 226, 226, 0.55);
+        color: #7f1d1df2;
+        background: #fee2e28c;
         border: 1px solid rgba(252, 165, 165, 0.45);
       }
 
       &.promo-chip--sales {
-        color: rgba(124, 45, 18, 0.95);
-        background: rgba(254, 215, 170, 0.45);
+        color: rgb(124, 45, 18);
+        background: rgb(254, 215, 170);
         border: 1px solid rgba(253, 186, 116, 0.4);
       }
 
       &.promo-chip--week {
-        color: rgba(91, 33, 182, 0.95);
-        background: rgba(237, 233, 254, 0.5);
+        color: rgb(91, 33, 182);
+        background: rgb(237, 233, 254);
         border: 1px solid rgba(196, 181, 253, 0.45);
       }
 
@@ -1766,12 +1928,12 @@ onUnmounted(() => {
 @media (min-width: 1025px) {
   .subnav-box {
     width: min(86%, 1400px);
-    margin-top: 30px;
+    margin-top: 12px;
   }
 
   .wine-filter-bar-wrap {
     width: min(86%, 1400px);
-    margin: 12px auto 4px;
+    margin: 30px auto 4px;
 
     .wine-filter-bar {
       padding: 12px 14px 10px;
@@ -1785,54 +1947,55 @@ onUnmounted(() => {
 
   .info-list {
     width: min(86%, 1400px);
+    grid-template-columns: repeat(5, minmax(0, 1fr));
     gap: 12px;
     padding: 6px 0 34px;
 
     .info-item {
-      border-radius: 10px;
-      gap: 4px;
-      padding: 5px;
+      border-radius: 9px;
+      gap: 3px;
+      padding: 4px;
 
       .info-img-wrap {
-        border-radius: 9px;
+        border-radius: 8px;
       }
 
       .info-img-wrap:not(.info-img-wrap--tas-white-aspect-test) {
-        aspect-ratio: 2 / 3;
+        aspect-ratio: 6 / 7;
       }
 
       .info-img-top-bar {
-        top: 7px;
-        left: 7px;
-        right: 7px;
+        top: 6px;
+        left: 6px;
+        right: 6px;
       }
 
       .info-promo-row {
-        gap: 5px;
+        gap: 4px;
       }
 
       .promo-chip {
-        font-size: 10px;
-        padding: 2px 6px;
+        font-size: 12px;
+        padding: 3px 6px;
       }
 
       .info-meta-line.info-meta-line--labeled {
         .info-meta-tag {
-          font-size: 11px;
+          font-size: 13px;
         }
 
         .info-meta-strong {
-          font-size: clamp(12px, 2.8vw, 14px);
+          font-size: clamp(14px, 3.2vw, 16px);
         }
       }
 
       .grid-price-shell {
-        gap: 8px;
+        gap: 6px;
         margin-top: 2px;
       }
 
       .grid-price-txn {
-        font-size: clamp(10px, 2.6vw, 12px);
+        font-size: clamp(11px, 2.8vw, 13px);
       }
 
       .info-ec-score-row {
@@ -1841,19 +2004,19 @@ onUnmounted(() => {
       }
 
       .info-ec-score-num {
-        font-size: 13px;
+        font-size: 15px;
       }
 
       .info-ec-star-strip {
-        font-size: 13px;
+        font-size: 15px;
       }
 
       .info-ec-drop {
-        font-size: 9px;
+        font-size: 11px;
       }
 
       .info-ec-review-paren {
-        font-size: 12px;
+        font-size: 14px;
       }
 
       .grid-price-discount-wrap {
@@ -1865,44 +2028,45 @@ onUnmounted(() => {
       }
 
       .grid-ref-price-muted {
-        font-size: clamp(12px, 2.65vw, 14px);
+        font-size: clamp(14px, 3vw, 16px);
       }
 
       .grid-save-strong {
-        font-size: clamp(13px, 3.1vw, 15px);
+        font-size: clamp(15px, 3.5vw, 17px);
       }
 
       .grid-cart-stack {
-        gap: 8px;
-        margin-top: 8px;
+        gap: 6px;
+        margin-top: 6px;
 
         .grid-cart-qty {
           :deep(.el-input-number) {
+
             .el-input-number__decrease,
             .el-input-number__increase {
-              width: 36px;
-              font-size: 15px;
+              width: 34px;
+              font-size: 14px;
             }
 
             .el-input__wrapper {
-              min-height: 38px;
+              min-height: 36px;
               padding-top: 4px;
               padding-bottom: 4px;
               border-radius: 7px;
             }
 
             .el-input__inner {
-              min-height: 24px;
-              line-height: 24px;
-              font-size: 14px;
+              min-height: 22px;
+              line-height: 22px;
+              font-size: 13px;
             }
           }
         }
 
         .grid-add-cart-btn {
-          min-height: 40px;
-          padding: 8px 16px;
-          font-size: 14px;
+          min-height: 38px;
+          padding: 8px 14px;
+          font-size: 13px;
           letter-spacing: 0.5px;
           border-radius: 8px;
         }
@@ -1911,41 +2075,41 @@ onUnmounted(() => {
       .info-price.grid-sale-price {
         &.grid-sale-price--accent-only {
           .info-price-sym {
-            font-size: clamp(13px, 2.95vw, 16px);
+            font-size: clamp(15px, 3.3vw, 18px);
           }
 
           .info-price-int {
-            font-size: clamp(20px, 4.5vw, 26px);
+            font-size: clamp(22px, 5vw, 29px);
           }
 
           .info-price-frac {
-            font-size: clamp(11px, 2.8vw, 14px);
+            font-size: clamp(13px, 3.2vw, 16px);
           }
         }
       }
 
       .info-title {
-        font-size: 15px;
-        letter-spacing: 1px;
+        font-size: 16px;
+        letter-spacing: 0.5px;
       }
 
       .info-price {
         .info-price-sym {
-          font-size: clamp(12px, 2.7vw, 14px);
+          font-size: clamp(13px, 2.85vw, 15px);
         }
 
         .info-price-int {
-          font-size: clamp(19px, 4.2vw, 24px);
+          font-size: clamp(20px, 4.5vw, 26px);
         }
 
         .info-price-frac {
-          font-size: clamp(11px, 2.6vw, 13px);
+          font-size: clamp(12px, 2.8vw, 14px);
         }
       }
 
       .info-sub {
-        font-size: 11px;
-        letter-spacing: 1px;
+        font-size: 12px;
+        letter-spacing: 0.5px;
       }
 
       .info-sub--under-title {
@@ -1964,7 +2128,90 @@ onUnmounted(() => {
   }
 
   .info-list {
-    grid-template-columns: repeat(4, 1fr)
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+
+    .info-item {
+      min-width: 0;
+      overflow: hidden;
+
+      .info-title,
+      .info-sub,
+      .info-sub--under-title,
+      .info-meta-strong,
+      .grid-ref-price-muted,
+      .grid-save-strong,
+      .grid-price-txn,
+      .info-ec-review-paren {
+        display: block;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .info-title,
+      .info-sub {
+        display: block;
+        width: 100%;
+        max-width: 100%;
+      }
+
+      .info-title {
+        -webkit-line-clamp: unset;
+        line-clamp: unset;
+      }
+
+      .info-meta-line.info-meta-line--labeled {
+        width: 100%;
+        flex-wrap: nowrap;
+      }
+
+      .info-meta-piece {
+        min-width: 0;
+        flex: 1 1 0;
+        overflow: hidden;
+      }
+
+      .info-meta-line.info-meta-line--labeled {
+        min-width: 0;
+      }
+
+      &.info-item--nav-menu {
+        overflow: hidden;
+
+        .nav-menu-list {
+          min-width: 0;
+        }
+
+        .nav-menu-row {
+          min-width: 0;
+          grid-template-columns: minmax(0, 1fr) auto;
+        }
+
+        .nav-menu-name {
+          display: flex;
+          align-items: center;
+          min-width: 0;
+          max-width: 100%;
+          overflow: hidden;
+          white-space: normal;
+        }
+
+        .nav-menu-wine-icon {
+          flex-shrink: 0;
+        }
+
+        .nav-menu-name-text {
+          flex: 1 1 auto;
+          min-width: 0;
+          max-width: 100%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+    }
   }
 }
 

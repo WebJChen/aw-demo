@@ -98,46 +98,36 @@ watch(() => route.name, (name) => {
 watch(() => route.query.s, () => {
   syncKeywordFromRoute()
 }, { immediate: true })
+
+/*
+ * 八大州导航 + 全站搜索框 UI 已暂时隐藏（见 template 注释块）。
+ * 下列逻辑仍保留，供路由同步、搜索跳转、分类面板定位等功能继续使用，请勿删除。
+ * - navItems / tagRoutes / handleTagClick
+ * - keyword / openSearchPage / onSearchEnter / syncKeywordFromRoute
+ * - watch(route.name) 同步 activeNav
+ * - handleFocusCategoryHit / CategoryDetailPanel
+ */
 </script>
 
 <template>
+  <!-- 【UI 暂隐·功能保留】原 search-nav 卡片整块隐藏；CategoryDetailPanel 仍挂载供 focusByHit 使用 -->
+  <!--
   <div class="search-nav">
     <el-card class="search-card" shadow="hover">
-      <div class="search-tags">
-        <a v-for="item in tagRoutes" :key="item.tag" :href="item.href" target="_blank" rel="noopener noreferrer"
-          class="tag-pill w100 pointer"
-          :class="{ active: !isSearchRoute && !isCartRoute && !isOrderNeutralRoute && activeNav === item.tag, disabled: !item.available }"
-          @click="handleTagClick(item, $event)">
-          <span class="tag-content">
-            {{ item.tag }}
-            <span v-if="item.capital" class="small-text fs16">
-              ({{ item.tag === '堪培拉' ? '' : '首府：' }}{{ item.capital }})
-            </span>
-          </span>
-        </a>
-      </div>
-      <CategoryDetailPanel v-if="!isSearchRoute && !isCartRoute && !isOrderNeutralRoute" ref="categoryPanelRef" />
-      <div class="search-container">
-        <el-input v-model="keyword" placeholder="搜索全站..." class="search-input" size="large" clearable
-          @keyup.enter="onSearchEnter">
-          <template #prefix>
-            <el-icon>
-              <Search />
-            </el-icon>
-          </template>
-        </el-input>
-        <el-button type="primary" size="large" class="search-btn fs16" @click="openSearchPage">
-          <el-icon>
-            <Search />
-          </el-icon>
-          搜索
-        </el-button>
-      </div>
+      <div class="search-tags">...</div>
+      <div class="search-container">...</div>
     </el-card>
   </div>
+  -->
+  <CategoryDetailPanel v-if="!isSearchRoute && !isCartRoute && !isOrderNeutralRoute" ref="categoryPanelRef"
+    class="service-nav-panel-host--hidden" />
 </template>
 
 <style scoped lang="scss">
+.service-nav-panel-host--hidden {
+  display: none;
+}
+
 .search-nav {
   display: flex;
   justify-content: center;

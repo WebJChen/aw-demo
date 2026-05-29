@@ -36,7 +36,7 @@ const hideServiceNavForPaySnapshot = computed(
   justify-content: center;
   align-items: center;
   gap: 20px;
-  margin-top: 35px;
+  // margin-top: 35px;
 }
 
 .content-box--snapshot-order {
@@ -59,7 +59,7 @@ const hideServiceNavForPaySnapshot = computed(
 @media (max-width: 375px) {
   .content-box {
     // height: auto;
-    padding-top: 20px;
+    // padding-top: 20px;
     gap: 16px;
   }
 }

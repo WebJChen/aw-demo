@@ -363,4 +363,73 @@ const openResult = (result) => {
     margin-top: 28px;
   }
 }
+
+@media (min-width: 1025px) {
+  .search-results-page {
+    width: min(84%, 1280px);
+    margin: 32px auto 72px;
+    gap: 24px;
+  }
+
+  .search-header {
+    padding: 18px 20px;
+    gap: 12px;
+    border-radius: 14px;
+  }
+
+  .search-title h1 {
+    font-size: 26px;
+  }
+
+  .search-title p {
+    font-size: 14px;
+  }
+
+  .results-list {
+    gap: 12px;
+  }
+
+  .result-card {
+    padding: 16px 18px;
+    border-radius: 12px;
+    gap: 8px;
+  }
+
+  .result-meta {
+    gap: 6px;
+    font-size: 11px;
+  }
+
+  .meta-tag,
+  .meta-sub,
+  .meta-source {
+    padding: 3px 9px;
+  }
+
+  .result-title {
+    font-size: 18px;
+  }
+
+  .result-en-title {
+    font-size: 14px;
+  }
+
+  .result-desc {
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .result-tags {
+    gap: 6px;
+  }
+
+  .result-tag {
+    padding: 3px 9px;
+    font-size: 11px;
+  }
+
+  .pagination-wrapper {
+    padding: 14px 0 0;
+  }
+}
 </style>

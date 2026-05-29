@@ -80,6 +80,20 @@ async function getItemRegionByPath(regionPath) {
   return itemRegionPromiseCache.get(key)
 }
 
+let allWineRegionsPromise = null
+
+async function getAllWineRegions() {
+  if (allWineRegionsPromise) return allWineRegionsPromise
+  allWineRegionsPromise = import('@/data/split/wine-regions.json')
+    .then((mod) => {
+      const paths = Array.isArray(mod?.default) ? mod.default : []
+      return Promise.all(paths.map((path) => getWineRegionByPath(path)))
+    })
+    .then((regions) => regions.filter(Boolean))
+    .catch(() => [])
+  return allWineRegionsPromise
+}
+
 async function getWineRegionByPath(regionPath) {
   const key = String(regionPath || '').trim()
   if (!key) return null
@@ -102,4 +116,4 @@ async function getWineRegionByPath(regionPath) {
   return wineRegionPromiseCache.get(key)
 }
 
-export { getItemJson, getWineJson, getNavData, getItemRegionByPath, getWineRegionByPath }
+export { getItemJson, getWineJson, getNavData, getItemRegionByPath, getWineRegionByPath, getAllWineRegions }

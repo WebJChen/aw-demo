@@ -252,7 +252,10 @@ const focusByHit = async (hitKey) => {
   await new Promise((resolve) => requestAnimationFrame(resolve))
 
   const targetEl = panelRef.value?.querySelector?.(`[data-winery-hit-key="${hitKey}"]`)
-  if (!targetEl) return false
+  if (!targetEl) {
+    openWineryDetail(targetItem)
+    return true
+  }
 
   targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' })
   void targetEl.offsetWidth
@@ -264,6 +267,14 @@ const focusByHit = async (hitKey) => {
 defineExpose({
   focusByHit
 })
+
+/*
+ * CategoryDetailPanel UI 已暂时隐藏（见 template 注释块）。
+ * 下列逻辑仍保留，供搜索定位、酒庄详情弹窗、购物车等功能继续使用，请勿删除。
+ * - focusByHit / playPanelHitHighlight / ensureCurrentRegionData
+ * - handleSubNavClick / activeCategoryType / allItems / paginatedItems
+ * - openWineryDetail / addToCart / WineryItemDialog
+ */
 
 watch(() => currentRegionPath.value, () => {
   loadedRegionPath.value = ''
@@ -313,11 +324,12 @@ const handleSubNavClick = (subNav) => {
 
 <template>
   <div ref="panelRef" class="category-detail-panel w100">
+    <!-- 【UI 暂隐·功能保留】「xx全部相关酒庄」标题 + 三类酒庄子导航 + 展开列表：恢复显示时取消注释 -->
+    <!--
     <div class="toggle-btn">
       <span class="toggle-text w100">{{ panelTitleText }}</span>
     </div>
 
-    <!-- 酒类子导航 -->
     <div class="alcohol-subnav">
       <div class="subnav-item" :class="{ 'active': hasVisibleData && activeCategoryType === '葡萄酒酒庄' }"
         @click="handleSubNavClick('葡萄酒酒庄')">
@@ -346,7 +358,6 @@ const handleSubNavClick = (subNav) => {
       <div v-for="category in categoryList" :key="category.id" class="category-section bgfff">
         <h3 class="category-title">{{ category.navName }}</h3>
 
-        <!-- 分页内容 -->
         <div class="items-grid">
           <div v-for="(item, index) in paginatedItems" :key="index" class="item-card pointer"
             :data-winery-hit-key="item.__hitKey" @click="openWineryDetail(item)">
@@ -361,7 +372,6 @@ const handleSubNavClick = (subNav) => {
           </div>
         </div>
 
-        <!-- 分页控制 -->
         <div v-if="totalPages > 1" class="pagination-section">
           <div class="custom-pagination">
             <el-button class="page-btn" :disabled="currentPage === 1" @click="prevPage" size="small">
@@ -378,6 +388,7 @@ const handleSubNavClick = (subNav) => {
         </div>
       </div>
     </div>
+    -->
   </div>
   <WineryItemDialog v-if="itemDialogVisible" v-model:visible="itemDialogVisible" :title="selectedItem?.title || ''"
     :en-title="selectedItem?.enTitle || ''" :banner="resolveImageUrl(selectedItem?.img)"
@@ -387,7 +398,7 @@ const handleSubNavClick = (subNav) => {
 <style scoped lang="scss">
 .category-detail-panel {
   max-width: 1200px;
-  margin: 30px auto 0;
+  // margin: 30px auto 0;
   padding: 0 20px;
 
   .toggle-btn {
@@ -612,7 +623,7 @@ const handleSubNavClick = (subNav) => {
 @media (min-width: 1025px) {
   .category-detail-panel {
     max-width: 1120px;
-    margin: 24px auto 0;
+    // margin: 24px auto 0;
     padding: 0 16px;
 
     .toggle-btn {

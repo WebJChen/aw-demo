@@ -306,6 +306,7 @@ const getFooterImg = (name) => (
 }
 
 @media (min-width: 1025px) {
+
   /* 与 header 同高 line-height，沿用改动前 inline-block 垂直对齐方式 */
   .el-header .language-dropdown .el-dropdown-link,
   .el-header .header-user-dropdown .header-user-trigger {
@@ -764,7 +765,7 @@ const getFooterImg = (name) => (
           display: flex;
           flex-wrap: wrap;
           justify-content: space-evenly;
-          gap: 8px;
+          gap: 6px;
           overflow: visible;
           white-space: normal;
 
