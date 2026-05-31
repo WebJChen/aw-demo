@@ -165,6 +165,23 @@ export function buildWineDisplay(item, ctx = {}) {
     item?.tasteProfile ??
     '黑莓・石墨・柔和单宁收口（占位口味描述，可写入 wineData.tasteProfile）'
 
+  const saleUnitRaw =
+    wd?.saleUnit ?? wd?.priceUnit ?? wd?.unitLabel ?? item?.saleUnit ?? item?.priceUnit ?? item?.unitLabel
+  let saleUnit = '瓶'
+  if (saleUnitRaw != null && String(saleUnitRaw).trim()) {
+    const unitText = String(saleUnitRaw).trim()
+    if (/箱|case|carton|打/i.test(unitText)) {
+      saleUnit = /6|六/.test(unitText) ? '箱（6瓶）' : '箱'
+    } else if (/瓶|bottle/i.test(unitText)) {
+      saleUnit = '瓶'
+    } else {
+      saleUnit = unitText
+    }
+  } else {
+    const seed = String(item?.title || wd?.name || '').length + Number(item?.testPrice ?? saleNum ?? 0)
+    saleUnit = seed % 11 === 0 ? '箱（6瓶）' : '瓶'
+  }
+
   return {
     origin,
     wineryName,
@@ -173,6 +190,7 @@ export function buildWineDisplay(item, ctx = {}) {
     taste,
     ratingStars,
     promoBadges,
+    saleUnit,
     /** 1688式：紧跟价格旁的灰色成交文案（非胶囊） */
     transactionLine: transactionLine.trim() ? transactionLine : null,
     /** 星级行右侧括号：(评价/成交笔数) */

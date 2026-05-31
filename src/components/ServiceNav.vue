@@ -5,6 +5,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useNavStore } from '@/stores/navStore'
 import navData from '@/data/split/nav.json'
+import { WINE_GRID_ROUTE_NAME, buildWineGridRoute } from '@/utils/wineGridRoute'
 import { withRandomLoading } from '@/utils/loadingUtils'
 import CategoryDetailPanel from '@/views/CategoryDetailPanel.vue'
 import { Z_INDEX } from '@/constants/zIndex'
@@ -33,10 +34,7 @@ const slugTagMap = computed(() => Object.fromEntries(navItems.value.map((item) =
 
 const tagRoutes = computed(() => navItems.value.map((item) => ({
   ...item,
-  href: router.resolve({
-    name: item.slug,
-    params: { subNav: item.firstSubNavPath }
-  }).href
+  href: router.resolve(buildWineGridRoute()).href
 })))
 const isSearchRoute = computed(() => route.name === 'SearchResults')
 const isCartRoute = computed(() => route.name === 'Cart')
@@ -86,13 +84,20 @@ onUnmounted(() => {
   window.removeEventListener('auswine:focus-category-hit', handleFocusCategoryHit)
 })
 
-watch(() => route.name, (name) => {
+watch(() => [route.name, route.params.regionPath], ([name, regionPathValue]) => {
   if (name === 'OrderList' || name === 'OrderDetail') return
-  if (typeof name === 'string' && slugTagMap.value[name]) {
-    navStore.setActiveNav(slugTagMap.value[name])
+  if (name === 'WineryPreview') {
+    const region = navData.find((item) => item.path === regionPathValue)
+    if (region?.navName) navStore.setActiveNav(region.navName)
     return
   }
-  if (name === 'Home') navStore.setActiveNav(navItems.value[0]?.tag || '塔斯马尼亚州')
+  if (name === WINE_GRID_ROUTE_NAME || name === 'Home') {
+    navStore.setActiveNav(navItems.value[0]?.tag || '塔斯马尼亚州')
+    return
+  }
+  if (typeof name === 'string' && slugTagMap.value[name]) {
+    navStore.setActiveNav(slugTagMap.value[name])
+  }
 }, { immediate: true })
 
 watch(() => route.query.s, () => {

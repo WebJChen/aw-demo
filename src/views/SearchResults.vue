@@ -5,6 +5,8 @@ import {
   buildSearchIndex,
   scoreRow,
   getHighlightSegments,
+  normalizeSearchSourceType,
+  resolveSearchResultRoute,
   saveSearchTarget
 } from '@/utils/searchUtils'
 import { getItemJson, getWineJson } from '@/utils/dataRepository'
@@ -22,6 +24,13 @@ let hasBuiltSearchIndex = false
 let buildSearchIndexPromise = null
 
 const keyword = computed(() => (typeof route.query.s === 'string' ? route.query.s.trim() : ''))
+const sourceTypeFilter = computed(() => normalizeSearchSourceType(route.query.type))
+
+const searchScopeLabel = computed(() => {
+  if (sourceTypeFilter.value === 'wine') return '酒款搜索'
+  if (sourceTypeFilter.value === 'item') return '酒庄搜索'
+  return '全站搜索'
+})
 
 const ensureSearchIndex = async () => {
   if (hasBuiltSearchIndex) return
@@ -50,6 +59,7 @@ const performSearch = async (rawKeyword) => {
 
   const rows = []
   for (const row of indexRows) {
+    if (sourceTypeFilter.value && row.sourceType !== sourceTypeFilter.value) continue
     const scoreData = scoreRow(row, currentKeyword)
     if (!scoreData.matched) continue
 
@@ -86,7 +96,7 @@ const pagedResults = computed(() => {
   return allResults.value.slice(start, start + pageSize)
 })
 
-watch(keyword, async () => {
+watch([keyword, sourceTypeFilter], async () => {
   await withRandomLoading(async () => {
     pageLoading.value = true
     currentPage.value = 1
@@ -105,14 +115,8 @@ const handlePageChange = async (page) => {
 }
 
 const openResult = (result) => {
-  const targetRoute = {
-    name: result.regionPath,
-    params: { subNav: result.subNavPath },
-    query: {
-      s: keyword.value,
-      hit: result.id
-    }
-  }
+  const targetRoute = resolveSearchResultRoute(result, keyword.value)
+  if (!targetRoute) return
 
   saveSearchTarget({
     s: keyword.value,
@@ -135,8 +139,8 @@ const openResult = (result) => {
   <div class="search-results-page">
     <div class="search-header">
       <div class="search-title">
-        <h1>全站搜索</h1>
-        <p v-if="keyword">“{{ keyword }}” 的搜索结果，共 {{ totalResults }} 条</p>
+        <h1>{{ searchScopeLabel }}</h1>
+        <p v-if="keyword">“{{ keyword }}” 的{{ sourceTypeFilter === 'wine' ? '酒款' : sourceTypeFilter === 'item' ? '酒庄' : '' }}搜索结果，共 {{ totalResults }} 条</p>
         <p v-else>请输入关键词开始搜索</p>
       </div>
     </div>

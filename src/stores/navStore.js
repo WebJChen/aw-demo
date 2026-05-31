@@ -6,6 +6,8 @@ export const useNavStore = defineStore('nav', () => {
   const activeSubNav = ref('红酒')
   const activeCategoryType = ref('葡萄酒酒庄')
   const scrollY = ref(0)
+  /** 上次访问的酒款/酒庄 catalog 路由，用于从根路径恢复 */
+  const lastVisitedRoute = ref(null)
 
   let throttleTimer = null
   let pendingScrollY = null
@@ -51,17 +53,28 @@ export const useNavStore = defineStore('nav', () => {
     }
   }
 
+  const setLastVisitedRoute = (routeLike) => {
+    const name = routeLike?.name
+    if (!name || typeof name !== 'string') return
+    const params = routeLike?.params && typeof routeLike.params === 'object'
+      ? { ...routeLike.params }
+      : {}
+    lastVisitedRoute.value = { name, params }
+  }
+
   return {
     activeNav,
     activeSubNav,
     activeCategoryType,
     scrollY,
+    lastVisitedRoute,
     setActiveNav,
     setActiveSubNav,
     setActiveCategoryType,
     setScrollY,
     saveScrollYThrottled,
-    flushScrollY
+    flushScrollY,
+    setLastVisitedRoute
   }
 }, {
   persist: true

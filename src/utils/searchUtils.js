@@ -1,4 +1,8 @@
+import { buildWineGridRoute } from '@/utils/wineGridRoute'
+
 const SEARCH_TARGET_STORAGE_KEY = 'auswine.search.target'
+const SEARCH_SOURCE_WINE = 'wine'
+const SEARCH_SOURCE_ITEM = 'item'
 
 const normalizeForSearch = (value) => String(value || '').toLowerCase().trim().replace(/\s+/g, ' ')
 
@@ -350,14 +354,63 @@ const clearSearchTarget = () => {
   }
 }
 
+const normalizeSearchSourceType = (value) => {
+  const v = String(value || '').trim().toLowerCase()
+  if (v === SEARCH_SOURCE_WINE || v === SEARCH_SOURCE_ITEM) return v
+  return ''
+}
+
+const buildSearchResultsRoute = (keyword, sourceType = '') => {
+  const s = String(keyword || '').trim()
+  if (!s) return null
+  const query = { s }
+  const normalized = normalizeSearchSourceType(sourceType)
+  if (normalized) query.type = normalized
+  return { name: 'SearchResults', query }
+}
+
+const resolveSearchResultRoute = (result, keyword = '') => {
+  if (!result || typeof result !== 'object') return null
+
+  const query = {}
+  const s = String(keyword || '').trim()
+  if (s) query.s = s
+  if (result.id) query.hit = result.id
+
+  if (result.sourceType === SEARCH_SOURCE_WINE) {
+    return {
+      ...buildWineGridRoute({ subNavPath: result.subNavPath }),
+      query
+    }
+  }
+
+  if (result.sourceType === SEARCH_SOURCE_ITEM) {
+    return {
+      name: 'WineryPreview',
+      params: {
+        regionPath: result.regionPath,
+        subNav: result.subNavPath
+      },
+      query
+    }
+  }
+
+  return null
+}
+
 export {
   SEARCH_TARGET_STORAGE_KEY,
+  SEARCH_SOURCE_WINE,
+  SEARCH_SOURCE_ITEM,
   normalizeForSearch,
   tokenizeForSearch,
   buildSearchIndex,
   scoreRow,
   extractSnippet,
   getHighlightSegments,
+  normalizeSearchSourceType,
+  buildSearchResultsRoute,
+  resolveSearchResultRoute,
   saveSearchTarget,
   readSearchTarget,
   clearSearchTarget

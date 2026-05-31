@@ -1,9 +1,11 @@
-<script setup>
+﻿<script setup>
 import { ref, reactive, computed, onMounted, onUnmounted, watch, nextTick, defineAsyncComponent } from 'vue';
 import { ElMessage } from 'element-plus';
 import { Search } from '@element-plus/icons-vue';
 import { storeToRefs } from 'pinia';
 import { useRoute, useRouter } from 'vue-router';
+import CatalogGridShell from '@/components/CatalogGridShell.vue'
+import RegionNavMenuCard from '@/components/RegionNavMenuCard.vue'
 const ItemDataDialog = defineAsyncComponent(() => import('@/components/dialogs/page/home/ItemDataDialog.vue'))
 import { useDeviceStore } from '@/stores/deviceStore';
 import { useNavStore } from '@/stores/navStore';
@@ -11,11 +13,16 @@ import { useCartStore } from '@/stores/cartStore'
 import { useDialogStore } from '@/stores/dialogStore'
 import navData from '@/data/split/nav.json';
 import itemData from '@/data/item.json';
-import { readSearchTarget, saveSearchTarget } from '@/utils/searchUtils'
+import { readSearchTarget, saveSearchTarget, buildSearchResultsRoute, SEARCH_SOURCE_WINE } from '@/utils/searchUtils'
+import { withRandomLoading } from '@/utils/loadingUtils'
 import { resolveDataImage } from '@/utils/dataImageResolver'
 import { getAllWineRegions } from '@/utils/dataRepository'
-import { Z_INDEX } from '@/constants/zIndex'
 import { buildWineDisplay } from '@/utils/wineGridExtras'
+import {
+  WINE_GRID_ROUTE_NAME,
+  buildWineGridRoute,
+  isLegacyWineRegionRouteName
+} from '@/utils/wineGridRoute'
 /** 【样式测试·可删】见 @/utils/tasmaniaGridStyleTestThumbs.js；正式环境移除该 import 与本页 isTasmaniaGridStyleTestThumb、gridItemThumbSrc、相关 class/样式 */
 import { tasGridStyleTestThumbByIndex } from '@/utils/tasmaniaGridStyleTestThumbs'
 
@@ -75,24 +82,26 @@ const getGridPriceParts = (item) => {
   }
 }
 */
-const regionRouteNames = navData.map((region) => region.path)
-const fallbackRegionNavName = navData[0]?.navName || '塔斯马尼亚州'
+const isWineCatalogRoute = (routeName) =>
+  routeName === WINE_GRID_ROUTE_NAME
+  || routeName === 'Home'
+  || isLegacyWineRegionRouteName(routeName)
 const navMenuItems = computed(() =>
-  (Array.isArray(itemData) ? itemData : [])
-    .slice(0, 8)
-    .map((region) => ({
-      navName: region?.navName || '',
-      capitalLabel:
-        region?.navName === '堪培拉'
-          ? '（首都领地.ACT）'
-          : `（首府：${region?.capital || ''}）`
-    }))
+  navData.slice(0, 8).map((region) => ({
+    navName: region?.navName || '',
+    regionPath: region?.path || '',
+    capitalLabel:
+      region?.navName === '堪培拉'
+        ? '（首都领地.ACT）'
+        : `（首府：${region?.capital || ''}）`
+  }))
 )
 const INITIAL_RENDER_COUNT = 24
 const RENDER_STEP_COUNT = 24
 
-const gridRef = ref(null)
-const loadMoreTriggerRef = ref(null)
+const shellRef = ref(null)
+const getGridEl = () => shellRef.value?.getGridEl?.() ?? null
+const getLoadMoreEl = () => shellRef.value?.getLoadMoreEl?.() ?? null
 
 const currentPage = ref(1)
 const scrollPage = ref(1)
@@ -103,11 +112,24 @@ const hasMore = ref(false)
 const deviceStore = useDeviceStore()
 const { isPhone, isPortrait } = storeToRefs(deviceStore)
 const navStore = useNavStore()
-const { activeSubNav, activeNav } = storeToRefs(navStore)
+const { activeSubNav } = storeToRefs(navStore)
 const cartStore = useCartStore()
 const dialogStore = useDialogStore()
 const route = useRoute()
 const router = useRouter()
+
+const openWineryPreviewInNewWindow = (menuItem) => {
+  const targetRegionPath = menuItem?.regionPath
+  if (!targetRegionPath) return
+  const region = (Array.isArray(itemData) ? itemData : []).find((item) => item?.path === targetRegionPath)
+  const firstSubNav = region?.subNavList?.find((subNav) => subNav?.isShow !== false)?.subNavPath || 'wine'
+  const href = router.resolve({
+    name: 'WineryPreview',
+    params: { regionPath: targetRegionPath, subNav: firstSubNav }
+  }).href
+  window.open(href, '_blank', 'noopener,noreferrer')
+}
+
 const itemDialogVisible = computed({
   get: () => dialogStore.dialogs.wineItemDetail?.show === true,
   set: (v) =>
@@ -128,7 +150,7 @@ const clearSearchHitState = () => {
     clearTimeout(hitClearTimer)
     hitClearTimer = null
   }
-  const highlighted = gridRef.value?.querySelectorAll?.('.search-hit-active') || []
+  const highlighted = getGridEl()?.querySelectorAll?.('.search-hit-active') || []
   highlighted.forEach((el) => el.classList.remove('search-hit-active'))
 }
 
@@ -377,14 +399,10 @@ const resetWineGridFilters = () => {
   wineSortBy.value = 'default'
 }
 
-const executeWineSearch = () => {
-  appliedWineSearchKeyword.value = localWineSearchKeyword.value.trim()
-  resetRenderLimit()
-  nextTick(() => {
-    updateHasMore()
-    initLoadMoreObserver()
-    scheduleUpdateScrollPage()
-  })
+const executeWineSearch = async () => {
+  const target = buildSearchResultsRoute(localWineSearchKeyword.value, SEARCH_SOURCE_WINE)
+  if (!target) return
+  await withRandomLoading(() => router.push(target), { min: 80, max: 300 })
 }
 
 const onWineSearchClear = () => {
@@ -495,7 +513,7 @@ const eachPageCount = computed(() => {
 const totalPages = computed(() => Math.max(1, Math.ceil(filteredWineTotal.value / eachPageCount.value)))
 
 function updateScrollPage() {
-  if (!gridRef.value) return
+  if (!getGridEl()) return
   const totalShown = Math.min(renderLimit.value, filteredWineTotal.value)
   if (totalShown <= 0) {
     scrollPage.value = 1
@@ -503,7 +521,7 @@ function updateScrollPage() {
   }
   const per = eachPageCount.value || 1
   const pages = Math.max(1, Math.ceil(filteredWineTotal.value / per))
-  const grid = gridRef.value
+  const grid = getGridEl()
   const rect = grid.getBoundingClientRect()
   const gridTop = rect.top + window.pageYOffset
   const scrollOffset = window.scrollY - gridTop
@@ -542,10 +560,14 @@ const loadMoreItems = () => {
   updateHasMore()
 }
 
-const initLoadMoreObserver = () => {
+const initLoadMoreObserver = (retry = 0) => {
   if (typeof window === 'undefined') return
   if (!('IntersectionObserver' in window)) return
-  if (!loadMoreTriggerRef.value) return
+  const loadMoreEl = getLoadMoreEl()
+  if (!loadMoreEl) {
+    if (retry < 4) nextTick(() => initLoadMoreObserver(retry + 1))
+    return
+  }
 
   if (loadMoreObserver) loadMoreObserver.disconnect()
   loadMoreObserver = new IntersectionObserver((entries) => {
@@ -558,7 +580,7 @@ const initLoadMoreObserver = () => {
     rootMargin: '500px 0px 500px 0px',
     threshold: 0
   })
-  loadMoreObserver.observe(loadMoreTriggerRef.value)
+  loadMoreObserver.observe(loadMoreEl)
 }
 
 const teardownLoadMoreObserver = () => {
@@ -570,16 +592,10 @@ const teardownLoadMoreObserver = () => {
 const handleSubNavClick = (subItem) => {
   if (subNavDisabledMap.value[subItem]) return
   navStore.setActiveSubNav(subItem)
-  if (typeof route.name === 'string' && regionRouteNames.includes(route.name)) {
+  if (typeof route.name === 'string' && isWineCatalogRoute(route.name)) {
     const targetSubNav = enabledSubNavs.value.find((subNav) => subNav.subNavName === subItem)
     if (!targetSubNav) return
-    router.replace({
-      name: route.name,
-      params: {
-        ...route.params,
-        subNav: targetSubNav.subNavPath
-      }
-    })
+    router.replace(buildWineGridRoute({ subNavPath: targetSubNav.subNavPath }))
   }
 }
 
@@ -645,7 +661,7 @@ const waitForSearchTargetReady = (hitKey, maxFrames = 180) => {
   return new Promise((resolve) => {
     let frame = 0
     const check = () => {
-      const targetEl = gridRef.value?.querySelector?.(`[data-hit-key="${hitKey}"]`) || null
+      const targetEl = getGridEl()?.querySelector?.(`[data-hit-key="${hitKey}"]`) || null
       const ready = targetEl && !isDialogBlockingScroll()
       if (ready || frame >= maxFrames) {
         resolve(targetEl)
@@ -728,14 +744,8 @@ const handleSearchTargetFocus = async () => {
     const targetSubNav = enabledSubNavs.value.find((subNav) => subNav.subNavPath === targetSubNavPath)
     if (targetSubNav) {
       navStore.setActiveSubNav(targetSubNav.subNavName)
-      if (typeof route.name === 'string' && regionRouteNames.includes(route.name)) {
-        await router.replace({
-          name: route.name,
-          params: {
-            ...route.params,
-            subNav: targetSubNav.subNavPath
-          }
-        })
+      if (typeof route.name === 'string' && isWineCatalogRoute(route.name)) {
+        await router.replace(buildWineGridRoute({ subNavPath: targetSubNav.subNavPath }))
       }
       return
     }
@@ -797,13 +807,6 @@ const applySubNavFromRoute = () => {
   const routeName = typeof route.name === 'string' ? route.name : ''
   const firstSubNav = enabledSubNavs.value[0]?.subNavName || subNavList.value[0] || ''
 
-  if (routeName && regionRouteNames.includes(routeName)) {
-    const navRegion = navData.find((region) => region.path === routeName)
-    if (navRegion?.navName) navStore.setActiveNav(navRegion.navName)
-  } else if (routeName === 'Home') {
-    navStore.setActiveNav(fallbackRegionNavName)
-  }
-
   const routeSubNavPath = typeof route.params.subNav === 'string' ? route.params.subNav : ''
   const byRouteSubNav = routeSubNavPath
     ? enabledSubNavs.value.find((subNav) => subNav.subNavPath === routeSubNavPath)
@@ -859,6 +862,14 @@ watch(() => route.params.subNav, () => {
   handleSearchTargetFocus()
 })
 
+watch(() => route.query.hit, () => {
+  if (typeof route.query.hit !== 'string' || !route.query.hit) return
+  handledSearchHit.value = ''
+  nextTick(() => {
+    handleSearchTargetFocus()
+  })
+})
+
 watch(() => dataList.value.length, () => {
   updateHasMore()
   clearSearchHitState()
@@ -899,11 +910,24 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="wine-filter-bar-wrap center">
-    <div class="wine-filter-bar">
-      <div class="wine-filter-toolbar">
+  <CatalogGridShell
+    ref="shellRef"
+    variant="wine"
+    :sub-nav-items="subNavList"
+    :active-sub-nav="activeSubNav"
+    :sub-nav-disabled-map="subNavDisabledMap"
+    :show-grid="filteredWineTotal > 0"
+    :has-more="hasMore"
+    :show-pagination="filteredWineTotal > 0"
+    :show-empty="dataList.length > 0"
+    :scroll-page="scrollPage"
+    :total-pages="totalPages"
+    @sub-nav-select="handleSubNavClick"
+  >
+    <template #filter>
+      <div class="wine-filter-toolbar wine-filter-toolbar--wine">
         <el-input v-model="localWineSearchKeyword" class="wine-filter-search" size="large" clearable
-          placeholder="搜索酒庄、酒款、产地…" @keyup.enter="executeWineSearch" @clear="onWineSearchClear">
+          placeholder="搜索酒款名称、产地、标签…" @keyup.enter="executeWineSearch" @clear="onWineSearchClear">
           <template #prefix>
             <el-icon>
               <Search />
@@ -932,42 +956,17 @@ onUnmounted(() => {
         <span v-else>本栏共 </span>
         <strong>{{ filteredWineTotal }}</strong> 款酒
       </p>
-    </div>
-  </div>
+    </template>
 
-  <div class="subnav-box center">
-    <ul class="subnav-list">
-      <li v-for="(subItem, idx) in subNavList" :key="idx" class="subnav-item w100"
-        :class="{ active: activeSubNav === subItem, disabled: subNavDisabledMap[subItem] }"
-        @click="handleSubNavClick(subItem)">
-        {{ subItem }}
-      </li>
-    </ul>
-  </div>
+    <template #leading>
+      <RegionNavMenuCard :nav-menu-items="navMenuItems" @select="openWineryPreviewInNewWindow" />
+    </template>
 
-  <template v-if="filteredWineTotal > 0">
-    <div ref="gridRef" class="info-list">
-      <div class="info-item info-item--nav-menu" aria-label="推荐类目">
-        <ul class="nav-menu-list">
-          <li v-for="menuItem in navMenuItems" :key="menuItem.navName" class="nav-menu-row">
-            <span class="nav-menu-name">
-              <span class="nav-menu-wine-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" focusable="false" aria-hidden="true">
-                  <path d="M7 3h10v2c0 3.87-2.13 6.82-5 7.74V18h3v2H9v-2h3v-5.26C9.13 11.82 7 8.87 7 5V3z"
-                    fill="currentColor" />
-                </svg>
-              </span>
-              <span class="nav-menu-name-text">{{ menuItem.navName }}{{ menuItem.capitalLabel }}</span>
-            </span>
-            <span class="nav-menu-arrow" aria-hidden="true">›</span>
-          </li>
-        </ul>
-      </div>
+    <template #items>
       <div v-for="row in gridRows"
         :key="`${row.entry?.regionPath || ''}-${row.entry?.subNavPath || ''}-${row.entry?.sourceItemIndex ?? row.idx}`"
         class="info-item pointer" @click="openItemDialog(row.data, row.idx, row.entry)" :data-title="row.data.title"
         :data-hit-key="buildHitKey(row.idx)">
-        <!-- 【样式测试·可删】塔斯酒款：测试图 + contain；发布前删下列 class 与 gridItemThumbSrc -->
         <div class="info-img-wrap" :class="['bgfff', {
           'info-img-wrap--tas-thumb-test': isTasmaniaGridEntry(row.entry)
         }]">
@@ -1009,1258 +1008,56 @@ onUnmounted(() => {
           </span>
         </div>
 
-        <div class="grid-price-shell">
-          <div class="grid-price-block">
-            <template v-if="row.wine.hasDiscount">
-              <div class="grid-price-discount-wrap">
-                <div class="grid-price-inline-row">
-                  <div class="info-price grid-sale-price grid-sale-price--accent-only"
-                    :style="{ '--aw-price-color': GRID_PRICE_COLOR }">
-                    <span class="info-price-inner">
-                      <span class="info-price-sym fowe7">{{ row.priceParts.currency }}</span>
-                      <span class="info-price-main">
-                        <span class="info-price-int">{{ row.priceParts.intPart }}</span>
-                        <span v-if="row.priceParts.fraction" class="info-price-frac">.{{ row.priceParts.fraction
-                          }}</span>
-                      </span>
-                    </span>
-                  </div>
-                  <span class="grid-ref-price-muted" aria-label="划线价" title="划线价">
-                    {{ row.listParts.currency }}{{ row.listParts.intPart }}
-                    <template v-if="row.listParts.fraction">.{{ row.listParts.fraction }}</template>
+        <div class="grid-price-block grid-price-block--uniform">
+            <div class="grid-price-main-row">
+              <div class="info-price grid-sale-price"
+                :class="row.wine.hasDiscount ? 'grid-sale-price--accent-only' : 'grid-sale-price--list-only'"
+                :style="{ '--aw-price-color': GRID_PRICE_COLOR }">
+                <span class="info-price-inner">
+                  <span class="info-price-sym fowe7">{{ row.priceParts.currency }}</span>
+                  <span class="info-price-main">
+                    <span class="info-price-int">{{ row.priceParts.intPart }}</span>
+                    <span v-if="row.priceParts.fraction" class="info-price-frac">.{{ row.priceParts.fraction }}</span>
                   </span>
-                </div>
-                <div v-if="gridSaveAmountText(row)" class="grid-save-strong">
-                  省 {{ row.priceParts.currency }}{{ gridSaveAmountText(row) }}
-                </div>
-              </div>
-            </template>
-            <div v-else class="info-price grid-sale-price grid-sale-price--list-only"
-              :style="{ '--aw-price-color': GRID_PRICE_COLOR }">
-              <span class="info-price-inner">
-                <span class="info-price-sym fowe7">{{ row.priceParts.currency }}</span>
-                <span class="info-price-main">
-                  <span class="info-price-int">{{ row.priceParts.intPart }}</span>
-                  <span v-if="row.priceParts.fraction" class="info-price-frac">.{{ row.priceParts.fraction }}</span>
                 </span>
+              </div>
+              <span class="grid-price-unit">/ {{ row.wine.saleUnit }}</span>
+              <span v-if="row.wine.hasDiscount" class="grid-ref-price-muted" aria-label="划线价" title="划线价">
+                {{ row.listParts.currency }}{{ row.listParts.intPart }}
+                <template v-if="row.listParts.fraction">.{{ row.listParts.fraction }}</template>
               </span>
             </div>
+            <div class="grid-price-sub-row">
+              <span v-if="row.wine.hasDiscount && gridSaveAmountText(row)" class="grid-save-badge">
+                省 {{ row.priceParts.currency }}{{ gridSaveAmountText(row) }}
+              </span>
+              <span v-else class="grid-price-sub-placeholder" aria-hidden="true">占位</span>
+            </div>
           </div>
-          <span v-if="row.wine.transactionLine" class="grid-price-txn">{{ row.wine.transactionLine }}</span>
-        </div>
 
-        <div class="grid-cart-stack" @click.stop>
+        <div class="grid-cart-block">
+          <span v-if="row.wine.transactionLine" class="grid-price-txn">{{ row.wine.transactionLine }}</span>
+          <div class="grid-cart-stack" @click.stop>
           <div class="grid-cart-qty">
             <el-input-number :model-value="rowCartQty[row.idx] ?? 1" :min="1" :max="99"
               @update:model-value="(v) => { rowCartQty[row.idx] = v }" />
           </div>
           <el-button type="primary" class="grid-add-cart-btn" @click="handleGridAddCart(row)">加入购物车</el-button>
+          </div>
         </div>
       </div>
-    </div>
-    <div v-if="hasMore" ref="loadMoreTriggerRef" class="load-more-trigger" aria-hidden="true"></div>
-  </template>
-  <div v-else-if="dataList.length > 0" class="wine-grid-empty-wrap center">
-    <div class="wine-grid-empty">
-      <p>暂无符合当前筛选的酒款。</p>
-      <p class="wine-grid-empty-sub">请尝试重置条件，或调整价格 / 评分。</p>
-      <el-button type="primary" class="wine-grid-empty-reset" @click="resetWineGridFiltersAndView">重置筛选</el-button>
-    </div>
-  </div>
+    </template>
 
-  <div v-if="filteredWineTotal > 0" class="pagination-section pagination-section--scenic center">
-    <div class="custom-pagination custom-pagination--fixed">
-      <div class="page-indicator fs16">第 <span class="page-num fowe7">{{ scrollPage }}</span> / {{
-        totalPages }} 页</div>
-    </div>
-  </div>
+    <template #empty>
+      <div class="wine-grid-empty">
+        <p>暂无符合当前筛选的酒款。</p>
+        <p class="wine-grid-empty-sub">请尝试重置条件，或调整价格 / 评分。</p>
+        <el-button type="primary" class="wine-grid-empty-reset" @click="resetWineGridFiltersAndView">重置筛选</el-button>
+      </div>
+    </template>
+  </CatalogGridShell>
   <ItemDataDialog v-if="itemDialogVisible" v-model:visible="itemDialogVisible" :title="selectedItem?.title || ''"
     :en-title="selectedItem?.enTitle || ''" :banner="resolveImageUrl(selectedItem?.img)"
     :item-data="selectedItem ? [selectedItem] : []" :region-nav-name="selectedItemRegionNavName"
     @add-cart="addToCart" />
 </template>
-
-<style scoped lang="scss">
-.subnav-box {
-  width: 90%;
-  padding: 0 20px;
-  margin-top: 14px;
-
-  .subnav-list {
-    display: flex;
-    justify-content: space-between;
-    margin: 0;
-    padding: 0;
-    gap: 12px;
-
-    .subnav-item {
-      cursor: pointer;
-      padding: 10px 16px;
-      border-radius: 8px;
-      background: linear-gradient(180deg, #ffffff 0%, #fce7ec 100%);
-      color: #c92a52;
-      // border: 1px solid #e5e7eb;
-      transition: all .2s ease;
-      white-space: nowrap;
-      user-select: none;
-    }
-
-    .subnav-item.disabled {
-      background: #f3f4f6;
-      color: #9ca3af;
-      border-color: #e5e7eb;
-      cursor: not-allowed;
-      opacity: 0.7;
-    }
-
-    .subnav-item.active {
-      background: linear-gradient(180deg, #c92a52 0%, #a8163c 100%);
-      color: #fff;
-      border-color: transparent;
-      box-shadow: 0 6px 16px rgba(168, 22, 60, 0.26);
-    }
-  }
-}
-
-/* PC端子导航字号（不影响平板和手机） */
-@media (min-width: 1025px) {
-  .subnav-box {
-    .subnav-list {
-      .subnav-item {
-        font-size: var(--aw-font-16);
-      }
-    }
-  }
-}
-
-/* 酒款筛选条：参考 tto 多条件栅格；配色贴近酒电商主色 */
-.wine-filter-bar-wrap {
-  width: 90%;
-  padding: 0 20px;
-  margin: 40px auto 6px;
-
-  .wine-filter-bar {
-    border-radius: 0;
-    border: 1px solid rgba(168, 22, 60, 0.16);
-    background: linear-gradient(145deg, #fffdfb 0%, #fff7f9 52%, #fff 100%);
-    box-shadow:
-      0 2px 8px rgba(168, 22, 60, 0.06),
-      inset 0 1px 0 rgba(255, 255, 255, 0.9);
-    padding: 14px 16px 12px;
-    border-radius: 6px;
-  }
-
-  .wine-filter-toolbar {
-    display: grid;
-    grid-template-columns:
-      minmax(220px, 1.3fr) repeat(2, minmax(128px, 0.62fr)) minmax(128px, 0.72fr) auto;
-    gap: 10px 12px;
-    align-items: center;
-
-    @media (max-width: 1200px) {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    @media (max-width: 640px) {
-      grid-template-columns: 1fr;
-    }
-  }
-
-  .wine-filter-search {
-    min-width: 0;
-
-    :deep(.el-input-group__wrapper) {
-      border-radius: 0 !important;
-    }
-
-    :deep(.el-input__wrapper) {
-      border-radius: 0;
-    }
-
-    :deep(.el-input-group__append) {
-      padding: 0;
-      background: transparent;
-      border: none;
-      box-shadow: none;
-
-      .el-button.wine-filter-submit {
-        margin: 0;
-        border-radius: 0;
-        padding: 0 18px;
-        height: var(--el-component-size-large);
-        background: linear-gradient(180deg, #c92a52 0%, #a8163c 100%);
-        border: 1px solid #9a1538;
-        color: #fff;
-        font-weight: 600;
-        letter-spacing: 1px;
-
-        &:hover {
-          filter: brightness(1.06);
-          color: #fff;
-        }
-      }
-    }
-  }
-
-  .wine-filter-select :deep(.el-select__wrapper) {
-    border-radius: 0;
-  }
-
-  .wine-filter-reset {
-    border-radius: 0;
-    padding: 0 16px;
-    color: #a8163c;
-    border-color: rgba(168, 22, 60, 0.35);
-    background: rgba(255, 255, 255, 0.65);
-
-    &:hover {
-      background: rgba(168, 22, 60, 0.06);
-      color: #7f132e;
-      border-color: rgba(168, 22, 60, 0.5);
-    }
-  }
-
-  .wine-filter-hint {
-    margin: 12px 0 0;
-    font-size: 13px;
-    color: #6b7280;
-
-    strong {
-      color: #a8163c;
-      margin: 0 2px;
-      font-weight: 700;
-    }
-  }
-}
-
-.wine-grid-empty-wrap {
-  width: 90%;
-  padding: 28px 20px 56px;
-
-  .wine-grid-empty {
-    padding: 32px 20px;
-    text-align: center;
-    border: 1px dashed rgba(168, 22, 60, 0.25);
-    background: rgba(254, 242, 248, 0.45);
-    color: #4b5563;
-
-    p {
-      margin: 0;
-      font-size: 17px;
-    }
-
-    .wine-grid-empty-sub {
-      margin-top: 8px !important;
-      font-size: 14px;
-      color: #6b7280;
-    }
-
-    .wine-grid-empty-reset {
-      margin-top: 18px;
-      border-radius: 0;
-      padding: 0 22px;
-      background: linear-gradient(180deg, #c92a52 0%, #a8163c 100%);
-      border: none;
-    }
-  }
-}
-
-.info-list {
-  display: grid;
-  width: 90%;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  padding: 8px 0 40px;
-
-  .info-item {
-    display: flex;
-    border-radius: 12px;
-    flex-direction: column;
-    justify-content: center;
-    gap: 5px;
-    border: 2px solid transparent;
-    padding: 6px;
-    transition:
-      box-shadow 0.35s ease,
-      border-color 0.35s ease,
-      transform 0.35s ease,
-      background-color 0.35s ease;
-
-    img {
-      object-fit: cover;
-      display: block;
-      width: 100%;
-      height: 100%;
-      transition: transform 0.45s cubic-bezier(0.33, 1, 0.68, 1);
-      transform-origin: center center;
-    }
-
-    &:not(.info-item--nav-menu):hover {
-      border-color: rgba(168, 22, 60, 0.42);
-      box-shadow: 0 14px 36px rgba(168, 22, 60, 0.16);
-      transform: translateY(-4px);
-      background: rgba(255, 252, 253, 0.98);
-
-      .info-img-wrap img {
-        transform: scale(1.07);
-      }
-
-      .info-title {
-        color: #c92a52;
-        text-decoration: underline solid rgba(201, 42, 82, 0.75);
-        text-underline-offset: 5px;
-        text-decoration-thickness: 1px;
-        -webkit-box-decoration-break: clone;
-        box-decoration-break: clone;
-      }
-
-      .info-sub,
-      .info-sub--under-title {
-        color: #991b36;
-        text-decoration: underline solid rgba(153, 27, 54, 0.65);
-        text-underline-offset: 4px;
-        text-decoration-thickness: 1px;
-        -webkit-box-decoration-break: clone;
-        box-decoration-break: clone;
-      }
-    }
-
-    &.info-item--nav-menu {
-      cursor: default;
-      height: 100%;
-      padding: 0 6px;
-      gap: 0;
-      background: linear-gradient(180deg, #fffdfd 0%, #fff4f7 100%);
-      border-color: rgba(168, 22, 60, 0.16);
-      justify-content: flex-start;
-
-      .nav-menu-list {
-        display: flex;
-        flex-direction: column;
-        justify-content: space-around;
-        height: 100%;
-        gap: 0;
-        margin: 0;
-        padding: 0;
-        list-style: none;
-        flex: 1;
-      }
-
-      .nav-menu-row {
-        display: grid;
-        grid-template-columns: minmax(0, 1fr) auto auto;
-        align-items: center;
-        gap: 12px;
-        padding: 4px 0;
-        border-radius: 0;
-        background: transparent;
-        border: 0;
-      }
-
-      .nav-menu-name {
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-        min-width: 0;
-        font-size: 13px;
-        font-weight: 800;
-        line-height: 1.15;
-        color: #2f3640;
-        white-space: nowrap;
-        overflow: visible;
-
-        &:has(.nav-menu-name-text:hover) .nav-menu-wine-icon {
-          transform: rotate(-45deg);
-        }
-      }
-
-      .nav-menu-name-text {
-        min-width: 0;
-        overflow: visible;
-        text-overflow: ellipsis;
-        font-size: 13px;
-        line-height: 1.15;
-        color: inherit;
-        cursor: pointer;
-        transition: color 0.2s ease, border-color 0.2s ease;
-        border-bottom: 1px solid transparent;
-
-        &:hover {
-          color: #c92a52;
-          border-bottom-color: #c92a52;
-        }
-      }
-
-      .nav-menu-wine-icon {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        flex: 0 0 auto;
-        width: 20px;
-        height: 20px;
-        color: #c92a52;
-        transform: rotate(0deg);
-        transition: transform 0.25s ease;
-
-        svg {
-          width: 100%;
-          height: 100%;
-          display: block;
-        }
-      }
-
-      .nav-menu-capital {
-        font-size: 14px;
-        color: #8b5b6a;
-        white-space: nowrap;
-      }
-
-      .nav-menu-arrow {
-        font-size: 20px;
-        // line-height: 1;
-        color: #c92a52;
-        margin-left: 2px;
-      }
-    }
-
-    .info-img-wrap {
-      position: relative;
-      width: 100%;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-
-    /* 参考 300×400：宽:高 = 3:4 */
-    .info-img-wrap:not(.info-img-wrap--tas-white-aspect-test) {
-      aspect-ratio: 3 / 4;
-    }
-
-    /* 【样式测试·可删】塔斯马尼亚「白葡萄酒」：2:3 比例实验（勿让桌面 5:6 改写，故与 :not 拆分） */
-    .info-img-wrap--tas-white-aspect-test {
-      aspect-ratio: 2 / 3;
-    }
-
-    /* 【样式测试·可删】塔斯全栏测试缩略图：contain 完整显示，避免 cover 裁切显得「太大/不全」 */
-    .info-img-wrap--tas-thumb-test {
-      // background: #f3f0ec;
-
-      img {
-        object-fit: contain;
-      }
-    }
-
-    .info-img-top-bar {
-      position: absolute;
-      top: 8px;
-      left: 8px;
-      right: 8px;
-      z-index: 2;
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 8px;
-      pointer-events: none;
-    }
-
-    .info-img-top-bar-spacer {
-      flex: 1;
-      min-width: 0;
-    }
-
-    .info-promo-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      flex: 1;
-      min-width: 0;
-      align-items: flex-start;
-      justify-content: flex-start;
-    }
-
-    .promo-chip {
-      font-size: 11px;
-      padding: 3px 7px;
-      border-radius: 4px;
-      font-weight: 700;
-      line-height: 1.35;
-      letter-spacing: 0;
-      backdrop-filter: blur(10px);
-
-      &.promo-chip--hot {
-        color: #7f1d1df2;
-        background: #fee2e28c;
-        border: 1px solid rgba(252, 165, 165, 0.45);
-      }
-
-      &.promo-chip--sales {
-        color: rgb(124, 45, 18);
-        background: rgb(254, 215, 170);
-        border: 1px solid rgba(253, 186, 116, 0.4);
-      }
-
-      &.promo-chip--week {
-        color: rgb(91, 33, 182);
-        background: rgb(237, 233, 254);
-        border: 1px solid rgba(196, 181, 253, 0.45);
-      }
-
-      &.promo-chip--muted {
-        color: rgba(55, 65, 81, 0.94);
-        background: rgba(243, 244, 246, 0.5);
-        border: 1px solid rgba(229, 231, 235, 0.7);
-      }
-    }
-
-    .info-meta-line.info-meta-line--labeled {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: baseline;
-      gap: 4px 8px;
-      margin-top: 2px;
-
-      .info-meta-piece {
-        display: inline-flex;
-        align-items: baseline;
-        flex-wrap: wrap;
-        gap: 2px 4px;
-      }
-
-      .info-meta-tag {
-        font-size: 12px;
-        font-weight: 700;
-        color: #111827;
-        letter-spacing: 0.5px;
-        flex-shrink: 0;
-      }
-
-      .info-meta-strong {
-        font-size: clamp(13px, 3vw, 15px);
-        font-weight: 800;
-        color: #9d174d;
-        letter-spacing: 0.03em;
-        line-height: 1.35;
-        word-break: break-word;
-      }
-
-      .info-meta-sep {
-        color: #d1d5db;
-        font-weight: 500;
-      }
-    }
-
-    .grid-price-shell {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-top: 4px;
-      width: 100%;
-      min-width: 0;
-    }
-
-    .grid-price-txn {
-      flex-shrink: 0;
-      max-width: 48%;
-      font-size: clamp(11px, 2.85vw, 13px);
-      font-weight: 500;
-      line-height: 1.35;
-      color: #878787;
-      letter-spacing: 0;
-      text-align: right;
-      pointer-events: none;
-    }
-
-    .info-ec-score-row {
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 4px 6px;
-      margin-top: 4px;
-      line-height: 1.35;
-      pointer-events: none;
-    }
-
-    .info-ec-score-num {
-      font-size: 14px;
-      font-weight: 700;
-      color: #111827;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .info-ec-star-strip {
-      display: inline-flex;
-      align-items: center;
-      gap: 2px;
-      font-size: 14px;
-      line-height: 1;
-      transform: translateY(-0.5px);
-    }
-
-    .info-ec-star {
-      flex-shrink: 0;
-      line-height: 1;
-    }
-
-    .info-ec-star--full {
-      color: #f97316;
-    }
-
-    .info-ec-star--empty {
-      color: #cfd4dc;
-      font-size: 13px;
-    }
-
-    .info-ec-star--half-wrap {
-      display: inline-flex;
-      width: 0.62em;
-      overflow: hidden;
-      justify-content: flex-start;
-
-      .info-ec-star-half {
-        color: #f97316;
-        line-height: 1;
-      }
-    }
-
-    .info-ec-drop {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      align-self: center;
-      font-size: 10px;
-      font-weight: 600;
-      color: #4b5563;
-      line-height: 1;
-      margin-right: -2px;
-      /* ⌵ 字形的 visual center 略高于数字基线，微上移与星号行对齐 */
-      transform: translateY(-0.5px);
-    }
-
-    .info-ec-review-paren {
-      font-size: 13px;
-      font-weight: 500;
-      font-variant-numeric: tabular-nums;
-      color: #2563eb;
-    }
-
-    .grid-price-block {
-      flex: 1;
-      min-width: 0;
-      margin-top: 0;
-    }
-
-    .grid-price-discount-wrap {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .grid-price-inline-row {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: baseline;
-      gap: 10px 12px;
-    }
-
-    .grid-ref-price-muted {
-      font-size: clamp(13px, 2.85vw, 15px);
-      font-weight: 500;
-      color: #9ca3af;
-      text-decoration: line-through;
-      letter-spacing: 0;
-      font-variant-numeric: tabular-nums;
-      opacity: 0.92;
-    }
-
-    .grid-save-strong {
-      font-size: clamp(14px, 3.4vw, 17px);
-      font-weight: 800;
-      color: #c2410c;
-      letter-spacing: 0.5px;
-      line-height: 1.2;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .grid-cart-stack {
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      gap: 10px;
-      margin-top: 10px;
-
-      .grid-cart-qty {
-        width: 100%;
-
-        :deep(.el-input-number) {
-          width: 100%;
-          vertical-align: middle;
-
-          .el-input-number__decrease,
-          .el-input-number__increase {
-            width: 40px;
-            font-size: 16px;
-          }
-
-          .el-input__wrapper {
-            width: 100%;
-            min-height: 42px;
-            padding-top: 6px;
-            padding-bottom: 6px;
-            border-radius: 8px;
-            align-items: center;
-          }
-
-          .el-input__inner {
-            min-height: 28px;
-            line-height: 28px;
-            font-size: 15px;
-            font-weight: 600;
-          }
-        }
-      }
-
-      .grid-add-cart-btn {
-        width: 100%;
-        min-height: 44px;
-        padding: 10px 18px;
-        font-size: 15px;
-        font-weight: 700;
-        letter-spacing: 1px;
-        border-radius: 10px;
-      }
-    }
-
-    .info-price.grid-sale-price {
-      display: flex;
-      align-items: baseline;
-      flex-wrap: wrap;
-      gap: 8px;
-
-      &.grid-sale-price--list-only {
-        margin-top: 2px;
-      }
-
-      &.grid-sale-price--accent-only {
-        margin-top: 0;
-        letter-spacing: 0;
-
-        .info-price-sym {
-          font-size: clamp(14px, 3.15vw, 17px);
-        }
-
-        .info-price-int {
-          font-size: clamp(23px, 5.35vw, 30px);
-        }
-
-        .info-price-frac {
-          font-size: clamp(13px, 3.05vw, 16px);
-        }
-      }
-    }
-
-    .info-title {
-      font-weight: 600;
-      letter-spacing: 2px;
-      color: #1f2937;
-      -webkit-line-clamp: 1;
-      line-clamp: 1;
-      text-decoration: none;
-      transition: color 0.28s ease;
-    }
-
-    /* 标题下价格：大号数字 + 较小货币与小数（无背景边框阴影） */
-    .info-price {
-      color: var(--aw-price-color, #a8163c);
-      letter-spacing: 0;
-      line-height: 1.05;
-      margin-top: 2px;
-
-      .info-price-inner {
-        display: inline-flex;
-        align-items: baseline;
-        flex-wrap: nowrap;
-      }
-
-      .info-price-sym {
-        flex-shrink: 0;
-        font-size: clamp(13px, 2.9vw, 15px);
-        margin-right: 5px;
-        line-height: 1;
-      }
-
-      .info-price-main {
-        display: inline-flex;
-        align-items: baseline;
-        flex-wrap: nowrap;
-        font-weight: 800;
-      }
-
-      .info-price-int {
-        font-size: clamp(21px, 4.8vw, 26px);
-        line-height: 1;
-      }
-
-      .info-price-frac {
-        flex-shrink: 0;
-        font-size: clamp(12px, 2.9vw, 14px);
-        font-weight: 700;
-        line-height: 1;
-        vertical-align: top;
-        margin-left: 0.03em;
-        transform: translateY(-0.2em);
-      }
-    }
-
-    .info-sub {
-      font-size: 12px;
-      color: #6b7280;
-      letter-spacing: 2px;
-      -webkit-line-clamp: 2;
-      line-clamp: 2;
-      line-height: 1.5;
-      min-height: calc(1.5em * 2);
-      text-decoration: none;
-      transition: color 0.28s ease;
-    }
-
-    .info-sub--under-title {
-      margin-top: 2px;
-      min-height: unset;
-      letter-spacing: 1px;
-      font-weight: 500;
-      color: #757575;
-    }
-
-    .info-title,
-    .info-sub {
-      display: -webkit-box;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-  }
-
-  .info-item.search-hit-active {
-    border-color: #c92a52;
-    box-shadow: 0 0 0 3px rgba(201, 42, 82, 0.22), 0 10px 26px rgba(201, 42, 82, 0.24);
-    animation: hitPulse 1.6s ease;
-    transform: translateY(-2px);
-  }
-}
-
-.pagination-section {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-bottom: 40px;
-
-  .custom-pagination {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 15px;
-
-    .page-indicator {
-      color: #6b7280;
-      letter-spacing: 1px;
-      line-height: 1.5;
-
-      .page-num {
-        font-size: 20px;
-        color: #a8163c;
-        line-height: 24px;
-      }
-    }
-  }
-
-  .custom-pagination--fixed {
-    position: fixed;
-    bottom: 60px;
-    left: calc(50% + (100vw - 100%) / 2);
-    transform: translateX(-50%);
-    z-index: v-bind('Z_INDEX.page.floatingPagination');
-    padding: 10px 20px;
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 8px;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-  }
-}
-
-.load-more-trigger {
-  width: 100%;
-  height: 1px;
-}
-
-:deep(.el-pagination) {
-  .el-pager li {
-    &.is-active {
-      background-color: #a8163c;
-      color: white;
-    }
-
-    &:hover {
-      color: #a8163c;
-    }
-  }
-
-  .btn-prev,
-  .btn-next {
-    &:hover {
-      color: #a8163c;
-    }
-  }
-}
-
-@keyframes hitPulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(201, 42, 82, 0.45), 0 8px 18px rgba(201, 42, 82, 0.16);
-  }
-
-  60% {
-    box-shadow: 0 0 0 10px rgba(201, 42, 82, 0.08), 0 14px 30px rgba(201, 42, 82, 0.24);
-  }
-
-  100% {
-    box-shadow: 0 0 0 3px rgba(201, 42, 82, 0.22), 0 10px 26px rgba(201, 42, 82, 0.24);
-  }
-}
-
-@media (min-width: 1025px) {
-  .subnav-box {
-    width: min(86%, 1400px);
-    margin-top: 12px;
-  }
-
-  .wine-filter-bar-wrap {
-    width: min(86%, 1400px);
-    margin: 30px auto 4px;
-
-    .wine-filter-bar {
-      padding: 12px 14px 10px;
-    }
-  }
-
-  .wine-grid-empty-wrap {
-    width: min(86%, 1400px);
-    padding: 22px 18px 48px;
-  }
-
-  .info-list {
-    width: min(86%, 1400px);
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: 12px;
-    padding: 6px 0 34px;
-
-    .info-item {
-      border-radius: 9px;
-      gap: 3px;
-      padding: 4px;
-
-      .info-img-wrap {
-        border-radius: 8px;
-      }
-
-      .info-img-wrap:not(.info-img-wrap--tas-white-aspect-test) {
-        aspect-ratio: 6 / 7;
-      }
-
-      .info-img-top-bar {
-        top: 6px;
-        left: 6px;
-        right: 6px;
-      }
-
-      .info-promo-row {
-        gap: 4px;
-      }
-
-      .promo-chip {
-        font-size: 12px;
-        padding: 3px 6px;
-      }
-
-      .info-meta-line.info-meta-line--labeled {
-        .info-meta-tag {
-          font-size: 13px;
-        }
-
-        .info-meta-strong {
-          font-size: clamp(14px, 3.2vw, 16px);
-        }
-      }
-
-      .grid-price-shell {
-        gap: 6px;
-        margin-top: 2px;
-      }
-
-      .grid-price-txn {
-        font-size: clamp(11px, 2.8vw, 13px);
-      }
-
-      .info-ec-score-row {
-        gap: 3px 5px;
-        margin-top: 3px;
-      }
-
-      .info-ec-score-num {
-        font-size: 15px;
-      }
-
-      .info-ec-star-strip {
-        font-size: 15px;
-      }
-
-      .info-ec-drop {
-        font-size: 11px;
-      }
-
-      .info-ec-review-paren {
-        font-size: 14px;
-      }
-
-      .grid-price-discount-wrap {
-        gap: 6px;
-      }
-
-      .grid-price-inline-row {
-        gap: 8px 10px;
-      }
-
-      .grid-ref-price-muted {
-        font-size: clamp(14px, 3vw, 16px);
-      }
-
-      .grid-save-strong {
-        font-size: clamp(15px, 3.5vw, 17px);
-      }
-
-      .grid-cart-stack {
-        gap: 6px;
-        margin-top: 6px;
-
-        .grid-cart-qty {
-          :deep(.el-input-number) {
-
-            .el-input-number__decrease,
-            .el-input-number__increase {
-              width: 34px;
-              font-size: 14px;
-            }
-
-            .el-input__wrapper {
-              min-height: 36px;
-              padding-top: 4px;
-              padding-bottom: 4px;
-              border-radius: 7px;
-            }
-
-            .el-input__inner {
-              min-height: 22px;
-              line-height: 22px;
-              font-size: 13px;
-            }
-          }
-        }
-
-        .grid-add-cart-btn {
-          min-height: 38px;
-          padding: 8px 14px;
-          font-size: 13px;
-          letter-spacing: 0.5px;
-          border-radius: 8px;
-        }
-      }
-
-      .info-price.grid-sale-price {
-        &.grid-sale-price--accent-only {
-          .info-price-sym {
-            font-size: clamp(15px, 3.3vw, 18px);
-          }
-
-          .info-price-int {
-            font-size: clamp(22px, 5vw, 29px);
-          }
-
-          .info-price-frac {
-            font-size: clamp(13px, 3.2vw, 16px);
-          }
-        }
-      }
-
-      .info-title {
-        font-size: 16px;
-        letter-spacing: 0.5px;
-      }
-
-      .info-price {
-        .info-price-sym {
-          font-size: clamp(13px, 2.85vw, 15px);
-        }
-
-        .info-price-int {
-          font-size: clamp(20px, 4.5vw, 26px);
-        }
-
-        .info-price-frac {
-          font-size: clamp(12px, 2.8vw, 14px);
-        }
-      }
-
-      .info-sub {
-        font-size: 12px;
-        letter-spacing: 0.5px;
-      }
-
-      .info-sub--under-title {
-        letter-spacing: 0.5px;
-      }
-    }
-  }
-}
-
-@media (min-width: 769px) and (max-width: 1024px) {
-  .subnav-box {
-    .subnav-list {
-      width: 95%;
-      flex: 10px;
-    }
-  }
-
-  .info-list {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 12px;
-
-    .info-item {
-      min-width: 0;
-      overflow: hidden;
-
-      .info-title,
-      .info-sub,
-      .info-sub--under-title,
-      .info-meta-strong,
-      .grid-ref-price-muted,
-      .grid-save-strong,
-      .grid-price-txn,
-      .info-ec-review-paren {
-        display: block;
-        min-width: 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-      }
-
-      .info-title,
-      .info-sub {
-        display: block;
-        width: 100%;
-        max-width: 100%;
-      }
-
-      .info-title {
-        -webkit-line-clamp: unset;
-        line-clamp: unset;
-      }
-
-      .info-meta-line.info-meta-line--labeled {
-        width: 100%;
-        flex-wrap: nowrap;
-      }
-
-      .info-meta-piece {
-        min-width: 0;
-        flex: 1 1 0;
-        overflow: hidden;
-      }
-
-      .info-meta-line.info-meta-line--labeled {
-        min-width: 0;
-      }
-
-      &.info-item--nav-menu {
-        overflow: hidden;
-
-        .nav-menu-list {
-          min-width: 0;
-        }
-
-        .nav-menu-row {
-          min-width: 0;
-          grid-template-columns: minmax(0, 1fr) auto;
-        }
-
-        .nav-menu-name {
-          display: flex;
-          align-items: center;
-          min-width: 0;
-          max-width: 100%;
-          overflow: hidden;
-          white-space: normal;
-        }
-
-        .nav-menu-wine-icon {
-          flex-shrink: 0;
-        }
-
-        .nav-menu-name-text {
-          flex: 1 1 auto;
-          min-width: 0;
-          max-width: 100%;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-        }
-      }
-    }
-  }
-}
-
-@media (max-width: 768px) {
-  .subnav-box {
-    flex-direction: column;
-    padding: 0;
-
-    .subnav-list {
-      display: grid;
-      width: 100%;
-      gap: 10px;
-      grid-template-columns: repeat(1, 1fr);
-      // margin-top: 10px;
-    }
-  }
-}
-
-// 移动端竖屏
-@media (max-width: 768px) and (orientation: portrait) {
-  .info-list {
-    grid-template-columns: repeat(1, 1fr);
-    gap: 20px;
-
-    .info-item {
-      gap: 10px;
-    }
-  }
-}
-
-// 移动端横屏
-@media (max-width: 768px) and (orientation: landscape) {
-  .info-list {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
-
-    .info-item {
-      gap: 8px;
-    }
-  }
-}
-
-
-/* 超小屏幕设备适配（iPhone 4、iPhone 5、iPhone SE等，<=375px） */
-@media (max-width: 375px) {
-  .subnav-box {
-    .subnav-list {
-      gap: 0
-    }
-  }
-}
-</style>
