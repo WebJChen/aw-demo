@@ -6,7 +6,9 @@ import { useRoute, useRouter } from 'vue-router'
 import CatalogGridShell from '@/components/CatalogGridShell.vue'
 import RegionNavMenuCard from '@/components/RegionNavMenuCard.vue'
 import { useDeviceStore } from '@/stores/deviceStore'
+import { useNavStore } from '@/stores/navStore'
 import navData from '@/data/split/nav.json'
+import { buildWineGridRoute } from '@/utils/wineGridRoute'
 import { buildWineryDetailRouteTarget } from '@/utils/wineryDetailPage'
 import { getItemRegionByPath } from '@/utils/dataRepository'
 import { resolveDataImage } from '@/utils/dataImageResolver'
@@ -32,7 +34,9 @@ const SEARCH_SCOPE_OPTIONS = [
 const route = useRoute()
 const router = useRouter()
 const deviceStore = useDeviceStore()
+const navStore = useNavStore()
 const { isPhone, isPortrait } = storeToRefs(deviceStore)
+const { activeSubNav } = storeToRefs(navStore)
 
 const shellRef = ref(null)
 const getGridEl = () => shellRef.value?.getGridEl?.() ?? null
@@ -246,6 +250,12 @@ const openWineryPreviewInNewWindow = (menuItem) => {
 
 const goHome = () => {
   router.push({ name: 'Home' })
+}
+
+const goBackToWineGrid = () => {
+  const routeTarget = buildWineGridRoute({ activeSubNavName: activeSubNav.value })
+  const href = router.resolve(routeTarget).href
+  window.open(href, '_blank', 'noopener,noreferrer')
 }
 
 const openWineryDetailInNewWindow = (entry) => {
@@ -585,10 +595,17 @@ onUnmounted(() => {
 
     <template #grid-toolbar>
       <div class="catalog-page-toolbar">
-        <!-- 【样式测试·可删】仅 tasmania：州酒庄列表标题栏在子导航上方 -->
-        <button v-if="isTasmaniaWineryLayoutTest" type="button" class="back-to-wine-grid-btn w100">
-          {{ regionTitle }}酒庄列表
-        </button>
+        <!-- 【样式测试·可删】仅 tasmania：州酒庄列表标题栏 + 返回酒款信息，在子导航上方 -->
+        <div v-if="isTasmaniaWineryLayoutTest" class="catalog-page-toolbar catalog-page-toolbar--tasmania">
+          <div class="back-to-wine-grid-btn w100 catalog-page-toolbar__title">
+            {{ regionTitle }}酒庄列表
+          </div>
+          <button type="button" class="back-to-wine-grid-btn back-to-wine-grid-btn--plain w100"
+            @click="goBackToWineGrid">
+            <span class="back-to-wine-grid-btn__arrow" aria-hidden="true">‹</span>
+            返回首页
+          </button>
+        </div>
         <div v-else class="catalog-page-toolbar catalog-page-toolbar--winery-nav">
           <button type="button" class="winery-nav-pager-btn winery-nav-pager-btn--prev">
             上一页
@@ -605,12 +622,8 @@ onUnmounted(() => {
 
     <template #leading>
       <!-- 【样式测试·可删】仅非 tasmania 州展示八州导航首格 -->
-      <RegionNavMenuCard
-        v-if="showLeadingNavMenu"
-        :nav-menu-items="navMenuItems"
-        :active-region-path="regionPath"
-        @select="openWineryPreviewInNewWindow"
-      />
+      <RegionNavMenuCard v-if="showLeadingNavMenu" :nav-menu-items="navMenuItems" :active-region-path="regionPath"
+        @select="openWineryPreviewInNewWindow" />
     </template>
 
     <template #items>
@@ -630,7 +643,7 @@ onUnmounted(() => {
           <span class="info-meta-chip info-meta-chip--type">{{ row.display.wineryType }}</span>
           <span class="info-meta-chip info-meta-chip--visit">{{ row.display.visitLabel }}</span>
           <span v-for="tag in row.display.styleTags" :key="tag" class="info-meta-chip info-meta-chip--tag">{{ tag
-          }}</span>
+            }}</span>
         </div>
         <p class="info-winery-teaser" :title="row.display.teaser">{{ row.display.teaser }}</p>
       </div>

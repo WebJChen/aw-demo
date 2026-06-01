@@ -1347,6 +1347,86 @@
   width: 100%;
 }
 
+/* 【样式测试·可删】tasmania 酒庄页：州标题 + 返回酒款信息上下排列 */
+.catalog-page-toolbar--tasmania {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  box-sizing: border-box;
+
+  .catalog-page-toolbar__title {
+    cursor: default;
+    user-select: none;
+
+    &:hover,
+    &:active {
+      background: linear-gradient(180deg, #ffffff 0%, #fce7ec 100%);
+      border-color: rgba(168, 22, 60, 0.22);
+      color: #a8163c;
+      box-shadow: none;
+      transform: none;
+    }
+  }
+
+  .back-to-wine-grid-btn--plain {
+    justify-content: center;
+    background: #fff;
+    border-color: rgba(168, 22, 60, 0.22);
+
+    &:hover {
+      background: rgba(168, 22, 60, 0.04);
+      border-color: rgba(168, 22, 60, 0.35);
+      color: #7f132e;
+      box-shadow: none;
+    }
+
+    &:active {
+      background: rgba(168, 22, 60, 0.08);
+      box-shadow: none;
+    }
+  }
+
+  .back-to-wine-grid-btn__arrow {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    width: 1em;
+    margin-right: 2px;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  @media (max-width: 768px) {
+    gap: 6px;
+
+    .back-to-wine-grid-btn {
+      padding: 10px 12px;
+      font-size: 13px;
+    }
+
+    .back-to-wine-grid-btn__arrow {
+      font-size: 16px;
+    }
+  }
+
+  @media (max-width: 375px) {
+    gap: 5px;
+
+    .back-to-wine-grid-btn {
+      padding: 9px 10px;
+      font-size: 12px;
+      letter-spacing: 0.3px;
+    }
+
+    .back-to-wine-grid-btn__arrow {
+      font-size: 15px;
+    }
+  }
+}
+
 .back-to-wine-grid-btn {
   display: flex;
   align-items: center;
