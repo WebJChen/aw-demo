@@ -6,9 +6,7 @@ import { useRoute, useRouter } from 'vue-router'
 import CatalogGridShell from '@/components/CatalogGridShell.vue'
 import RegionNavMenuCard from '@/components/RegionNavMenuCard.vue'
 import { useDeviceStore } from '@/stores/deviceStore'
-import { useNavStore } from '@/stores/navStore'
 import navData from '@/data/split/nav.json'
-import { buildWineGridRoute } from '@/utils/wineGridRoute'
 import { buildWineryDetailRouteTarget } from '@/utils/wineryDetailPage'
 import { getItemRegionByPath } from '@/utils/dataRepository'
 import { resolveDataImage } from '@/utils/dataImageResolver'
@@ -34,9 +32,7 @@ const SEARCH_SCOPE_OPTIONS = [
 const route = useRoute()
 const router = useRouter()
 const deviceStore = useDeviceStore()
-const navStore = useNavStore()
 const { isPhone, isPortrait } = storeToRefs(deviceStore)
-const { activeSubNav } = storeToRefs(navStore)
 
 const shellRef = ref(null)
 const getGridEl = () => shellRef.value?.getGridEl?.() ?? null
@@ -57,6 +53,9 @@ let scrollUpdateFrameId = 0
 
 const regionPath = computed(() => (typeof route.params.regionPath === 'string' ? route.params.regionPath : ''))
 const regionTitle = computed(() => currentRegionData.value?.navName || '')
+// 【样式测试·可删】tasmania 州酒庄页：首格不展示八州导航；州标题栏在子导航上方
+const isTasmaniaWineryLayoutTest = computed(() => regionPath.value === 'tasmania')
+const showLeadingNavMenu = computed(() => !isTasmaniaWineryLayoutTest.value)
 const navMenuItems = computed(() =>
   navData.slice(0, 8).map((region) => ({
     navName: region?.navName || '',
@@ -245,10 +244,8 @@ const openWineryPreviewInNewWindow = (menuItem) => {
   window.open(href, '_blank', 'noopener,noreferrer')
 }
 
-const goBackToWineGrid = () => {
-  const routeTarget = buildWineGridRoute({ activeSubNavName: activeSubNav.value })
-  const href = router.resolve(routeTarget).href
-  window.open(href, '_blank', 'noopener,noreferrer')
+const goHome = () => {
+  router.push({ name: 'Home' })
 }
 
 const openWineryDetailInNewWindow = (entry) => {
@@ -557,49 +554,28 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <CatalogGridShell
-    ref="shellRef"
-    variant="winery"
-    :sub-nav-items="subNavList"
-    :active-sub-nav="activeSubNavLabel"
-    :sub-nav-disabled-map="subNavDisabledMap"
-    :show-grid="filteredDataTotal > 0"
-    :has-more="hasMore"
-    :show-pagination="filteredDataTotal > 0"
-    :scroll-page="scrollPage"
-    :total-pages="totalPages"
-    @sub-nav-select="handleSubNavClick"
-  >
+  <CatalogGridShell ref="shellRef" variant="winery" :sub-nav-items="subNavList" :active-sub-nav="activeSubNavLabel"
+    :sub-nav-disabled-map="subNavDisabledMap" :toolbar-before-sub-nav="isTasmaniaWineryLayoutTest"
+    :show-grid="filteredDataTotal > 0" :has-more="hasMore" :show-pagination="filteredDataTotal > 0"
+    :scroll-page="scrollPage" :total-pages="totalPages" @sub-nav-select="handleSubNavClick">
     <template #filter>
       <div class="wine-filter-toolbar wine-filter-toolbar--winery">
-          <el-input
-            v-model="localSearchKeyword"
-            class="wine-filter-search"
-            size="large"
-            clearable
-            placeholder="搜索酒庄名称、简介、标签…"
-            @keyup.enter="executeSearch"
-            @clear="onSearchClear"
-          >
-            <template #prefix>
-              <el-icon>
-                <Search />
-              </el-icon>
-            </template>
-            <template #append>
-              <el-button type="primary" class="wine-filter-submit" @click="executeSearch">搜索</el-button>
-            </template>
-          </el-input>
-          <el-select v-model="searchScope" class="wine-filter-select" size="large" placeholder="筛选字段">
-            <el-option
-              v-for="opt in SEARCH_SCOPE_OPTIONS"
-              :key="opt.value"
-              :label="opt.label"
-              :value="opt.value"
-            />
-          </el-select>
-          <el-button size="large" class="wine-filter-reset" @click="resetSearchFiltersAndView">重置</el-button>
-        </div>
+        <el-input v-model="localSearchKeyword" class="wine-filter-search" size="large" clearable
+          placeholder="搜索酒庄名称、简介、标签…" @keyup.enter="executeSearch" @clear="onSearchClear">
+          <template #prefix>
+            <el-icon>
+              <Search />
+            </el-icon>
+          </template>
+          <template #append>
+            <el-button type="primary" class="wine-filter-submit" @click="executeSearch">搜索</el-button>
+          </template>
+        </el-input>
+        <el-select v-model="searchScope" class="wine-filter-select" size="large" placeholder="筛选字段">
+          <el-option v-for="opt in SEARCH_SCOPE_OPTIONS" :key="opt.value" :label="opt.label" :value="opt.value" />
+        </el-select>
+        <el-button size="large" class="wine-filter-reset" @click="resetSearchFiltersAndView">重置</el-button>
+      </div>
       <p class="wine-filter-hint">
         <span v-if="appliedSearchKeyword">筛选结果 · </span>
         <span v-else>本栏共 </span>
@@ -609,32 +585,42 @@ onUnmounted(() => {
 
     <template #grid-toolbar>
       <div class="catalog-page-toolbar">
-        <button type="button" class="back-to-wine-grid-btn w100" @click="goBackToWineGrid">返回查看酒款信息</button>
+        <!-- 【样式测试·可删】仅 tasmania：州酒庄列表标题栏在子导航上方 -->
+        <button v-if="isTasmaniaWineryLayoutTest" type="button" class="back-to-wine-grid-btn w100">
+          {{ regionTitle }}酒庄列表
+        </button>
+        <div v-else class="catalog-page-toolbar catalog-page-toolbar--winery-nav">
+          <button type="button" class="winery-nav-pager-btn winery-nav-pager-btn--prev">
+            上一页
+          </button>
+          <button type="button" class="winery-nav-home-btn" @click="goHome">
+            返回首页
+          </button>
+          <button type="button" class="winery-nav-pager-btn winery-nav-pager-btn--next">
+            下一页
+          </button>
+        </div>
       </div>
     </template>
 
     <template #leading>
-      <RegionNavMenuCard :nav-menu-items="navMenuItems" @select="openWineryPreviewInNewWindow" />
+      <!-- 【样式测试·可删】仅非 tasmania 州展示八州导航首格 -->
+      <RegionNavMenuCard
+        v-if="showLeadingNavMenu"
+        :nav-menu-items="navMenuItems"
+        :active-region-path="regionPath"
+        @select="openWineryPreviewInNewWindow"
+      />
     </template>
 
     <template #items>
-      <div
-        v-for="row in gridRows"
+      <div v-for="row in gridRows"
         :key="`${row.entry?.regionPath || ''}-${row.entry?.subNavPath || ''}-${row.entry?.sourceItemIndex ?? row.idx}`"
-        class="info-item pointer"
-        :data-title="row.data.title"
-        :data-hit-key="buildHitKeyForEntry(row.entry)"
-        @click="openWineryDetailInNewWindow(row.entry)"
-      >
+        class="info-item pointer" :data-title="row.data.title" :data-hit-key="buildHitKeyForEntry(row.entry)"
+        @click="openWineryDetailInNewWindow(row.entry)">
         <div class="info-img-wrap bgfff">
-          <img
-            :src="resolveImageUrl(row.data.img)"
-            :alt="row.data.title"
-            class="w100"
-            :loading="getImageLoading(row.idx)"
-            decoding="async"
-            :fetchpriority="getImageFetchPriority(row.idx)"
-          >
+          <img :src="resolveImageUrl(row.data.img)" :alt="row.data.title" class="w100"
+            :loading="getImageLoading(row.idx)" decoding="async" :fetchpriority="getImageFetchPriority(row.idx)">
         </div>
         <div class="info-title fs16" :title="row.data.title">{{ row.data.title }}</div>
         <div v-if="row.data.enTitle" class="info-sub info-sub--under-title" :title="row.data.enTitle">
@@ -643,7 +629,8 @@ onUnmounted(() => {
         <div class="info-meta-line info-meta-line--winery">
           <span class="info-meta-chip info-meta-chip--type">{{ row.display.wineryType }}</span>
           <span class="info-meta-chip info-meta-chip--visit">{{ row.display.visitLabel }}</span>
-          <span v-for="tag in row.display.styleTags" :key="tag" class="info-meta-chip info-meta-chip--tag">{{ tag }}</span>
+          <span v-for="tag in row.display.styleTags" :key="tag" class="info-meta-chip info-meta-chip--tag">{{ tag
+          }}</span>
         </div>
         <p class="info-winery-teaser" :title="row.display.teaser">{{ row.display.teaser }}</p>
       </div>

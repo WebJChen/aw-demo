@@ -209,15 +209,31 @@
 .winery-detail-tag-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
   margin-top: 16px;
 }
 
 .winery-detail-tag {
-  padding: 0;
-  color: #374151;
-  font-size: 13px;
-  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 10px;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.35;
+  border: 1px solid transparent;
+
+  &--1 {
+    color: #a8163c;
+    background: rgba(168, 22, 60, 0.1);
+    border-color: rgba(168, 22, 60, 0.22);
+  }
+
+  &--2 {
+    color: #1d4ed8;
+    background: rgba(59, 130, 246, 0.1);
+    border-color: rgba(59, 130, 246, 0.22);
+  }
 }
 
 .winery-detail-feature-grid {

@@ -271,6 +271,31 @@
         border: 0;
       }
 
+      .nav-menu-row--active {
+        padding: 6px 8px;
+        border-radius: 8px;
+        background: linear-gradient(180deg, #c92a52 0%, #a8163c 100%);
+        box-shadow: 0 6px 16px rgba(168, 22, 60, 0.26);
+
+        .nav-menu-name,
+        .nav-menu-name-text {
+          color: #fff;
+          font-weight: 800;
+          border-bottom-color: transparent;
+        }
+
+        .nav-menu-wine-icon,
+        .nav-menu-arrow {
+          color: #fff;
+        }
+
+        .nav-menu-name-text:hover,
+        .nav-menu-name-text:active {
+          color: #fff;
+          border-bottom-color: transparent;
+        }
+      }
+
       .nav-menu-name {
         display: inline-flex;
         align-items: center;
@@ -1278,6 +1303,46 @@
   }
 }
 
+/* 【样式测试·可删】toolbar 在子导航上方时，与 subnav-box 对调上下间距（仅 tasmania 酒庄页启用） */
+.catalog-grid-toolbar.catalog-grid-toolbar--first {
+  margin-top: 14px;
+  margin-bottom: 0;
+
+  +.subnav-box.center {
+    margin-top: -4px;
+    margin-bottom: 6px;
+  }
+
+  @media (min-width: 1025px) {
+    margin-top: 12px;
+
+    +.subnav-box.center {
+      margin-top: -4px;
+    }
+  }
+
+  /* 移动端：subnav-box 默认 margin-top 14px ↔ toolbar 默认 -4px / 6px 对调 */
+  @media (max-width: 768px) {
+    margin-top: 14px;
+    margin-bottom: 0;
+
+    +.subnav-box.center {
+      margin-top: -4px;
+      margin-bottom: 6px;
+    }
+  }
+
+  @media (max-width: 375px) {
+    margin-top: 14px;
+    margin-bottom: 0;
+
+    +.subnav-box.center {
+      margin-top: -4px;
+      margin-bottom: 6px;
+    }
+  }
+}
+
 .catalog-page-toolbar {
   width: 100%;
 }
@@ -1310,6 +1375,77 @@
   &:active {
     transform: translateY(1px);
     box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.12);
+  }
+}
+
+.catalog-page-toolbar--winery-nav {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+  box-sizing: border-box;
+
+  .winery-nav-pager-btn,
+  .winery-nav-home-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid rgba(168, 22, 60, 0.22);
+    background: linear-gradient(180deg, #ffffff 0%, #fce7ec 100%);
+    color: #a8163c;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.12s ease, box-shadow 0.12s ease;
+
+    &:hover {
+      background: linear-gradient(180deg, #c92a52 0%, #a8163c 100%);
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 4px 12px rgba(168, 22, 60, 0.2);
+    }
+
+    &:active {
+      transform: translateY(1px);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.12);
+    }
+  }
+
+  .winery-nav-pager-btn {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .winery-nav-home-btn {
+    flex: 1 1 0;
+    min-width: 0;
+    width: auto;
+  }
+
+  @media (max-width: 768px) {
+    gap: 6px;
+
+    .winery-nav-pager-btn,
+    .winery-nav-home-btn {
+      padding: 10px 10px;
+      font-size: 13px;
+    }
+
+    .winery-nav-pager-btn {
+      padding-left: 8px;
+      padding-right: 8px;
+    }
+  }
+
+  @media (max-width: 375px) {
+    .winery-nav-pager-btn,
+    .winery-nav-home-btn {
+      font-size: 12px;
+      padding: 9px 8px;
+    }
   }
 }
 

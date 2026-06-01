@@ -10,7 +10,6 @@ import { saveSearchTarget } from '@/utils/searchUtils'
 import {
   buildWineryDetailPageModel,
   buildWineryListRouteTarget,
-  getClassicWineDisplayLimit,
   getClassicWineGridClass,
   loadClassicWinesForWinery,
   loadWineryDetailContext,
@@ -36,15 +35,6 @@ const bannerCarouselRef = ref(null)
 const regionPath = computed(() => (typeof route.params.regionPath === 'string' ? route.params.regionPath : ''))
 const subNavPath = computed(() => (typeof route.params.subNav === 'string' ? route.params.subNav : ''))
 const itemIndex = computed(() => (typeof route.params.itemIndex === 'string' ? route.params.itemIndex : ''))
-
-const classicWineLimit = computed(() =>
-  getClassicWineDisplayLimit({
-    isPhone: isPhone.value,
-    isPortrait: isPortrait.value,
-    isTablet: isTablet.value,
-    isPc: isPc.value
-  })
-)
 
 const classicWineGridClass = computed(() =>
   getClassicWineGridClass({
@@ -95,7 +85,7 @@ const syncDetail = async () => {
   detailCtx.value = ctx
   pageModel.value = buildWineryDetailPageModel(ctx)
   bannerImages.value = resolveWineryDetailImages(ctx.item)
-  classicWines.value = await loadClassicWinesForWinery(ctx, classicWineLimit.value)
+  classicWines.value = await loadClassicWinesForWinery(ctx, 0)
   loading.value = false
 }
 
@@ -148,11 +138,6 @@ watch([regionPath, subNavPath, itemIndex], () => {
   void syncDetail()
 })
 
-watch(classicWineLimit, async (limit) => {
-  if (!detailCtx.value || loading.value) return
-  classicWines.value = await loadClassicWinesForWinery(detailCtx.value, limit)
-})
-
 onMounted(() => {
   deviceStore.startListen()
   void syncDetail()
@@ -203,7 +188,7 @@ onUnmounted(() => {
           <div class="winery-detail-hero-copy">
             <p class="winery-detail-kicker">{{ pageModel.regionNavName }} · 首府 {{ pageModel.capital }}</p>
             <h1 class="winery-detail-title">
-              {{ pageModel.title }}
+              {{ pageModel.title }}酒庄专页
               <span v-if="pageModel.enTitle" class="winery-detail-title-en">（{{ pageModel.enTitle }}）</span>
             </h1>
             <div class="winery-detail-chip-row">
@@ -229,10 +214,10 @@ onUnmounted(() => {
         </div>
 
         <section class="winery-detail-section">
-          <h2 class="winery-detail-section-title">{{ pageModel.introTitle }}</h2>
+          <h2 class="winery-detail-section-title">相关介绍</h2>
           <p class="winery-detail-intro">{{ pageModel.intro }}</p>
           <div v-if="pageModel.tags.length" class="winery-detail-tag-row">
-            <span v-for="tag in pageModel.tags" :key="tag" class="winery-detail-tag">{{ tag }}</span>
+            <span v-for="(tag, tagIdx) in pageModel.tags" :key="tag" class="winery-detail-tag" :class="`winery-detail-tag--${(tagIdx % 2) + 1}`">{{ tag }}</span>
           </div>
         </section>
 
@@ -249,7 +234,7 @@ onUnmounted(() => {
         </div>
 
         <section v-if="pageModel.features.length" class="winery-detail-section">
-          <h2 class="winery-detail-section-title">到访与联系</h2>
+          <h2 class="winery-detail-section-title">联系信息</h2>
           <div class="winery-detail-feature-grid">
             <article v-for="(feature, index) in pageModel.features" :key="index" class="winery-detail-feature-card">
               <div class="winery-detail-feature-icon">
@@ -280,7 +265,7 @@ onUnmounted(() => {
         </div>
 
         <section class="winery-detail-section winery-detail-section--tips">
-          <h2 class="winery-detail-section-title">参观提示</h2>
+          <h2 class="winery-detail-section-title">提供的服务</h2>
           <ul class="winery-detail-tips">
             <li v-for="(tip, index) in pageModel.visitTips" :key="index">{{ tip }}</li>
           </ul>
@@ -299,7 +284,7 @@ onUnmounted(() => {
         </div>
 
         <section class="winery-detail-section">
-          <h2 class="winery-detail-section-title">经典推荐</h2>
+          <h2 class="winery-detail-section-title">本酒庄所有在售酒款列表</h2>
 
           <div v-if="classicWines.length" class="winery-detail-wines" :class="classicWineGridClass">
             <button
@@ -327,7 +312,7 @@ onUnmounted(() => {
               </div>
             </button>
           </div>
-          <p v-else class="winery-detail-empty-wines">暂无经典推荐，请稍后在酒款栏目浏览本州酒款。</p>
+          <p v-else class="winery-detail-empty-wines">暂无在售酒款，请稍后在酒款栏目浏览本州酒款。</p>
         </section>
 
         <footer class="winery-detail-footer">

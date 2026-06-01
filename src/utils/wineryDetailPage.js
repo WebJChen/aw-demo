@@ -132,11 +132,10 @@ export function buildWineryDetailPageModel(ctx) {
     capital: region?.capital || '',
     regionLabel: getWineryRegionDisplayName(item),
     townLabel: getWineryTownDisplayName(item),
-    introTitle: info.name || info.dialogInfoTitle || item?.title || '关于酒庄',
     intro:
       info.desc ||
       info.dialogInfoDesc ||
-      `${item?.title || '该酒庄'}的详细介绍正在整理中。欢迎通过下方联系方式预约到访或咨询经典酒款。`,
+      `${item?.title || '该酒庄'}的详细介绍正在整理中。欢迎通过下方联系方式预约到访或咨询在售酒款。`,
     features,
     tags,
     source,
@@ -222,8 +221,10 @@ export async function loadClassicWinesForWinery(ctx, limit = 5) {
 
   const offset = (Number(itemIndex) || 0) % Math.max(1, sorted.length)
   const rotated = [...sorted.slice(offset), ...sorted.slice(0, offset)]
+  const takeAll = limit == null || Number(limit) <= 0
+  const sliceCount = takeAll ? rotated.length : Math.min(Number(limit) || 5, rotated.length)
 
-  return rotated.slice(0, limit).map((row) => ({
+  return rotated.slice(0, sliceCount).map((row) => ({
     data: row.wineItem,
     regionPath,
     subNavPath: row.subNavPath,

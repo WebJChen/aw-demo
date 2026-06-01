@@ -42,6 +42,11 @@ defineProps({
   totalPages: {
     type: Number,
     default: 1
+  },
+  /** 为 true 时 grid-toolbar 在子导航上方（默认在下方） */
+  toolbarBeforeSubNav: {
+    type: Boolean,
+    default: false
   }
 })
 
@@ -63,6 +68,10 @@ defineExpose({
     </div>
   </div>
 
+  <div v-if="$slots['grid-toolbar'] && toolbarBeforeSubNav" class="catalog-grid-toolbar catalog-grid-toolbar--first center">
+    <slot name="grid-toolbar" />
+  </div>
+
   <WineSubNav
     :items="subNavItems"
     :active-item="activeSubNav"
@@ -70,7 +79,7 @@ defineExpose({
     @select="$emit('sub-nav-select', $event)"
   />
 
-  <div v-if="$slots['grid-toolbar']" class="catalog-grid-toolbar center">
+  <div v-if="$slots['grid-toolbar'] && !toolbarBeforeSubNav" class="catalog-grid-toolbar center">
     <slot name="grid-toolbar" />
   </div>
 
