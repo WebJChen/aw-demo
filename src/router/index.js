@@ -262,13 +262,13 @@ const buildRestoreTargetFromLastRoute = (lastRoute, persisted) => {
 
 			|| region?.subNavList?.find((subNav) => subNav?.isShow !== false)?.subNavPath
 
-			|| 'wine'
+			|| 'wineries'
 
 		return {
 
 			name: 'WineryPreview',
 
-			params: { regionPath, subNav: itemSubNav }
+			params: { regionPath, subNav: itemSubNav === 'wine' ? 'wineries' : itemSubNav }
 
 		}
 
@@ -282,11 +282,13 @@ const buildRestoreTargetFromLastRoute = (lastRoute, persisted) => {
 
 		const region = findRegionByPath(regionPath)
 
-		const itemSubNav = String(params.subNav || '').trim()
+		const itemSubNavRaw = String(params.subNav || '').trim()
 
 			|| region?.subNavList?.find((subNav) => subNav?.isShow !== false)?.subNavPath
 
-			|| 'wine'
+			|| 'wineries'
+
+		const itemSubNav = itemSubNavRaw === 'wine' ? 'wineries' : itemSubNavRaw
 
 		const itemIndex = String(params.itemIndex ?? '').trim()
 

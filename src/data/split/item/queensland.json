@@ -7,7 +7,7 @@
   "subNavList": [
     {
       "subNavName": "葡萄酒酒庄",
-      "subNavPath": "wine",
+      "subNavPath": "wineries",
       "isShow": true,
       "itemData": [
         {
@@ -1519,7 +1519,7 @@
         },
         {
           "title": "Beachtree Distilling Co.",
-          "img": "../assets/img/categoryImgs/queensland/BeachtreeDistillingCo.jpg",
+          "img": "../assets/img/item/Queensland/BeachtreeDistillingCo.jpg",
           "enTitle": "Beachtree Distilling Co.",
           "info": {
             "name": "Beachtree Distilling Co.",
@@ -1555,7 +1555,7 @@
         },
         {
           "title": "Sunshine & Sons",
-          "img": "../assets/img/categoryImgs/queensland/DistilleryDrone.jpg",
+          "img": "../assets/img/item/Queensland/DistilleryDrone.jpg",
           "enTitle": "Sunshine & Sons",
           "info": {
             "name": "Sunshine & Sons",
@@ -1622,7 +1622,7 @@
         },
         {
           "title": "The Rare Orchid Distilling Co.",
-          "img": "../assets/img/categoryImgs/queensland/RareOrchidDistilling.jpg",
+          "img": "../assets/img/item/Queensland/RareOrchidDistilling.jpg",
           "enTitle": "The Rare Orchid Distilling Co.",
           "info": {
             "name": "The Rare Orchid Distilling Co.",
@@ -1686,7 +1686,7 @@
         },
         {
           "title": "Six-Tricks Distilling Co.",
-          "img": "../assets/img/categoryImgs/queensland/sixtricks.jpg",
+          "img": "../assets/img/item/Queensland/sixtricks.jpg",
           "enTitle": "Six-Tricks Distilling Co.",
           "info": {
             "name": "Six-Tricks Distilling Co.",
@@ -1722,7 +1722,7 @@
         },
         {
           "title": "Kalki Moon",
-          "img": "../assets/img/categoryImgs/queensland/KalkiMoon.jpg",
+          "img": "../assets/img/item/Queensland/KalkiMoon.jpg",
           "enTitle": "Kalki Moon",
           "info": {
             "name": "Kalki Moon",
@@ -1756,7 +1756,7 @@
         },
         {
           "title": "Rebellion Rum Co.",
-          "img": "../assets/img/categoryImgs/queensland/RebellionRum.jpg",
+          "img": "../assets/img/item/Queensland/RebellionRum.jpg",
           "enTitle": "Rebellion Rum Co.",
           "info": {
             "name": "Rebellion Rum Co.",
@@ -1791,7 +1791,7 @@
         },
         {
           "title": "Panezski Artisan Distillery",
-          "img": "../assets/img/categoryImgs/queensland/PanezskiArtisanDistillery.jpg",
+          "img": "../assets/img/item/Queensland/PanezskiArtisanDistillery.jpg",
           "enTitle": "Panezski Artisan Distillery",
           "info": {
             "name": "Panezski Artisan Distillery",
@@ -1824,7 +1824,7 @@
         },
         {
           "title": "Beech Mountain Distillery",
-          "img": "../assets/img/categoryImgs/queensland/BeechMountainDistillery.jpg",
+          "img": "../assets/img/item/Queensland/BeechMountainDistillery.jpg",
           "enTitle": "Beech Mountain Distillery",
           "info": {
             "name": "Beech Mountain Distillery",
@@ -1890,7 +1890,7 @@
         },
         {
           "title": "Bavay Distillery",
-          "img": "../assets/img/categoryImgs/queensland/BavayDistillery.jpg",
+          "img": "../assets/img/item/Queensland/BavayDistillery.jpg",
           "enTitle": "Bavay Distillery",
           "info": {
             "name": "Bavay Distillery",
@@ -1957,7 +1957,7 @@
         },
         {
           "title": "Artisans Secret Distillery",
-          "img": "../assets/img/categoryImgs/queensland/ArtisansSecretDistillery.jpg",
+          "img": "../assets/img/item/Queensland/ArtisansSecretDistillery.jpg",
           "enTitle": "Artisans Secret Distillery",
           "info": {
             "name": "Artisans Secret Distillery",
@@ -2160,7 +2160,7 @@
         },
         {
           "title": "Summit Estate Wines",
-          "img": "../assets/img/categoryImgs/queensland/summitestatewines.jpg",
+          "img": "../assets/img/item/Queensland/summitestatewines.jpg",
           "enTitle": "Summit Estate Wines",
           "info": {
             "name": "Summit Estate Wines",

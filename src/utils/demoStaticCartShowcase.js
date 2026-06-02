@@ -5,10 +5,10 @@
 
 import { demoThumbnailByLineIndex } from '@/utils/demoStaticMedia'
 
-/** 与 ItemGrid `buildHitKey` 规则一致，对应 `data/split/wine/tasmania.json` 红酒子导航 `red-wine` 下列表下标 */
-export const DEMO_HIT_TOLPUDDLE = 'wine__tasmania__red-wine__1'
-export const DEMO_HIT_DEVILS_CORNER = 'wine__tasmania__red-wine__3'
-export const DEMO_HIT_TAMAR_RIDGE = 'wine__tasmania__red-wine__4'
+/** 与 ItemGrid `buildHitKey` 规则一致（标题 slug） */
+export const DEMO_HIT_TOLPUDDLE = 'wine__tasmania__red-wine__tolpuddle-vineyard-pinot-noir'
+export const DEMO_HIT_DEVILS_CORNER = 'wine__tasmania__red-wine__devils-corner-pinot-noir'
+export const DEMO_HIT_TAMAR_RIDGE = 'wine__tasmania__red-wine__tamar-ridge-pinot-noir'
 
 const DEMO_ROW_BLUEPRINT = [
   {

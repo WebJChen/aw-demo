@@ -1,7 +1,7 @@
 import { getItemRegionByPath, getWineRegionByPath } from '@/utils/dataRepository'
 import { buildWineryGridDisplay } from '@/utils/wineryGridExtras'
 import { buildWineDisplay } from '@/utils/wineGridExtras'
-import { resolveDataImage } from '@/utils/dataImageResolver'
+import { resolveItemDetailImageUrls } from '@/utils/itemImageResolver'
 
 const UNCATEGORIZED_REGION = '暂未分类分区'
 const UNCATEGORIZED_TOWN = '暂未分类城镇'
@@ -83,29 +83,7 @@ function readItemInfo(item) {
 }
 
 export function resolveWineryDetailImages(item, fallbackBanner = '') {
-  const info = readItemInfo(item)
-  const groups = [
-    info?.images,
-    info?.banners,
-    info?.bannerList,
-    info?.imgs,
-    item?.images,
-    item?.banners,
-    item?.bannerList,
-    item?.imgs,
-    item?.img ? [item.img] : []
-  ]
-
-  const images = groups
-    .flatMap((group) => (Array.isArray(group) ? group : []))
-    .map((image) => resolveDataImage(image, undefined, { variant: 'thumb' }) || resolveDataImage(image))
-    .filter(Boolean)
-
-  if (images.length) return Array.from(new Set(images))
-
-  const fallback = resolveDataImage(fallbackBanner || item?.img, undefined, { variant: 'thumb' })
-    || resolveDataImage(fallbackBanner || item?.img)
-  return fallback ? [fallback] : []
+  return resolveItemDetailImageUrls(item, fallbackBanner, { variant: 'thumb' })
 }
 
 export function buildWineryDetailPageModel(ctx) {

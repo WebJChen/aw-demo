@@ -2,6 +2,7 @@ import { computed, ref, watch } from 'vue'
 import { defineStore } from 'pinia'
 import { buildWineDisplay, resolveWineCartUnitPrice } from '@/utils/wineGridExtras'
 import { createDemoPinnedCartRows, isDemoPinnedCartId } from '@/utils/demoStaticCartShowcase'
+import { getItemCoverPath } from '@/utils/itemImageResolver'
 
 const DEFAULT_PRICE = 188
 const STORAGE_KEY = 'aw_cart_items'
@@ -161,7 +162,7 @@ export const useCartStore = defineStore('cart', () => {
       existed.title = title
       existed.enTitle = normalizeText(item.enTitle)
       existed.desc = extractDesc(item)
-      existed.img = normalizeText(item.img)
+      existed.img = normalizeText(getItemCoverPath(item))
       existed.price = unitPrice || existed.price || DEFAULT_PRICE
       existed.wineOrigin = wineOrigin || existed.wineOrigin || ''
       existed.wineVintage = wineVintage || existed.wineVintage || ''
@@ -182,7 +183,7 @@ export const useCartStore = defineStore('cart', () => {
       title,
       enTitle: normalizeText(item.enTitle),
       desc: extractDesc(item),
-      img: normalizeText(item.img),
+      img: normalizeText(getItemCoverPath(item)),
       wineOrigin,
       wineVintage,
       price: unitPrice || DEFAULT_PRICE,

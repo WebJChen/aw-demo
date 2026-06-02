@@ -10,15 +10,18 @@ import { useNavStore } from '@/stores/navStore'
 import navData from '@/data/split/nav.json'
 import { buildWineGridRoute } from '@/utils/wineGridRoute'
 import { buildWineryDetailRouteTarget } from '@/utils/wineryDetailPage'
+import { resolveWinerySubNavPath, WINERY_DEFAULT_SUB_NAV } from '@/utils/wineryRouteUtils'
 import { getItemRegionByPath } from '@/utils/dataRepository'
-import { resolveDataImage } from '@/utils/dataImageResolver'
+import { resolveItemGridImageUrl } from '@/utils/itemImageResolver'
 import { buildWineryGridDisplay } from '@/utils/wineryGridExtras'
 import {
   buildSearchResultsRoute,
+  matchesCatalogItem,
   readSearchTarget,
   saveSearchTarget,
   SEARCH_SOURCE_ITEM
 } from '@/utils/searchUtils'
+import { buildCatalogHitKey, findCatalogEntryIndexByHitKey } from '@/utils/catalogHitKey'
 import { withRandomLoading } from '@/utils/loadingUtils'
 
 const INITIAL_RENDER_COUNT = 24
@@ -45,7 +48,6 @@ const scrollPage = ref(1)
 const renderLimit = ref(INITIAL_RENDER_COUNT)
 const hasMore = ref(false)
 const currentRegionData = ref(null)
-const resolvedImagePathCache = new Map()
 const localSearchKeyword = ref('')
 const appliedSearchKeyword = ref('')
 const searchScope = ref('all')
@@ -111,28 +113,28 @@ const flattenText = (value) => {
 }
 
 const matchesSearchKeyword = (item, kwRaw) => {
-  const kw = String(kwRaw || '').trim().toLowerCase()
+  const kw = String(kwRaw || '').trim()
   if (!kw) return true
   const info = getItemInfo(item) || {}
-  const scopeMap = {
-    all: [
-      item?.title,
-      item?.enTitle,
-      info?.name,
-      info?.desc,
-      info?.dialogInfoTitle,
-      info?.dialogInfoDesc,
-      info?.tags,
-      info?.features,
-      info?.source,
-      item?.subNavName
-    ],
-    title: [item?.title, item?.enTitle],
-    desc: [info?.desc, info?.dialogInfoDesc, info?.dialogInfoTitle],
-    tags: [info?.tags, info?.features, info?.source]
+  if (searchScope.value === 'title') {
+    return matchesCatalogItem(item, kw, {
+      title: [item?.title, item?.enTitle, info?.name].filter(Boolean).join(' ')
+    })
   }
-  const hay = flattenText(scopeMap[searchScope.value] || scopeMap.all).toLowerCase()
-  return hay.includes(kw)
+  if (searchScope.value === 'desc') {
+    return matchesCatalogItem(item, kw, { desc: info?.desc || info?.dialogInfoDesc || '' })
+  }
+  if (searchScope.value === 'tags') {
+    const tags = Array.isArray(info?.tags) ? info.tags.join(' ') : ''
+    const features = Array.isArray(info?.features)
+      ? info.features.map((f) => `${f?.title || ''} ${f?.desc || ''}`).join(' ')
+      : ''
+    return matchesCatalogItem(item, kw, { tags: `${tags} ${features}`.trim() })
+  }
+  return matchesCatalogItem(item, kw, {
+    navName: regionTitle.value,
+    subNavName: currentSubNav.value?.subNavName || item?.subNavName || ''
+  })
 }
 
 const buildEntryListForSubNav = (subNav) => {
@@ -147,8 +149,10 @@ const buildEntryListForSubNav = (subNav) => {
   }))
 }
 
-const buildHitKeyForEntry = (entry) =>
-  `item__${entry?.regionPath || ''}__${entry?.subNavPath || ''}__${entry?.sourceItemIndex ?? ''}`
+const buildHitKeyForEntry = (entry) => {
+  if (!entry) return ''
+  return buildCatalogHitKey('item', entry.regionPath, entry.subNavPath, entry.data, entry.sourceItemIndex)
+}
 
 const dataList = computed(() => {
   const subNav = currentSubNav.value
@@ -223,21 +227,11 @@ const teardownLoadMoreObserver = () => {
   loadMoreObserver = null
 }
 
-const resolveImageUrl = (img) => {
-  const cacheKey = String(img || '')
-  if (resolvedImagePathCache.has(cacheKey)) {
-    return resolvedImagePathCache.get(cacheKey)
-  }
-  const resolved = resolveDataImage(img, undefined, { variant: 'thumb' })
-  resolvedImagePathCache.set(cacheKey, resolved)
-  return resolved
-}
-
 const openWineryPreviewInNewWindow = (menuItem) => {
   const regionPathValue = menuItem?.regionPath
   if (!regionPathValue) return
   const region = navData.find((item) => item?.path === regionPathValue)
-  const firstSubNav = region?.subNavList?.find((subNav) => subNav?.isShow !== false)?.subNavPath || 'wine'
+  const firstSubNav = region?.subNavList?.find((subNav) => subNav?.isShow !== false)?.subNavPath || WINERY_DEFAULT_SUB_NAV
   const href = router.resolve({
     name: 'WineryPreview',
     params: {
@@ -248,8 +242,9 @@ const openWineryPreviewInNewWindow = (menuItem) => {
   window.open(href, '_blank', 'noopener,noreferrer')
 }
 
+/** 酒款首页（勿用 name: Home，路由守卫会按 lastVisitedRoute 拉回酒庄页） */
 const goHome = () => {
-  router.push({ name: 'Home' })
+  router.push(buildWineGridRoute({ activeSubNavName: activeSubNav.value }))
 }
 
 const goBackToWineGrid = () => {
@@ -341,16 +336,20 @@ const handleSearchTargetFocus = async () => {
   if (hitRegionPath && hitRegionPath !== regionPath.value) {
     await router.replace({
       name: 'WineryPreview',
-      params: { regionPath: hitRegionPath, subNav: hitSubNavPath || currentSubNav.value?.subNavPath || 'wine' },
+      params: {
+        regionPath: hitRegionPath,
+        subNav: resolveWinerySubNavPath(hitSubNavPath, currentRegionData.value)
+      },
       query: { ...route.query }
     })
     return
   }
 
-  if (hitSubNavPath && hitSubNavPath !== currentSubNav.value?.subNavPath) {
+  const resolvedHitSubNav = resolveWinerySubNavPath(hitSubNavPath, currentRegionData.value)
+  if (resolvedHitSubNav && resolvedHitSubNav !== currentSubNav.value?.subNavPath) {
     await router.replace({
       name: 'WineryPreview',
-      params: { regionPath: regionPath.value, subNav: hitSubNavPath },
+      params: { regionPath: regionPath.value, subNav: resolvedHitSubNav },
       query: { ...route.query }
     })
     return
@@ -360,7 +359,7 @@ const handleSearchTargetFocus = async () => {
   appliedSearchKeyword.value = ''
 
   const allEntries = buildEntryListForSubNav(currentSubNav.value)
-  const targetIndex = allEntries.findIndex((entry) => buildHitKeyForEntry(entry) === targetHit)
+  const targetIndex = findCatalogEntryIndexByHitKey(allEntries, targetHit, buildHitKeyForEntry)
   if (targetIndex < 0) return
 
   const targetVisibleCount = Math.max(
@@ -408,17 +407,16 @@ const syncRegionData = async () => {
 const normalizeSubNavRoute = () => {
   if (!regionPath.value || !enabledSubNavs.value.length) return
   const routeSubNavPath = typeof route.params.subNav === 'string' ? route.params.subNav : ''
-  const byRoute = routeSubNavPath
-    ? enabledSubNavs.value.find((subNav) => subNav.subNavPath === routeSubNavPath)
-    : null
+  const resolvedSubNav = resolveWinerySubNavPath(routeSubNavPath, currentRegionData.value)
+  const byRoute = enabledSubNavs.value.find((subNav) => subNav.subNavPath === resolvedSubNav)
   const fallback = enabledSubNavs.value[0]
   if (!fallback) return
-  if (!routeSubNavPath || !byRoute) {
+  if (!routeSubNavPath || routeSubNavPath !== resolvedSubNav || !byRoute) {
     router.replace({
       name: 'WineryPreview',
       params: {
         regionPath: regionPath.value,
-        subNav: fallback.subNavPath
+        subNav: resolveWinerySubNavPath(routeSubNavPath, currentRegionData.value)
       }
     })
   }
@@ -632,7 +630,7 @@ onUnmounted(() => {
         class="info-item pointer" :data-title="row.data.title" :data-hit-key="buildHitKeyForEntry(row.entry)"
         @click="openWineryDetailInNewWindow(row.entry)">
         <div class="info-img-wrap bgfff">
-          <img :src="resolveImageUrl(row.data.img)" :alt="row.data.title" class="w100"
+          <img :src="resolveItemGridImageUrl(row.data)" :alt="row.data.title" class="w100"
             :loading="getImageLoading(row.idx)" decoding="async" :fetchpriority="getImageFetchPriority(row.idx)">
         </div>
         <div class="info-title fs16" :title="row.data.title">{{ row.data.title }}</div>

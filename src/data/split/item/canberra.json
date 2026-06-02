@@ -7,7 +7,7 @@
   "subNavList": [
     {
       "subNavName": "葡萄酒酒庄",
-      "subNavPath": "wine",
+      "subNavPath": "wineries",
       "isShow": true,
       "itemData": [
         {

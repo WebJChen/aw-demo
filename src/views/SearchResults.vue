@@ -1,13 +1,17 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { ArrowLeft, Search } from '@element-plus/icons-vue'
 import {
   buildSearchIndex,
   scoreRow,
   getHighlightSegments,
   normalizeSearchSourceType,
   resolveSearchResultRoute,
-  saveSearchTarget
+  saveSearchTarget,
+  buildSearchResultsRoute,
+  SEARCH_SOURCE_ITEM,
+  SEARCH_SOURCE_WINE
 } from '@/utils/searchUtils'
 import { getItemJson, getWineJson } from '@/utils/dataRepository'
 import { withRandomLoading } from '@/utils/loadingUtils'
@@ -19,6 +23,7 @@ const pageSize = 10
 const currentPage = ref(1)
 const pageLoading = ref(false)
 const searchRows = ref([])
+const localKeyword = ref('')
 let indexRows = []
 let hasBuiltSearchIndex = false
 let buildSearchIndexPromise = null
@@ -96,6 +101,10 @@ const pagedResults = computed(() => {
   return allResults.value.slice(start, start + pageSize)
 })
 
+watch(keyword, (value) => {
+  localKeyword.value = value
+})
+
 watch([keyword, sourceTypeFilter], async () => {
   await withRandomLoading(async () => {
     pageLoading.value = true
@@ -112,6 +121,26 @@ const handlePageChange = async (page) => {
     currentPage.value = page
   }, { min: 80, max: 300 })
   pageLoading.value = false
+}
+
+const submitSearch = async () => {
+  const nextKeyword = String(localKeyword.value || '').trim()
+  if (!nextKeyword) return
+  const target = buildSearchResultsRoute(nextKeyword, sourceTypeFilter.value)
+  if (!target) return
+  await router.push(target)
+}
+
+const goBack = () => {
+  if (typeof window !== 'undefined' && window.history.length > 1) {
+    router.back()
+    return
+  }
+  if (sourceTypeFilter.value === SEARCH_SOURCE_ITEM) {
+    router.push({ name: 'Home' })
+    return
+  }
+  router.push({ name: 'WineGrid' })
 }
 
 const openResult = (result) => {
@@ -138,15 +167,46 @@ const openResult = (result) => {
 <template>
   <div class="search-results-page">
     <div class="search-header">
+      <div class="search-toolbar">
+        <el-button class="search-back-btn" @click="goBack">
+          <el-icon class="search-back-btn__icon">
+            <ArrowLeft />
+          </el-icon>
+          返回
+        </el-button>
+        <el-input
+          v-model="localKeyword"
+          class="search-toolbar-input"
+          size="large"
+          clearable
+          :placeholder="sourceTypeFilter === 'wine' ? '搜索酒款名称、酒庄、风味…' : sourceTypeFilter === 'item' ? '搜索酒庄名称、简介、标签…' : '搜索酒庄或酒款…'"
+          @keyup.enter="submitSearch"
+          @clear="localKeyword = ''"
+        >
+          <template #prefix>
+            <el-icon>
+              <Search />
+            </el-icon>
+          </template>
+        </el-input>
+        <el-button type="primary" class="search-toolbar-submit" size="large" @click="submitSearch">搜索</el-button>
+      </div>
       <div class="search-title">
         <h1>{{ searchScopeLabel }}</h1>
-        <p v-if="keyword">“{{ keyword }}” 的{{ sourceTypeFilter === 'wine' ? '酒款' : sourceTypeFilter === 'item' ? '酒庄' : '' }}搜索结果，共 {{ totalResults }} 条</p>
+        <p v-if="keyword">
+          “{{ keyword }}” 的{{ sourceTypeFilter === 'wine' ? '酒款' : sourceTypeFilter === 'item' ? '酒庄' : '全站' }}搜索结果，共
+          {{ totalResults }} 条
+        </p>
         <p v-else>请输入关键词开始搜索</p>
       </div>
     </div>
 
-    <div class="results-section" v-loading.fullscreen="pageLoading" element-loading-spinner-color="#a8163c"
-      element-loading-background="rgba(255, 255, 255, 0.8)">
+    <div
+      class="results-section"
+      v-loading.fullscreen="pageLoading"
+      element-loading-spinner-color="#a8163c"
+      element-loading-background="rgba(255, 255, 255, 0.8)"
+    >
       <div v-if="hasResults" class="results-list">
         <article v-for="result in pagedResults" :key="result.id" class="result-card">
           <div class="result-meta">
@@ -206,8 +266,14 @@ const openResult = (result) => {
       </div>
 
       <div class="pagination-wrapper" v-if="hasResults && totalResults > pageSize">
-        <el-pagination :current-page="currentPage" :page-size="pageSize" :total="totalResults"
-          layout="prev, pager, next" background @current-change="handlePageChange" />
+        <el-pagination
+          :current-page="currentPage"
+          :page-size="pageSize"
+          :total="totalResults"
+          layout="prev, pager, next"
+          background
+          @current-change="handlePageChange"
+        />
       </div>
     </div>
   </div>
@@ -226,11 +292,37 @@ const openResult = (result) => {
 .search-header {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  padding: 22px;
+  gap: 14px;
+  padding: 18px 20px;
   border-radius: 16px;
   background: linear-gradient(135deg, #fef7f9 0%, #fce7ec 100%);
   box-shadow: 0 10px 30px rgba(148, 163, 184, 0.2);
+}
+
+.search-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.search-back-btn {
+  flex: 0 0 auto;
+  border-color: rgba(168, 22, 60, 0.25);
+  color: #a8163c;
+}
+
+.search-back-btn__icon {
+  margin-right: 4px;
+}
+
+.search-toolbar-input {
+  flex: 1 1 220px;
+  min-width: 0;
+}
+
+.search-toolbar-submit {
+  flex: 0 0 auto;
 }
 
 .search-title h1 {
@@ -366,6 +458,14 @@ const openResult = (result) => {
     width: 95%;
     margin-top: 28px;
   }
+
+  .search-toolbar {
+    gap: 8px;
+  }
+
+  .search-toolbar-submit {
+    width: 100%;
+  }
 }
 
 @media (min-width: 1025px) {
@@ -376,7 +476,7 @@ const openResult = (result) => {
   }
 
   .search-header {
-    padding: 18px 20px;
+    padding: 16px 18px;
     gap: 12px;
     border-radius: 14px;
   }
@@ -397,43 +497,6 @@ const openResult = (result) => {
     padding: 16px 18px;
     border-radius: 12px;
     gap: 8px;
-  }
-
-  .result-meta {
-    gap: 6px;
-    font-size: 11px;
-  }
-
-  .meta-tag,
-  .meta-sub,
-  .meta-source {
-    padding: 3px 9px;
-  }
-
-  .result-title {
-    font-size: 18px;
-  }
-
-  .result-en-title {
-    font-size: 14px;
-  }
-
-  .result-desc {
-    font-size: 13px;
-    line-height: 1.6;
-  }
-
-  .result-tags {
-    gap: 6px;
-  }
-
-  .result-tag {
-    padding: 3px 9px;
-    font-size: 11px;
-  }
-
-  .pagination-wrapper {
-    padding: 14px 0 0;
   }
 }
 </style>

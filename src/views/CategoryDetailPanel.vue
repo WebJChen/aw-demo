@@ -8,8 +8,8 @@ import { useCartStore } from '@/stores/cartStore'
 import { useDialogStore } from '@/stores/dialogStore'
 const WineryItemDialog = defineAsyncComponent(() => import('@/components/dialogs/page/home/WineryItemDialog.vue'))
 import navData from '@/data/split/nav.json'
-import { resolveDataImage } from '@/utils/dataImageResolver'
 import { getItemRegionByPath } from '@/utils/dataRepository'
+import { buildCatalogHitKey, findCatalogEntryIndexByHitKey } from '@/utils/catalogHitKey'
 
 const isExpanded = ref(false)
 const navStore = useNavStore()
@@ -122,7 +122,7 @@ const allItems = computed(() => {
           items.push({
             ...item,
             subNavName: subNav.subNavName,
-            __hitKey: `item__${category.path}__${subNav.subNavPath}__${itemIndex}`
+            __hitKey: buildCatalogHitKey('item', category.path, subNav.subNavPath, item, itemIndex)
           })
         })
       }
@@ -227,24 +227,26 @@ const getAlcoholTypeBySubNavName = (subNavName = '') => {
 
 const focusByHit = async (hitKey) => {
   if (typeof hitKey !== 'string' || !hitKey.startsWith('item__')) return false
-  const [sourceType, regionPath, subNavPath, indexStr] = hitKey.split('__')
-  if (sourceType !== 'item' || !regionPath || !subNavPath) return false
+  const parsed = hitKey.split('__')
+  const regionPath = parsed[1] || ''
+  const subNavPath = parsed[2] || ''
+  if (!regionPath || !subNavPath) return false
 
   const region = await getItemRegionByPath(regionPath)
   if (!region) return false
   const subNav = region.subNavList?.find((item) => item.subNavPath === subNavPath)
   if (!subNav) return false
 
-  const targetIndex = Number(indexStr)
-  const targetItem = getSubNavItems(subNav)?.[targetIndex]
-  if (!targetItem) return false
-
   isExpanded.value = true
   navStore.setActiveCategoryType(getAlcoholTypeBySubNavName(subNav.subNavName || ''))
   await ensureCurrentRegionData()
   await nextTick()
 
-  const allIndex = allItems.value.findIndex((item) => item.__hitKey === hitKey)
+  const allIndex = findCatalogEntryIndexByHitKey(
+    allItems.value,
+    hitKey,
+    (item) => item?.__hitKey || ''
+  )
   if (allIndex < 0) return false
   currentPage.value = Math.floor(allIndex / pageSize.value) + 1
 
@@ -289,10 +291,6 @@ watch(() => isExpanded.value, (expanded) => {
   if (!expanded) return
   void ensureCurrentRegionData()
 }, { immediate: true })
-
-const resolveImageUrl = (img) => {
-  return resolveDataImage(img)
-}
 
 const prevPage = () => {
   if (currentPage.value > 1) {
@@ -391,7 +389,7 @@ const handleSubNavClick = (subNav) => {
     -->
   </div>
   <WineryItemDialog v-if="itemDialogVisible" v-model:visible="itemDialogVisible" :title="selectedItem?.title || ''"
-    :en-title="selectedItem?.enTitle || ''" :banner="resolveImageUrl(selectedItem?.img)"
+    :en-title="selectedItem?.enTitle || ''"
     :item-data="selectedItem ? [selectedItem] : []" @add-cart="addToCart" />
 </template>
 

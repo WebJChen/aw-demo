@@ -4,6 +4,7 @@ import { ElMessage } from 'element-plus'
 import { Close, InfoFilled } from '@element-plus/icons-vue'
 import { storeToRefs } from 'pinia'
 import { resolveDataImage } from '@/utils/dataImageResolver'
+import { resolveItemDetailImageUrls } from '@/utils/itemImageResolver'
 import { Z_INDEX } from '@/constants/zIndex'
 import { useDeviceStore } from '@/stores/deviceStore'
 import { buildWineDisplay, wineSpecRows } from '@/utils/wineGridExtras'
@@ -144,31 +145,8 @@ const priceSectionHeadline = computed(() => {
 const resolveDialogImage = (image) => resolveDataImage(image)
 
 const dialogImages = computed(() => {
-  const imageGroups = [
-    itemInfo.value?.images,
-    itemInfo.value?.banners,
-    itemInfo.value?.bannerList,
-    itemInfo.value?.imgs,
-    itemDetail.value?.images,
-    itemDetail.value?.banners,
-    itemDetail.value?.bannerList,
-    itemDetail.value?.imgs
-  ]
-
-  const multiImages = imageGroups
-    .flatMap((group) => (Array.isArray(group) ? group : []))
-    .map((image) => resolveDialogImage(image))
-    .filter(Boolean)
-
-  if (multiImages.length > 0) return Array.from(new Set(multiImages))
-
-  const fallbackImages = [props.banner, itemDetail.value?.img]
-    .map((image) => resolveDialogImage(image))
-    .filter(Boolean)
-
-  const fromItem = Array.from(new Set(fallbackImages))
-  if (fromItem.length > 0) return fromItem
-
+  const urls = resolveItemDetailImageUrls(itemDetail.value)
+  if (urls.length) return urls
   return [resolveDialogImage('')]
 })
 

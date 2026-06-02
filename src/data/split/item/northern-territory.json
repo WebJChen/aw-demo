@@ -7,7 +7,7 @@
   "subNavList": [
     {
       "subNavName": "葡萄酒酒庄",
-      "subNavPath": "wine",
+      "subNavPath": "wineries",
       "isShow": true,
       "itemData": [
         {
@@ -115,7 +115,7 @@
         },
         {
           "title": "Darwin Distilling Co",
-          "img": "../assets/img/categoryImgs/northernTerritory/darwindistilling.jpg",
+          "img": "../assets/img/item/NorthernTerritory/darwindistilling.jpg",
           "enTitle": "Darwin Distilling Co",
           "info": {
             "name": "Darwin Distilling Co",

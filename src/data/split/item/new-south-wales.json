@@ -7,7 +7,7 @@
   "subNavList": [
     {
       "subNavName": "葡萄酒酒庄",
-      "subNavPath": "wine",
+      "subNavPath": "wineries",
       "isShow": true,
       "itemData": [
         {
@@ -947,7 +947,7 @@
         },
         {
           "title": "Eden Road Wines",
-          "img": "../assets/img/categoryImgs/newSouthWales/edenroadwines.jpg",
+          "img": "../assets/img/item/NewSouthWales/edenroadwines.jpg",
           "enTitle": "Eden Road Wines",
           "info": {
             "name": "Eden Road Wines",

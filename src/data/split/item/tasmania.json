@@ -7,7 +7,7 @@
   "subNavList": [
     {
       "subNavName": "葡萄酒酒庄",
-      "subNavPath": "wine",
+      "subNavPath": "wineries",
       "isShow": true,
       "itemData": [
         {
@@ -3132,7 +3132,7 @@
         },
         {
           "title": "Craigie Knowe Vineyard",
-          "img": "../assets/img/categoryImgs/tasmania/craigieknowevineyard.jpg",
+          "img": "../assets/img/item/Tasmania/craigieknowevineyard.jpg",
           "enTitle": "Craigie Knowe Vineyard",
           "info": {
             "name": "Craigie Knowe Vineyard",
@@ -3400,7 +3400,7 @@
         },
         {
           "title": "Clyde Mill Distillery",
-          "img": "../assets/img/categoryImgs/tasmania/clydemillwhiskybottles.jpeg",
+          "img": "../assets/img/item/Tasmania/clydemillwhiskybottles.jpeg",
           "enTitle": "Clyde Mill Distillery",
           "info": {
             "name": "Clyde Mill Distillery",

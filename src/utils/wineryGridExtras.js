@@ -1,4 +1,5 @@
 const WINERY_TYPE_LABELS = {
+  wineries: '葡萄酒酒庄',
   wine: '葡萄酒酒庄',
   Spirits: '洋酒酒庄',
   spirits: '洋酒酒庄',
@@ -14,7 +15,7 @@ const STYLE_TAGS = ['家族经营', '精品小批', '可持续种植', '获奖�
  */
 export function buildWineryGridDisplay(item, ctx = {}) {
   const info = item?.info || item?.wineData || item?.itemData || {}
-  const subNavPath = ctx?.subNavPath || 'wine'
+  const subNavPath = ctx?.subNavPath || 'wineries'
   const idx = Number(ctx?.sourceItemIndex ?? ctx?.idx ?? 0)
 
   const wineryType =

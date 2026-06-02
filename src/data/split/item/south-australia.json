@@ -7,7 +7,7 @@
   "subNavList": [
     {
       "subNavName": "葡萄酒酒庄",
-      "subNavPath": "wine",
+      "subNavPath": "wineries",
       "isShow": true,
       "itemData": [
         {
@@ -786,7 +786,7 @@
         },
         {
           "title": "Angove Family Winemakers",
-          "img": "../assets/img/categoryImgs/southAustralia/angovefamily.jpg",
+          "img": "../assets/img/item/SouthAustralia/angovefamily.jpg",
           "enTitle": "Angove Family Winemakers",
           "info": {
             "name": "Angove Family Winemakers",
@@ -1263,7 +1263,7 @@
         },
         {
           "title": "Angove Family Winemakers (St Agnes Distillery)",
-          "img": "../assets/img/categoryImgs/southAustralia/angovefamily.jpg",
+          "img": "../assets/img/item/SouthAustralia/angovefamily.jpg",
           "enTitle": "Angove Family Winemakers",
           "info": {
             "name": "Angove Family Winemakers (St Agnes Distillery)",

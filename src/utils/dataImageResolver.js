@@ -16,14 +16,6 @@ const assetModules = {
   ...optimizedAssetModules
 }
 
-const lowerFileNameAssetMap = Object.entries(assetModules).reduce((acc, [key, value]) => {
-  const fileName = key.split('/').pop()?.toLowerCase()
-  if (fileName && !acc[fileName]) {
-    acc[fileName] = value
-  }
-  return acc
-}, {})
-
 const normalizeAssetPath = (inputPath) => {
   const raw = String(inputPath || '').trim()
   if (!raw) return ''
@@ -44,13 +36,8 @@ const resolveAssetModule = (inputPath) => {
   const normalized = normalizeAssetPath(inputPath)
   if (!normalized) return ''
 
-  const directMatch = assetModules[normalized]
-  if (directMatch) return directMatch
-
-  const fileName = normalized.split('/').pop()?.toLowerCase()
-  if (!fileName) return ''
-
-  return lowerFileNameAssetMap[fileName] || ''
+  // 仅按完整路径匹配，避免不同目录下同名文件串图（与 tto-demo 一致）
+  return assetModules[normalized] || ''
 }
 
 const getOptimizedAssetPath = (normalizedAssetPath, variant = 'thumb') => {

@@ -7,7 +7,7 @@
   "subNavList": [
     {
       "subNavName": "葡萄酒酒庄",
-      "subNavPath": "wine",
+      "subNavPath": "wineries",
       "isShow": true,
       "itemData": [
         {
@@ -823,7 +823,7 @@
         },
         {
           "title": "Hoochery Distillery",
-          "img": "../assets/img/categoryImgs/westernAustralia/HoocheryDistillery.jpg",
+          "img": "../assets/img/item/westernAustralia/HoocheryDistillery.jpg",
           "enTitle": "Hoochery Distillery",
           "info": {
             "name": "Hoochery Distillery",

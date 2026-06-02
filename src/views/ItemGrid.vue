@@ -1,4 +1,4 @@
-﻿<script setup>
+<script setup>
 import { ref, reactive, computed, onMounted, onUnmounted, watch, nextTick, defineAsyncComponent } from 'vue';
 import { ElMessage } from 'element-plus';
 import { Search } from '@element-plus/icons-vue';
@@ -13,9 +13,17 @@ import { useCartStore } from '@/stores/cartStore'
 import { useDialogStore } from '@/stores/dialogStore'
 import navData from '@/data/split/nav.json';
 import itemData from '@/data/item.json';
-import { readSearchTarget, saveSearchTarget, buildSearchResultsRoute, SEARCH_SOURCE_WINE } from '@/utils/searchUtils'
+import {
+  readSearchTarget,
+  saveSearchTarget,
+  buildSearchResultsRoute,
+  SEARCH_SOURCE_WINE,
+  matchesWineCatalogItem
+} from '@/utils/searchUtils'
+import { WINERY_DEFAULT_SUB_NAV } from '@/utils/wineryRouteUtils'
+import { buildCatalogHitKey, findCatalogEntryIndexByHitKey } from '@/utils/catalogHitKey'
 import { withRandomLoading } from '@/utils/loadingUtils'
-import { resolveDataImage } from '@/utils/dataImageResolver'
+import { resolveItemGridImageUrl } from '@/utils/itemImageResolver'
 import { getAllWineRegions } from '@/utils/dataRepository'
 import { buildWineDisplay } from '@/utils/wineGridExtras'
 import {
@@ -122,7 +130,7 @@ const openWineryPreviewInNewWindow = (menuItem) => {
   const targetRegionPath = menuItem?.regionPath
   if (!targetRegionPath) return
   const region = (Array.isArray(itemData) ? itemData : []).find((item) => item?.path === targetRegionPath)
-  const firstSubNav = region?.subNavList?.find((subNav) => subNav?.isShow !== false)?.subNavPath || 'wine'
+  const firstSubNav = region?.subNavList?.find((subNav) => subNav?.isShow !== false)?.subNavPath || WINERY_DEFAULT_SUB_NAV
   const href = router.resolve({
     name: 'WineryPreview',
     params: { regionPath: targetRegionPath, subNav: firstSubNav }
@@ -136,7 +144,6 @@ const itemDialogVisible = computed({
     v ? dialogStore.openDialog('wineItemDetail') : dialogStore.closeDialog('wineItemDetail')
 })
 const selectedItem = ref(null)
-const resolvedImagePathCache = new Map()
 const allWineRegionsData = ref([])
 const selectedItemRegionNavName = ref('')
 
@@ -272,24 +279,7 @@ const parseWineTxnSalesApprox = (txnLine) => {
   return Math.max(...nums.map((n) => parseInt(n, 10)))
 }
 
-const wineMatchesKeyword = (item, kwRaw) => {
-  const kw = String(kwRaw || '').trim().toLowerCase()
-  if (!kw) return true
-  const wd = item?.wineData && typeof item.wineData === 'object' ? item.wineData : {}
-  const hay = [
-    item?.title,
-    item?.enTitle,
-    wd.wineryName,
-    wd.wineryLabel,
-    wd.originRegion,
-    wd.tasteProfile,
-    wd.tastingNotes
-  ]
-    .filter(Boolean)
-    .join(' ')
-    .toLowerCase()
-  return hay.includes(kw)
-}
+const wineMatchesKeyword = (item, kwRaw) => matchesWineCatalogItem(item, kwRaw)
 
 const matchesWinePriceTier = (price, tier) => {
   if (!tier) return true
@@ -498,7 +488,7 @@ const gridSaveAmountText = (row) => {
 
 const buildHitKeyForEntry = (entry) => {
   if (!entry) return ''
-  return `wine__${entry.regionPath}__${entry.subNavPath}__${entry.sourceItemIndex}`
+  return buildCatalogHitKey('wine', entry.regionPath, entry.subNavPath, entry.data, entry.sourceItemIndex)
 }
 
 const buildHitKey = (listIdx) => buildHitKeyForEntry(dataList.value[listIdx])
@@ -753,7 +743,7 @@ const handleSearchTargetFocus = async () => {
 
   resetWineGridFilters()
 
-  const targetIndex = dataList.value.findIndex((entry) => buildHitKeyForEntry(entry) === targetHit)
+  const targetIndex = findCatalogEntryIndexByHitKey(dataList.value, targetHit, buildHitKeyForEntry)
   if (targetIndex < 0) return
 
   const targetVisibleCount = Math.max(
@@ -785,20 +775,9 @@ const handleSearchTargetFocus = async () => {
   }
 }
 
-const resolveImageUrl = (img) => {
-  const cacheKey = String(img || '')
-  if (resolvedImagePathCache.has(cacheKey)) {
-    return resolvedImagePathCache.get(cacheKey)
-  }
-  const resolved = resolveDataImage(img, undefined, { variant: 'thumb' })
-  resolvedImagePathCache.set(cacheKey, resolved)
-  return resolved
-}
-
-/** 【样式测试·可删】塔斯马尼亚酒款轮换测试图；发布前与 isTasmaniaGridEntry 一并移除 */
 const gridItemThumbSrc = (row) => {
   if (!isTasmaniaGridEntry(row?.entry)) {
-    return resolveImageUrl(row?.data?.img)
+    return resolveItemGridImageUrl(row?.data)
   }
   return tasGridStyleTestThumbByIndex(row.entry?.sourceItemIndex ?? row.idx)
 }
@@ -1057,7 +1036,7 @@ onUnmounted(() => {
     </template>
   </CatalogGridShell>
   <ItemDataDialog v-if="itemDialogVisible" v-model:visible="itemDialogVisible" :title="selectedItem?.title || ''"
-    :en-title="selectedItem?.enTitle || ''" :banner="resolveImageUrl(selectedItem?.img)"
+    :en-title="selectedItem?.enTitle || ''"
     :item-data="selectedItem ? [selectedItem] : []" :region-nav-name="selectedItemRegionNavName"
     @add-cart="addToCart" />
 </template>

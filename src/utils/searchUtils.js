@@ -1,4 +1,6 @@
 import { buildWineGridRoute } from '@/utils/wineGridRoute'
+import { getItemCoverPath } from '@/utils/itemImageResolver'
+import { createCatalogSlugAllocator, createWineSlugAllocator } from '@/utils/catalogHitKey'
 
 const SEARCH_TARGET_STORAGE_KEY = 'auswine.search.target'
 const SEARCH_SOURCE_WINE = 'wine'
@@ -103,8 +105,42 @@ const extractItemTags = (item) => {
   return Array.from(new Set(tags))
 }
 
+const splitCatalogWords = (normText) =>
+  String(normText || '')
+    .split(/[^a-z0-9\u4e00-\u9fff]+/i)
+    .filter(Boolean)
+
+const evaluateFieldMatch = (normText, queryNorm, queryTokens) => {
+  if (!normText) {
+    return { matched: false, exact: false, allTokens: false, prefixAll: false }
+  }
+
+  const compactText = normText.replace(/\s+/g, '')
+  const compactQuery = queryNorm.replace(/\s+/g, '')
+  const exactContains =
+    normText.includes(queryNorm) ||
+    (compactQuery.length >= 2 && compactText.includes(compactQuery))
+  const allTokensHit = queryTokens.length > 0 && containsAllTokens(normText, queryTokens)
+  const words = splitCatalogWords(normText)
+  const prefixAll =
+    queryTokens.length > 0 &&
+    queryTokens.every((token) => {
+      if (!isAsciiToken(token)) return normText.includes(token)
+      return words.some((word) => word.startsWith(token))
+    })
+
+  return {
+    matched: exactContains || allTokensHit || prefixAll,
+    exact: exactContains,
+    allTokens: allTokensHit,
+    prefixAll
+  }
+}
+
 const buildSearchIndex = (itemJson, sourceType = 'item') => {
   const rows = []
+  const allocateId =
+    sourceType === 'wine' ? createWineSlugAllocator() : createCatalogSlugAllocator()
 
   for (const region of itemJson || []) {
     const navName = region?.navName || ''
@@ -128,7 +164,7 @@ const buildSearchIndex = (itemJson, sourceType = 'item') => {
         const fullText = [navName, subNavName, title, enTitle, subTitle, desc, tags.join(' '), infoText].join(' ')
 
         rows.push({
-          id: `${sourceType}__${regionPath}__${subNavPath}__${itemIndex}`,
+          id: allocateId(regionPath, subNavPath, item),
           navName,
           regionPath,
           subNavName,
@@ -140,7 +176,7 @@ const buildSearchIndex = (itemJson, sourceType = 'item') => {
           tags,
           infoText,
           fullText,
-          image: item?.img || '',
+          image: getItemCoverPath(item),
           item,
           itemIndex,
           sourceType
@@ -209,32 +245,16 @@ const scoreRow = (row, keyword) => {
       continue
     }
 
-    const singleAsciiToken = queryTokens.length === 1 && isAsciiToken(queryTokens[0]) && queryTokens[0].length >= 3
-    if (singleAsciiToken) {
-      const asciiCompactText = normText.replace(/[^a-z0-9]+/gi, '')
-      if (!asciiCompactText.includes(queryTokens[0])) continue
-    }
-
-    const exactContains = normText.includes(queryNorm) || normText.replace(/\s+/g, '').includes(queryNorm.replace(/\s+/g, ''))
-    const allTokensHit = containsAllTokens(normText, queryTokens)
-    const tokenHits = countTokenHits(normText, queryTokens)
-    const tokenHitRatio = queryTokens.length > 0 ? (tokenHits / queryTokens.length) : 0
-
-    // 匹配门槛：
-    // 1) 单词查询必须完整命中（防止少量字母误匹配）
-    // 2) 多词查询允许部分命中，但至少命中 2 个词且命中率 >= 60%
-    const enoughPartialHit =
-      queryTokens.length > 1 &&
-      tokenHits >= 2 &&
-      tokenHitRatio >= 0.6
-    if (!exactContains && !allTokensHit && !enoughPartialHit) continue
+    const fieldMatch = evaluateFieldMatch(normText, queryNorm, queryTokens)
+    if (!fieldMatch.matched) continue
 
     matched = true
 
     let score = 0
-    if (exactContains) score += field.weight * 3
-    if (allTokensHit) score += field.weight * 2
-    score += tokenHits * field.weight
+    if (fieldMatch.exact) score += field.weight * 3
+    if (fieldMatch.allTokens) score += field.weight * 2
+    if (fieldMatch.prefixAll) score += field.weight * 1.5
+    score += countTokenHits(normText, queryTokens) * field.weight
 
     // 越靠前越优先
     const posPenalty = Math.min(300, Math.floor(indexOfTokenSum(normText, queryTokens) / 4))
@@ -251,12 +271,63 @@ const scoreRow = (row, keyword) => {
     }
   }
 
+  const primaryNorm = normalizeForSearch(`${row.title || ''} ${row.enTitle || ''}`)
+  const primaryMatch = evaluateFieldMatch(primaryNorm, queryNorm, queryTokens)
+  const requirePrimary =
+    queryTokens.length > 1 ||
+    (queryTokens.length === 1 && isAsciiToken(queryTokens[0]) && queryTokens[0].length >= 3)
+  const finalMatched = matched && (!requirePrimary || primaryMatch.matched)
+
   return {
     score: bestScore,
-    matched,
+    matched: finalMatched,
     matchField: bestField,
     snippet: bestSnippet
   }
+}
+
+/** 酒庄/酒款网格页内搜索，与全站搜索规则一致 */
+const matchesCatalogItem = (item, keyword, extra = {}) => {
+  if (!String(keyword || '').trim()) return true
+
+  const row = {
+    title: item?.title || extra?.title || '',
+    enTitle: item?.enTitle || extra?.enTitle || '',
+    desc: extractItemDesc(item) || extra?.desc || '',
+    tags: extractItemTags(item),
+    subNavName: extra?.subNavName || '',
+    navName: extra?.navName || ''
+  }
+  return scoreRow(row, keyword).matched
+}
+
+/** 酒款网格页内搜索（字段侧重 wineData） */
+const matchesWineCatalogItem = (item, keyword, extra = {}) => {
+  const wd = item?.wineData && typeof item.wineData === 'object' ? item.wineData : {}
+  const titleHay = [
+    item?.title,
+    item?.enTitle,
+    wd.wineryName,
+    wd.wineryLabel,
+    extra?.title
+  ]
+    .filter(Boolean)
+    .join(' ')
+  const descHay = [
+    wd.desc,
+    wd.originRegion,
+    wd.tasteProfile,
+    wd.tastingNotes,
+    extra?.desc
+  ]
+    .filter(Boolean)
+    .join(' ')
+
+  return matchesCatalogItem(
+    { title: titleHay, enTitle: '', wineData: { desc: descHay, tags: wd.tags } },
+    keyword,
+    extra
+  )
 }
 
 const extractSnippet = (text, keyword, maxLen = 120) => {
@@ -385,11 +456,13 @@ const resolveSearchResultRoute = (result, keyword = '') => {
   }
 
   if (result.sourceType === SEARCH_SOURCE_ITEM) {
+    const subNav =
+      result.subNavPath === 'wine' ? 'wineries' : result.subNavPath
     return {
       name: 'WineryPreview',
       params: {
         regionPath: result.regionPath,
-        subNav: result.subNavPath
+        subNav
       },
       query
     }
@@ -406,6 +479,8 @@ export {
   tokenizeForSearch,
   buildSearchIndex,
   scoreRow,
+  matchesCatalogItem,
+  matchesWineCatalogItem,
   extractSnippet,
   getHighlightSegments,
   normalizeSearchSourceType,
