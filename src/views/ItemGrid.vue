@@ -735,7 +735,10 @@ const handleSearchTargetFocus = async () => {
     if (targetSubNav) {
       navStore.setActiveSubNav(targetSubNav.subNavName)
       if (typeof route.name === 'string' && isWineCatalogRoute(route.name)) {
-        await router.replace(buildWineGridRoute({ subNavPath: targetSubNav.subNavPath }))
+        await router.replace({
+          ...buildWineGridRoute({ subNavPath: targetSubNav.subNavPath }),
+          query: { ...route.query }
+        })
       }
       return
     }

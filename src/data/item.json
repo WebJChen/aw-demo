@@ -51,40 +51,108 @@
           },
           {
             "title": "Ghost Rock Winery",
-            "img": "",
-            "enTitle": "Tasmania Red Wine Example",
+            "img": "../assets/img/item/Tasmania/GhostRockWinery/bn1.jpg",
+            "enTitle": "Ghost Rock Wines",
+            "region": "塔斯马尼亚西北部",
+            "town": "Devonport 以东",
             "info": {
-              "name": "塔斯马尼亚西北部摇篮海岸（Cradle Coast）",
-              "desc": "鬼岩酒庄是一个家庭经营精品酒庄，以其采用有机原则种植的凉爽气候葡萄酒、附设的季节性餐厅及独特的“鬼岩”地名传说而闻名。酒庄提供从葡萄园到餐桌完整体验的精品家庭酒庄，在这里能有与美食结合的精致体验以及充满趣味的本地历史故事。",
+              "name": "Ghost Rock Wines · 鬼岩酒庄",
+              "desc": "鬼岩酒庄（Ghost Rock Wines）是塔斯马尼亚西北部地区的标杆酒庄，集品鉴室、餐厅、葡萄园与住宿（Vineyard House）于一体，可俯瞰连绵丘陵与巴斯海峡的迷人景致。酒庄始终坚持以葡萄酒、美食与景观为核心体验——Justin Arnold 表示，宾客如今可在葡萄藤旁沉浸式品饮、享用精致餐食，将北塔州之旅浓缩于一处。",
+              "terroir": {
+                "summary": "酒庄位于 Devonport 以东的凉爽海岸带，毗邻 Bass Strait，拥有 Clairdown 等原创葡萄园。海洋性气候与显著昼夜温差，适合酿造结构清晰、酸度明亮的凉爽气候葡萄酒。",
+                "subRegion": "塔斯马尼亚西北部 · Bass Strait 海岸丘陵",
+                "climate": "凉爽海洋性气候，受巴斯海峡调节",
+                "grapes": ["Pinot Noir", "Chardonnay", "Sauvignon Blanc", "Sparkling blends"],
+                "style": "专注凉爽气候葡萄酒；起泡酒与黑皮诺为标志性品类"
+              },
+              "story": {
+                "summary": "从 2001 年 Cate 与 Colin Arnold 在 Devonport 以东一片待修葺土地上起步，到如今 Justin 与 Alicia 全面掌舵，鬼岩酒庄始终是一家充满家族温度与北塔州个性的精品酒庄。",
+                "timeline": [
+                  {
+                    "year": "2001",
+                    "title": "酒庄创立",
+                    "desc": "Cate 与 Colin Arnold 在 Devonport 以东一处待修葺的地产上创立 Ghost Rock Wines，当时仅有少量葡萄藤。"
+                  },
+                  {
+                    "year": "2015",
+                    "title": "下一代加入",
+                    "desc": "儿子 Justin 与儿媳 Alicia 加入经营，Justin 负责酿酒，Alicia 负责品鉴室与餐厅运营。"
+                  },
+                  {
+                    "year": "2017",
+                    "title": "全面接班",
+                    "desc": "Justin 与 Alicia 正式接手酒庄全部所有权，持续拓展 Cellar Door、Eatery 与 Vineyard House 体验。"
+                  },
+                  {
+                    "year": "地名传说",
+                    "title": "Ghost Rock 之名",
+                    "desc": "Port Sorell 主路 Summerhill Park 转弯处西侧曾有一陡坡，路旁巨石传说约 1895 年曾吓退夜归骑手，由此得名「鬼岩」。岩石已在 1950 年代道路改建中移除，但名字保留了当地趣味、地域感与家族个性。"
+                  }
+                ]
+              },
+              "awards": [
+                {
+                  "title": "塔斯马尼亚西北部标杆酒庄",
+                  "issuer": "区域旅游与餐饮体验代表"
+                },
+                {
+                  "title": "Liquor Licence No. 51740",
+                  "issuer": "塔斯马尼亚州酒类许可"
+                },
+                "Portfolio 现含 19 款凉爽气候葡萄酒"
+              ],
+              "visitGuide": [
+                {
+                  "label": "营业时间",
+                  "text": "品鉴室与酒庄：周一至周日 11:00–17:00；厨房 11:00–15:30。请关注 Instagram 与 Facebook 获取最新公告。"
+                },
+                {
+                  "label": "品鉴体验",
+                  "text": "Cellar Door 可在轻松而个性化的环境中品鉴全系酒款；5 款酒品鉴 A$15（外带购酒可免品鉴费）。"
+                },
+                {
+                  "label": "餐厅预约",
+                  "text": "Eatery 提供以本地塔州食材为主的午餐，俯瞰 Clairdown 葡萄园与 Bass Strait；建议提前预约。"
+                },
+                {
+                  "label": "住宿",
+                  "text": "Vineyard House 为三卧室精品住宿，近品鉴室与餐厅；含起泡酒与黑皮诺各一瓶及早餐备品（详情请询 stay@ghostrock.com.au）。"
+                }
+              ],
+              "services": [
+                "Cellar Door 品鉴室",
+                "Eatery 餐厅（本地食材午餐）",
+                "Vineyard House 精品住宿",
+                "Guided tastings 导览品鉴",
+                "Wine Club 酒款订阅",
+                "整箱购酒免运费（官网政策）"
+              ],
               "features": [
                 {
                   "icon": "#22c55e",
-                  "title": "文本1",
-                  "desc": "描述1"
+                  "title": "地址",
+                  "desc": "Just East of Devonport, North-West Tasmania（具体导航请见官网 Visit Us）"
                 },
                 {
                   "icon": "#3b82f6",
-                  "title": "文本2",
-                  "desc": "描述2"
+                  "title": "联系方式",
+                  "desc": "总机 (03) 6428 4005 · mail@ghostrock.com.au"
                 },
                 {
                   "icon": "#f59e0b",
-                  "title": "文本3",
-                  "desc": "描述3"
+                  "title": "营业时间",
+                  "desc": "周一至周日 11:00–17:00（厨房至 15:30）"
                 }
               ],
               "tags": [
-                "tag1",
-                "tag2",
-                "tag3"
+                "家族经营",
+                "Cellar Door",
+                "Eatery",
+                "Vineyard House",
+                "凉爽气候",
+                "Bass Strait"
               ],
-              "source": [
-                {
-                  "title": "title",
-                  "desc": "Wikipedia,The Free Encyclopedia",
-                  "url": "url"
-                }
-              ]
+              "website": "https://www.ghostrock.com.au/"
             }
           },
           {

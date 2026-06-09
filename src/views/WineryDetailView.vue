@@ -10,6 +10,7 @@ import { saveSearchTarget } from '@/utils/searchUtils'
 import {
   buildWineryDetailPageModel,
   buildWineryListRouteTarget,
+  buildWineHitKey,
   getClassicWineGridClass,
   loadClassicWinesForWinery,
   loadWineryDetailContext,
@@ -108,7 +109,7 @@ const openClassicWineWithFocus = (wineRow) => {
     return
   }
 
-  const hitKey = wineRow?.hitKey || `wine__${rp}__${subNav}__${sourceIdx}`
+  const hitKey = wineRow?.hitKey || buildWineHitKey(rp, subNav, sourceIdx, wineRow?.data)
   saveSearchTarget({
     hit: hitKey,
     sourceType: 'wine',
@@ -161,7 +162,9 @@ onUnmounted(() => {
       <div class="winery-detail-shell">
         <nav class="winery-detail-toolbar">
           <button type="button" class="winery-detail-back" @click="goBackToWineryList">
-            <el-icon><ArrowLeft /></el-icon>
+            <el-icon>
+              <ArrowLeft />
+            </el-icon>
             返回 {{ pageModel.regionNavName }}酒庄列表
           </button>
           <button type="button" class="winery-detail-wine-link" @click="openWineGrid">浏览本州酒款</button>
@@ -169,19 +172,15 @@ onUnmounted(() => {
 
         <header class="winery-detail-hero">
           <div v-if="bannerImages.length" class="winery-detail-banner" :style="{ height: `${heroHeight}px` }">
-            <el-carousel
-              ref="bannerCarouselRef"
-              :interval="0"
-              indicator-position="inside"
-              arrow="hover"
-              :height="`${heroHeight}px`"
-            >
+            <el-carousel ref="bannerCarouselRef" :interval="0" indicator-position="inside" arrow="hover"
+              :height="`${heroHeight}px`">
               <el-carousel-item v-for="(image, index) in bannerImages" :key="index">
                 <img :src="image" :alt="pageModel.title" class="winery-detail-banner-img">
               </el-carousel-item>
             </el-carousel>
           </div>
-          <div v-else class="winery-detail-banner winery-detail-banner--placeholder" :style="{ height: `${heroHeight}px` }">
+          <div v-else class="winery-detail-banner winery-detail-banner--placeholder"
+            :style="{ height: `${heroHeight}px` }">
             <span>{{ pageModel.title }}</span>
           </div>
 
@@ -196,7 +195,8 @@ onUnmounted(() => {
               <span class="winery-detail-chip winery-detail-chip--visit">{{ pageModel.visitLabel }}</span>
               <span class="winery-detail-chip">{{ pageModel.regionLabel }}</span>
               <span class="winery-detail-chip">{{ pageModel.townLabel }}</span>
-              <span v-for="tag in pageModel.styleTags" :key="tag" class="winery-detail-chip winery-detail-chip--tag">{{ tag }}</span>
+              <span v-for="tag in pageModel.styleTags" :key="tag" class="winery-detail-chip winery-detail-chip--tag">{{
+                tag }}</span>
             </div>
           </div>
         </header>
@@ -205,7 +205,8 @@ onUnmounted(() => {
           <span class="winery-detail-divider-line" />
           <span class="winery-detail-divider-icon">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M8 3h8l-1 9a4 4 0 0 1-8 0L8 3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+              <path d="M8 3h8l-1 9a4 4 0 0 1-8 0L8 3z" stroke="currentColor" stroke-width="1.5"
+                stroke-linejoin="round" />
               <path d="M12 12v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
               <path d="M9 18h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
             </svg>
@@ -217,15 +218,107 @@ onUnmounted(() => {
           <h2 class="winery-detail-section-title">相关介绍</h2>
           <p class="winery-detail-intro">{{ pageModel.intro }}</p>
           <div v-if="pageModel.tags.length" class="winery-detail-tag-row">
-            <span v-for="(tag, tagIdx) in pageModel.tags" :key="tag" class="winery-detail-tag" :class="`winery-detail-tag--${(tagIdx % 2) + 1}`">{{ tag }}</span>
+            <span v-for="(tag, tagIdx) in pageModel.tags" :key="tag" class="winery-detail-tag"
+              :class="`winery-detail-tag--${(tagIdx % 2) + 1}`">{{ tag }}</span>
           </div>
         </section>
+
+        <template v-if="pageModel.terroir.hasContent">
+          <div class="winery-detail-divider" aria-hidden="true">
+            <span class="winery-detail-divider-line" />
+            <span class="winery-detail-divider-icon">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 3h8l-1 9a4 4 0 0 1-8 0L8 3z" stroke="currentColor" stroke-width="1.5"
+                  stroke-linejoin="round" />
+                <path d="M12 12v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                <path d="M9 18h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+              </svg>
+            </span>
+            <span class="winery-detail-divider-line" />
+          </div>
+
+          <section class="winery-detail-section">
+            <h2 class="winery-detail-section-title">风土与葡萄园</h2>
+            <p v-if="pageModel.terroir.summary" class="winery-detail-intro">{{ pageModel.terroir.summary }}</p>
+            <dl v-if="pageModel.terroir.rows.length" class="winery-detail-spec-grid">
+              <div v-for="(row, index) in pageModel.terroir.rows" :key="`${row.label}-${index}`"
+                class="winery-detail-spec-row">
+                <dt>{{ row.label }}</dt>
+                <dd>{{ row.value }}</dd>
+              </div>
+            </dl>
+          </section>
+        </template>
+
+        <template v-if="pageModel.story.hasContent">
+          <div class="winery-detail-divider" aria-hidden="true">
+            <span class="winery-detail-divider-line" />
+            <span class="winery-detail-divider-icon">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 3h8l-1 9a4 4 0 0 1-8 0L8 3z" stroke="currentColor" stroke-width="1.5"
+                  stroke-linejoin="round" />
+                <path d="M12 12v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                <path d="M9 18h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+              </svg>
+            </span>
+            <span class="winery-detail-divider-line" />
+          </div>
+
+          <section class="winery-detail-section">
+            <h2 class="winery-detail-section-title">酒庄故事与历史</h2>
+            <p v-if="pageModel.story.summary" class="winery-detail-intro">{{ pageModel.story.summary }}</p>
+            <ol v-if="pageModel.story.timeline.length" class="winery-detail-timeline">
+              <li v-for="(item, index) in pageModel.story.timeline" :key="`${item.year}-${index}`"
+                class="winery-detail-timeline-item">
+                <span v-if="item.year" class="winery-detail-timeline-year">{{ item.year }}</span>
+                <div class="winery-detail-timeline-body">
+                  <h3 v-if="item.title">{{ item.title }}</h3>
+                  <p v-if="item.desc">{{ item.desc }}</p>
+                </div>
+              </li>
+            </ol>
+          </section>
+        </template>
+
+        <template v-if="pageModel.awards.hasContent">
+          <div class="winery-detail-divider" aria-hidden="true">
+            <span class="winery-detail-divider-line" />
+            <span class="winery-detail-divider-icon">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 3h8l-1 9a4 4 0 0 1-8 0L8 3z" stroke="currentColor" stroke-width="1.5"
+                  stroke-linejoin="round" />
+                <path d="M12 12v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                <path d="M9 18h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+              </svg>
+            </span>
+            <span class="winery-detail-divider-line" />
+          </div>
+
+          <section class="winery-detail-section">
+            <h2 class="winery-detail-section-title">荣誉与认证</h2>
+            <ul class="winery-detail-awards">
+              <li v-for="(award, index) in pageModel.awards.items" :key="`${award.title}-${index}`"
+                class="winery-detail-award-item">
+                <span class="winery-detail-award-badge" aria-hidden="true">★</span>
+                <div class="winery-detail-award-copy">
+                  <strong>{{ award.title }}</strong>
+                  <span v-if="award.year || award.issuer" class="winery-detail-award-meta">
+                    <template v-if="award.year">{{ award.year }}</template>
+                    <template v-if="award.year && award.issuer"> · </template>
+                    <template v-if="award.issuer">{{ award.issuer }}</template>
+                  </span>
+                </div>
+              </li>
+            </ul>
+          </section>
+        </template>
 
         <div v-if="pageModel.features.length" class="winery-detail-divider" aria-hidden="true">
           <span class="winery-detail-divider-line" />
           <span class="winery-detail-divider-icon">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M8 3h8l-1 9a4 4 0 0 1-8 0L8 3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+              <path d="M8 3h8l-1 9a4 4 0 0 1-8 0L8 3z" stroke="currentColor" stroke-width="1.5"
+                stroke-linejoin="round" />
               <path d="M12 12v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
               <path d="M9 18h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
             </svg>
@@ -238,25 +331,22 @@ onUnmounted(() => {
           <div class="winery-detail-feature-grid">
             <article v-for="(feature, index) in pageModel.features" :key="index" class="winery-detail-feature-card">
               <div class="winery-detail-feature-icon">
-                <el-icon><component :is="featureIcon(feature.title)" /></el-icon>
+                <el-icon>
+                  <component :is="featureIcon(feature.title)" />
+                </el-icon>
               </div>
               <h3>{{ feature.title }}</h3>
               <p>{{ feature.desc }}</p>
             </article>
           </div>
-          <p v-if="pageModel.websiteUrl" class="winery-detail-website">
-            官网：
-            <a :href="pageModel.websiteUrl.startsWith('http') ? pageModel.websiteUrl : `https://${pageModel.websiteUrl}`" target="_blank" rel="noopener noreferrer">
-              {{ pageModel.websiteUrl }}
-            </a>
-          </p>
         </section>
 
         <div class="winery-detail-divider" aria-hidden="true">
           <span class="winery-detail-divider-line" />
           <span class="winery-detail-divider-icon">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M8 3h8l-1 9a4 4 0 0 1-8 0L8 3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+              <path d="M8 3h8l-1 9a4 4 0 0 1-8 0L8 3z" stroke="currentColor" stroke-width="1.5"
+                stroke-linejoin="round" />
               <path d="M12 12v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
               <path d="M9 18h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
             </svg>
@@ -265,17 +355,42 @@ onUnmounted(() => {
         </div>
 
         <section class="winery-detail-section winery-detail-section--tips">
-          <h2 class="winery-detail-section-title">提供的服务</h2>
-          <ul class="winery-detail-tips">
-            <li v-for="(tip, index) in pageModel.visitTips" :key="index">{{ tip }}</li>
+          <h2 class="winery-detail-section-title">到访须知</h2>
+          <ul class="winery-detail-visit-guide">
+            <li v-for="(item, index) in pageModel.visitGuide.items" :key="`${item.label}-${index}`">
+              <strong v-if="item.label">{{ item.label }}：</strong>{{ item.text }}
+            </li>
           </ul>
         </section>
+
+        <template v-if="pageModel.services.hasContent">
+          <div class="winery-detail-divider" aria-hidden="true">
+            <span class="winery-detail-divider-line" />
+            <span class="winery-detail-divider-icon">
+              <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 3h8l-1 9a4 4 0 0 1-8 0L8 3z" stroke="currentColor" stroke-width="1.5"
+                  stroke-linejoin="round" />
+                <path d="M12 12v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+                <path d="M9 18h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+              </svg>
+            </span>
+            <span class="winery-detail-divider-line" />
+          </div>
+
+          <section class="winery-detail-section winery-detail-section--tips">
+            <h2 class="winery-detail-section-title">提供的服务</h2>
+            <ul class="winery-detail-service-list">
+              <li v-for="(service, index) in pageModel.services.items" :key="`${service}-${index}`">{{ service }}</li>
+            </ul>
+          </section>
+        </template>
 
         <div class="winery-detail-divider" aria-hidden="true">
           <span class="winery-detail-divider-line" />
           <span class="winery-detail-divider-icon">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M8 3h8l-1 9a4 4 0 0 1-8 0L8 3z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+              <path d="M8 3h8l-1 9a4 4 0 0 1-8 0L8 3z" stroke="currentColor" stroke-width="1.5"
+                stroke-linejoin="round" />
               <path d="M12 12v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
               <path d="M9 18h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
             </svg>
@@ -284,16 +399,12 @@ onUnmounted(() => {
         </div>
 
         <section class="winery-detail-section">
-          <h2 class="winery-detail-section-title">本酒庄所有在售酒款列表</h2>
+          <h2 class="winery-detail-section-title">本酒庄在售酒款</h2>
+          <p class="winery-detail-section-lead">以下为本站收录的、与本酒庄名称匹配的在售酒款，点击可查看详情。</p>
 
           <div v-if="classicWines.length" class="winery-detail-wines" :class="classicWineGridClass">
-            <button
-              v-for="(row, idx) in classicWines"
-              :key="`${row.subNavPath}-${idx}-${row.data?.title || idx}`"
-              type="button"
-              class="winery-detail-wine-card"
-              @click="openClassicWineWithFocus(row)"
-            >
+            <button v-for="(row, idx) in classicWines" :key="`${row.subNavPath}-${idx}-${row.data?.title || idx}`"
+              type="button" class="winery-detail-wine-card" @click="openClassicWineWithFocus(row)">
               <div class="winery-detail-wine-thumb">
                 <img :src="resolveWineThumb(row.data)" :alt="row.data?.title" loading="lazy">
               </div>
@@ -301,23 +412,30 @@ onUnmounted(() => {
                 <div class="winery-detail-wine-title" :title="row.data?.title">{{ row.data?.title }}</div>
                 <div class="winery-detail-wine-origin">{{ row.display.origin }} · {{ row.display.wineryName }}</div>
                 <div class="winery-detail-wine-price" :style="{ color: GRID_PRICE_COLOR }">
-                  <span class="currency">{{ splitPriceParts(row.display.saleNum, row.display.currencySymbol).currency }}</span>
-                  <span class="int">{{ splitPriceParts(row.display.saleNum, row.display.currencySymbol).intPart }}</span>
-                  <span v-if="splitPriceParts(row.display.saleNum, row.display.currencySymbol).fraction" class="fraction">
+                  <span class="currency">{{ splitPriceParts(row.display.saleNum, row.display.currencySymbol).currency
+                  }}</span>
+                  <span class="int">{{ splitPriceParts(row.display.saleNum, row.display.currencySymbol).intPart
+                  }}</span>
+                  <span v-if="splitPriceParts(row.display.saleNum, row.display.currencySymbol).fraction"
+                    class="fraction">
                     .{{ splitPriceParts(row.display.saleNum, row.display.currencySymbol).fraction }}
                   </span>
                   <span class="unit">/ {{ row.display.saleUnit || '瓶' }}</span>
                 </div>
-                <div v-if="formatRating(row.display)" class="winery-detail-wine-rating">★ {{ formatRating(row.display) }}</div>
+                <div v-if="formatRating(row.display)" class="winery-detail-wine-rating">★ {{ formatRating(row.display)
+                }}</div>
               </div>
             </button>
           </div>
-          <p v-else class="winery-detail-empty-wines">暂无在售酒款，请稍后在酒款栏目浏览本州酒款。</p>
+          <p v-else class="winery-detail-empty-wines">暂未收录与本酒庄匹配的在售酒款，请稍后在酒款栏目浏览本州酒款。</p>
         </section>
 
         <footer class="winery-detail-footer">
-          <button type="button" class="winery-detail-source" @click="pageModel.hasSource ? (sourceDialogVisible = true) : null">
-            <el-icon><InfoFilled /></el-icon>
+          <button type="button" class="winery-detail-source"
+            @click="pageModel.hasSource ? (sourceDialogVisible = true) : null">
+            <el-icon>
+              <InfoFilled />
+            </el-icon>
             本页信息来源：{{ pageModel.sourceSummary }}
           </button>
         </footer>

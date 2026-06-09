@@ -46,6 +46,47 @@
           }
         },
         {
+          "title": "Ghost Rock Estate 2025 Estate Pinot Noir",
+          "img": "../assets/img/wine/Tasmania/GhostRockWinery/2025EstatePinotNoir.jpg",
+          "enTitle": "Ghost Rock Estate 2025 Estate Pinot Noir",
+          "testPrice": 50,
+          "currencySymbol": "A$",
+          "wineData": {
+            "name": "Ghost Rock Estate 2025 Estate Pinot Noir",
+            "wineryName": "Ghost Rock Winery",
+            "originRegion": "塔斯马尼亚西北部 · Ghost Rock Estate",
+            "desc": "深色成熟红果主导香气，覆盆子、李子和黑莓层叠于烘焙香料与黑胡椒之上，底层带有甜菜、砾石与矿物感，并有一丝海风气息。",
+            "vintage": "2025",
+            "abv": "13.5%vol",
+            "tasteProfile": "成熟红果 · 香料 · 矿物 · 海风",
+            "website": "https://www.ghostrock.com.au/",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "类型",
+                "desc": "红葡萄酒 · Pinot Noir · 750ml"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "年份",
+                "desc": "2025"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "酒精度",
+                "desc": "13.5%"
+              }
+            ],
+            "tags": [
+              "Ghost Rock",
+              "Pinot Noir",
+              "Estate",
+              "2025",
+              "Cool Climate"
+            ]
+          }
+        },
+        {
           "title": "Tolpuddle Vineyard Pinot Noir",
           "img": "",
           "enTitle": "Tolpuddle Vineyard Pinot Noir",
@@ -2123,6 +2164,47 @@
           }
         },
         {
+          "title": "Ghost Rock · A Gift 礼盒",
+          "img": "../assets/img/wine/Tasmania/GhostRockWinery/AGift.jpg",
+          "enTitle": "Ghost Rock A Gift Mixed Pack",
+          "testPrice": 120,
+          "originalPrice": 138,
+          "currencySymbol": "A$",
+          "wineData": {
+            "name": "Ghost Rock · A Gift 礼盒",
+            "wineryName": "Ghost Rock Winery",
+            "originRegion": "塔斯马尼亚西北部",
+            "desc": "送给所爱之人的精选礼盒——也许那个人就是你自己。含：Catherine Sparkling Cuvée ×1、2025 Sauvignon Blanc ×1、2025 P3 Rosé ×1。",
+            "tasteProfile": "起泡 · 长相思 · 桃红 · 组合礼盒",
+            "website": "https://www.ghostrock.com.au/",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "内含",
+                "desc": "Catherine Sparkling Cuvée、2025 Sauvignon Blanc、2025 P3 Rosé 各 1 瓶"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "类型",
+                "desc": "Mixed Packs · 750ml ×3"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "售价",
+                "desc": "A$120（原价 A$138）"
+              }
+            ],
+            "tags": [
+              "Ghost Rock",
+              "Gift Pack",
+              "Mixed Pack",
+              "Sparkling",
+              "Sauvignon Blanc",
+              "Rosé"
+            ]
+          }
+        },
+        {
           "title": "塔州白葡萄酒示例1",
           "img": "",
           "enTitle": "Tasmania White Wine Example 1",
@@ -3950,6 +4032,87 @@
               "可加入购物车",
               "塔斯马尼亚州",
               "气泡酒"
+            ]
+          }
+        },
+        {
+          "title": "Ghost Rock 2022 Catherine Sparkling Cuvée",
+          "img": "../assets/img/wine/Tasmania/GhostRockWinery/2022CatherineSparklingCuvée.jpg",
+          "enTitle": "Ghost Rock 2022 Catherine Sparkling Cuvée",
+          "testPrice": 70,
+          "currencySymbol": "A$",
+          "wineData": {
+            "name": "Ghost Rock 2022 Catherine Sparkling Cuvée",
+            "wineryName": "Ghost Rock Winery",
+            "originRegion": "塔斯马尼亚西北部 · Ghost Rock Estate",
+            "desc": "慷慨而诱人的香气：新鲜 zest 感的迈耶柠檬皮、细腻矿物感，以及蜂蜜、香草与奶油的丰富底韵。口感层次复杂而聚焦，气泡细腻，余韵悠长。",
+            "vintage": "2022",
+            "tasteProfile": "柠檬 · 矿物 · 蜂蜜 · 奶油 · 细腻气泡",
+            "website": "https://www.ghostrock.com.au/",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "类型",
+                "desc": "Sparkling · Chardonnay, Pinot Noir · 750ml"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "年份",
+                "desc": "2022"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "品种",
+                "desc": "Chardonnay · Pinot Noir 混酿"
+              }
+            ],
+            "tags": [
+              "Ghost Rock",
+              "Sparkling",
+              "Catherine",
+              "Cuvée",
+              "2022"
+            ]
+          }
+        },
+        {
+          "title": "Ghost Rock 2015 Catherine XV",
+          "img": "../assets/img/wine/Tasmania/GhostRockWinery/2015CatherineXV.jpg",
+          "enTitle": "Ghost Rock 2015 Catherine XV",
+          "testPrice": 125,
+          "currencySymbol": "A$",
+          "wineData": {
+            "name": "Ghost Rock 2015 Catherine XV",
+            "wineryName": "Ghost Rock Winery",
+            "originRegion": "塔斯马尼亚西北部 · Ghost Rock Estate",
+            "desc": "耐心雕琢的杰作，稀有陈年起泡。100% 霞多丽，在中性橡木桶中发酵与熟成，随后在酒泥上陈年 10 年，呈现非凡深度与复杂度。",
+            "vintage": "2015",
+            "tasteProfile": "100% Chardonnay · 酒泥陈年 10 年 · 稀有年份起泡",
+            "website": "https://www.ghostrock.com.au/",
+            "features": [
+              {
+                "icon": "#22c55e",
+                "title": "类型",
+                "desc": "Sparkling · 100% Chardonnay · 750ml"
+              },
+              {
+                "icon": "#3b82f6",
+                "title": "年份",
+                "desc": "2015"
+              },
+              {
+                "icon": "#f59e0b",
+                "title": "酿造",
+                "desc": "中性橡木桶发酵熟成 · 酒泥陈年 10 年"
+              }
+            ],
+            "tags": [
+              "Ghost Rock",
+              "Sparkling",
+              "Catherine XV",
+              "Chardonnay",
+              "2015",
+              "Rare Release"
             ]
           }
         },

@@ -1,4 +1,5 @@
 import { getItemRegionByPath, getWineRegionByPath } from '@/utils/dataRepository'
+import { buildCatalogHitKey } from '@/utils/catalogHitKey'
 import { buildWineryGridDisplay } from '@/utils/wineryGridExtras'
 import { buildWineDisplay } from '@/utils/wineGridExtras'
 import { resolveItemDetailImageUrls } from '@/utils/itemImageResolver'
@@ -26,11 +27,152 @@ function getWineryTownDisplayName(item) {
   return town === UNCATEGORIZED_TOWN ? '暂未分类城镇' : town
 }
 
-const VISIT_TIPS = [
-  '建议提前预约品鉴或参观，旺季周末名额有限。',
-  '部分酒窖仅接受成年人入内，请携带有效身份证件。',
-  '自驾访客请注意酒庄内部限速与指定停车区域。'
+const DEFAULT_VISIT_GUIDE = [
+  { label: '预约建议', text: '建议提前预约品鉴或参观，旺季周末名额有限。' },
+  { label: '到访年龄', text: '部分酒窖仅接受成年人入内，请携带有效身份证件。' },
+  { label: '自驾提示', text: '自驾访客请注意酒庄内部限速与指定停车区域。' }
 ]
+
+const TERROIR_FIELD_LABELS = [
+  ['subRegion', '子产区'],
+  ['elevation', '海拔'],
+  ['soils', '土壤'],
+  ['climate', '气候'],
+  ['grapes', '主要品种'],
+  ['style', '酿造风格']
+]
+
+function normalizeTextRow(row) {
+  if (row == null) return null
+  if (typeof row === 'string') {
+    const text = row.trim()
+    return text ? { label: '', text } : null
+  }
+  if (typeof row !== 'object') return null
+
+  const label = String(row.label || row.title || '').trim()
+  const text = String(row.text || row.desc || row.value || '').trim()
+  if (!label && !text) return null
+  return { label, text }
+}
+
+function normalizeTextRows(raw) {
+  if (!Array.isArray(raw)) return []
+  return raw.map(normalizeTextRow).filter(Boolean)
+}
+
+function formatTerroirValue(value) {
+  if (Array.isArray(value)) return value.map((v) => String(v).trim()).filter(Boolean).join('、')
+  return String(value || '').trim()
+}
+
+function normalizeTerroir(info) {
+  const raw = info?.terroir
+  if (!raw) return { summary: '', rows: [], hasContent: false }
+
+  if (typeof raw === 'string') {
+    const summary = raw.trim()
+    return { summary, rows: [], hasContent: Boolean(summary) }
+  }
+
+  if (Array.isArray(raw)) {
+    const rows = normalizeTextRows(raw).map((row) => ({
+      label: row.label || '要点',
+      value: row.text
+    }))
+    return { summary: '', rows, hasContent: rows.length > 0 }
+  }
+
+  if (typeof raw === 'object') {
+    const summary = String(raw.summary || raw.desc || '').trim()
+    const rows = []
+
+    if (Array.isArray(raw.rows)) {
+      raw.rows.forEach((row) => {
+        const label = String(row?.label || row?.title || '').trim()
+        const value = formatTerroirValue(row?.value ?? row?.text ?? row?.desc)
+        if (label || value) rows.push({ label: label || '要点', value })
+      })
+    } else {
+      TERROIR_FIELD_LABELS.forEach(([key, label]) => {
+        const value = formatTerroirValue(raw[key])
+        if (value) rows.push({ label, value })
+      })
+    }
+
+    return { summary, rows, hasContent: Boolean(summary || rows.length) }
+  }
+
+  return { summary: '', rows: [], hasContent: false }
+}
+
+function normalizeStory(info) {
+  const raw = info?.story
+  if (!raw) {
+    const legacy = String(info?.history || info?.storyText || '').trim()
+    if (!legacy) return { summary: '', timeline: [], hasContent: false }
+    return { summary: legacy, timeline: [], hasContent: true }
+  }
+
+  if (typeof raw === 'string') {
+    const summary = raw.trim()
+    return { summary, timeline: [], hasContent: Boolean(summary) }
+  }
+
+  if (typeof raw === 'object') {
+    const summary = String(raw.summary || raw.desc || '').trim()
+    const timeline = Array.isArray(raw.timeline)
+      ? raw.timeline
+          .map((item) => ({
+            year: String(item?.year || item?.period || '').trim(),
+            title: String(item?.title || item?.label || '').trim(),
+            desc: String(item?.desc || item?.text || '').trim()
+          }))
+          .filter((item) => item.year || item.title || item.desc)
+      : []
+    return { summary, timeline, hasContent: Boolean(summary || timeline.length) }
+  }
+
+  return { summary: '', timeline: [], hasContent: false }
+}
+
+function normalizeAwards(info) {
+  const raw = info?.awards
+  if (!raw) return { items: [], hasContent: false }
+
+  if (Array.isArray(raw)) {
+    const items = raw
+      .map((item) => {
+        if (typeof item === 'string') {
+          const title = item.trim()
+          return title ? { title, year: '', issuer: '' } : null
+        }
+        if (typeof item !== 'object') return null
+        const title = String(item.title || item.name || item.desc || '').trim()
+        const year = String(item.year || '').trim()
+        const issuer = String(item.issuer || item.org || item.source || '').trim()
+        if (!title && !issuer) return null
+        return { title: title || issuer, year, issuer: title ? issuer : '' }
+      })
+      .filter(Boolean)
+    return { items, hasContent: items.length > 0 }
+  }
+
+  return { items: [], hasContent: false }
+}
+
+function normalizeVisitGuide(info) {
+  const custom = normalizeTextRows(info?.visitGuide || info?.visit)
+  if (custom.length) return { items: custom, hasContent: true }
+  return { items: DEFAULT_VISIT_GUIDE, hasContent: true, isDefault: true }
+}
+
+function normalizeServices(info) {
+  const raw = info?.services
+  if (!Array.isArray(raw)) return { items: [], hasContent: false }
+  const items = raw.map((item) => String(item || '').trim()).filter(Boolean)
+  return { items, hasContent: items.length > 0 }
+}
 
 export function getClassicWineDisplayLimit(device) {
   const { isPhone, isPortrait, isTablet, isPc } = device || {}
@@ -121,7 +263,11 @@ export function buildWineryDetailPageModel(ctx) {
     visitLabel: gridDisplay.visitLabel,
     wineryType: gridDisplay.wineryType,
     styleTags: gridDisplay.styleTags || [],
-    visitTips: VISIT_TIPS,
+    terroir: normalizeTerroir(info),
+    story: normalizeStory(info),
+    awards: normalizeAwards(info),
+    visitGuide: normalizeVisitGuide(info),
+    services: normalizeServices(info),
     hasSource: source.length > 0,
     sourceSummary: source[0]?.desc || 'TasTrips.Online资料整理'
   }
@@ -189,12 +335,14 @@ export async function loadClassicWinesForWinery(ctx, limit = 5) {
   if (!pool.length) return []
 
   const testPool = pool.filter((row) => row.isTest)
+  const matched = pool.filter((row) => row.score > 0).sort((a, b) => b.score - a.score)
   let sorted
-  if (testPool.length) {
+  if (matched.length) {
+    sorted = matched
+  } else if (testPool.length) {
     sorted = testPool
   } else {
-    const matched = pool.filter((row) => row.score > 0).sort((a, b) => b.score - a.score)
-    sorted = matched.length >= Math.min(2, limit) ? matched : [...pool]
+    sorted = [...pool]
   }
 
   const offset = (Number(itemIndex) || 0) % Math.max(1, sorted.length)
@@ -208,14 +356,14 @@ export async function loadClassicWinesForWinery(ctx, limit = 5) {
     subNavPath: row.subNavPath,
     subNavName: row.subNavName,
     sourceItemIndex: row.sourceItemIndex,
-    hitKey: buildWineHitKey(regionPath, row.subNavPath, row.sourceItemIndex),
+    hitKey: buildWineHitKey(regionPath, row.subNavPath, row.sourceItemIndex, row.wineItem),
     regionNavName: wineRegion.navName || ctx.regionNavName || '',
     display: buildWineDisplay(row.wineItem, { regionNavName: wineRegion.navName || ctx.regionNavName || '' })
   }))
 }
 
-export function buildWineHitKey(regionPath, subNavPath, sourceItemIndex) {
-  return `wine__${regionPath}__${subNavPath}__${sourceItemIndex}`
+export function buildWineHitKey(regionPath, subNavPath, sourceItemIndex, wineItem) {
+  return buildCatalogHitKey('wine', regionPath, subNavPath, wineItem, sourceItemIndex)
 }
 
 export function buildWineryDetailRouteTarget(regionPath, subNavPath, itemIndex) {
