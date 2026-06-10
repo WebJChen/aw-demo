@@ -15,24 +15,30 @@ import { getItemRegionByPath } from '@/utils/dataRepository'
 import { resolveItemGridImageUrl } from '@/utils/itemImageResolver'
 import { buildWineryGridDisplay } from '@/utils/wineryGridExtras'
 import {
-  buildSearchResultsRoute,
   matchesCatalogItem,
   readSearchTarget,
-  saveSearchTarget,
-  SEARCH_SOURCE_ITEM
+  saveSearchTarget
 } from '@/utils/searchUtils'
 import { buildCatalogHitKey, findCatalogEntryIndexByHitKey } from '@/utils/catalogHitKey'
-import { withRandomLoading } from '@/utils/loadingUtils'
 
 const INITIAL_RENDER_COUNT = 24
 const RENDER_STEP_COUNT = 24
 
-const SEARCH_SCOPE_OPTIONS = [
-  { value: 'all', label: '全部字段' },
-  { value: 'title', label: '标题' },
-  { value: 'desc', label: '简介' },
-  { value: 'tags', label: '标签' }
+const VISIT_FILTER_OPTIONS = [
+  { value: '', label: '参观方式不限' },
+  { value: 'cellar', label: '有品鉴室' },
+  { value: 'booking', label: '建议预约' },
+  { value: 'dining', label: '含餐厅' },
+  { value: 'stay', label: '可住宿' }
 ]
+
+const WINERY_SORT_OPTIONS = [
+  { value: 'default', label: '默认排序' },
+  { value: 'nameAsc', label: '名称 A→Z' },
+  { value: 'nameDesc', label: '名称 Z→A' }
+]
+
+const PLACEHOLDER_TAG_RE = /^tag\d+$/i
 
 const route = useRoute()
 const router = useRouter()
@@ -50,7 +56,9 @@ const hasMore = ref(false)
 const currentRegionData = ref(null)
 const localSearchKeyword = ref('')
 const appliedSearchKeyword = ref('')
-const searchScope = ref('all')
+const wineryFilterVisit = ref('')
+const wineryFilterTag = ref('')
+const winerySortBy = ref('default')
 
 const handledSearchHit = ref('')
 let hitClearTimer = null
@@ -100,42 +108,96 @@ const getSubNavItems = (subNav) => {
 
 const getItemInfo = (item) => item?.info || item?.wineData || item?.itemData || null
 
-const flattenText = (value) => {
-  if (value == null) return ''
-  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
-    return String(value)
-  }
-  if (Array.isArray(value)) return value.map(flattenText).join(' ')
-  if (typeof value === 'object') {
-    return Object.values(value).map(flattenText).join(' ')
-  }
-  return ''
+const flattenVisitGuideText = (item) => {
+  const info = getItemInfo(item) || {}
+  if (!Array.isArray(info.visitGuide)) return ''
+  return info.visitGuide
+    .map((row) => `${row?.label || ''} ${row?.text || ''}`)
+    .join(' ')
 }
 
-const matchesSearchKeyword = (item, kwRaw) => {
+const getWineryTagList = (item) => {
+  const info = getItemInfo(item) || {}
+  if (!Array.isArray(info.tags)) return []
+  return info.tags.map((tag) => String(tag || '').trim()).filter(Boolean)
+}
+
+const getWinerySearchBlob = (item) => {
+  const info = getItemInfo(item) || {}
+  return [
+    item?.title,
+    item?.enTitle,
+    info?.name,
+    info?.desc,
+    info?.dialogInfoDesc,
+    item?.region,
+    item?.town,
+    getWineryTagList(item).join(' '),
+    flattenVisitGuideText(item)
+  ]
+    .filter(Boolean)
+    .join(' ')
+}
+
+const matchesWineryKeyword = (item, kwRaw) => {
   const kw = String(kwRaw || '').trim()
   if (!kw) return true
-  const info = getItemInfo(item) || {}
-  if (searchScope.value === 'title') {
-    return matchesCatalogItem(item, kw, {
-      title: [item?.title, item?.enTitle, info?.name].filter(Boolean).join(' ')
-    })
-  }
-  if (searchScope.value === 'desc') {
-    return matchesCatalogItem(item, kw, { desc: info?.desc || info?.dialogInfoDesc || '' })
-  }
-  if (searchScope.value === 'tags') {
-    const tags = Array.isArray(info?.tags) ? info.tags.join(' ') : ''
-    const features = Array.isArray(info?.features)
-      ? info.features.map((f) => `${f?.title || ''} ${f?.desc || ''}`).join(' ')
-      : ''
-    return matchesCatalogItem(item, kw, { tags: `${tags} ${features}`.trim() })
-  }
   return matchesCatalogItem(item, kw, {
+    title: getWinerySearchBlob(item),
     navName: regionTitle.value,
     subNavName: currentSubNav.value?.subNavName || item?.subNavName || ''
   })
 }
+
+const matchesWineryVisit = (item, visitFilter) => {
+  if (!visitFilter) return true
+  const hay = `${getWinerySearchBlob(item)} ${flattenVisitGuideText(item)}`.toLowerCase()
+  switch (visitFilter) {
+    case 'cellar':
+      return /cellar|品鉴|品饮|tasting|试饮/.test(hay)
+    case 'booking':
+      return /预约|booking|reservation|需预约|建议提前/.test(hay)
+    case 'dining':
+      return /eatery|餐厅|restaurant|厨房|午餐|晚餐|餐食/.test(hay)
+    case 'stay':
+      return /住宿|stay|vineyard house|bnb|留宿|过夜/.test(hay)
+    default:
+      return true
+  }
+}
+
+const matchesWineryTag = (item, tagFilter) => {
+  if (!tagFilter) return true
+  return getWineryTagList(item).some((tag) => tag === tagFilter)
+}
+
+const compareWineryTitle = (a, b) => {
+  const titleA = String(a?.data?.title || a?.data?.enTitle || '').trim()
+  const titleB = String(b?.data?.title || b?.data?.enTitle || '').trim()
+  return titleA.localeCompare(titleB, 'zh-CN', { sensitivity: 'base' })
+}
+
+const sortWineryEntries = (entries, sortBy) => {
+  const rows = [...entries]
+  if (sortBy === 'nameAsc') return rows.sort(compareWineryTitle)
+  if (sortBy === 'nameDesc') return rows.sort((a, b) => compareWineryTitle(b, a))
+  return rows
+}
+
+const availableTagOptions = computed(() => {
+  const subNav = currentSubNav.value
+  if (!subNav) return []
+  const tagCount = new Map()
+  getSubNavItems(subNav).forEach((item) => {
+    getWineryTagList(item).forEach((tag) => {
+      if (PLACEHOLDER_TAG_RE.test(tag)) return
+      tagCount.set(tag, (tagCount.get(tag) || 0) + 1)
+    })
+  })
+  return [...tagCount.entries()]
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0], 'zh-CN'))
+    .map(([label]) => ({ value: label, label }))
+})
 
 const buildEntryListForSubNav = (subNav) => {
   if (!subNav) return []
@@ -157,8 +219,30 @@ const buildHitKeyForEntry = (entry) => {
 const dataList = computed(() => {
   const subNav = currentSubNav.value
   if (!subNav) return []
-  return buildEntryListForSubNav(subNav)
-    .filter((entry) => matchesSearchKeyword(entry.data, appliedSearchKeyword.value))
+
+  const kw = appliedSearchKeyword.value
+  const visitFilter = wineryFilterVisit.value
+  const tagFilter = wineryFilterTag.value
+  const sortBy = winerySortBy.value
+
+  const rows = buildEntryListForSubNav(subNav).filter((entry) => {
+    const item = entry.data
+    if (!matchesWineryKeyword(item, kw)) return false
+    if (!matchesWineryVisit(item, visitFilter)) return false
+    if (!matchesWineryTag(item, tagFilter)) return false
+    return true
+  })
+
+  return sortWineryEntries(rows, sortBy)
+})
+
+const hasActiveWineryFilters = computed(() => {
+  return (
+    !!appliedSearchKeyword.value.trim() ||
+    !!wineryFilterVisit.value ||
+    !!wineryFilterTag.value ||
+    winerySortBy.value !== 'default'
+  )
 })
 
 const filteredDataTotal = computed(() => dataList.value.length)
@@ -435,13 +519,22 @@ const handleSubNavClick = (subItem) => {
   })
 }
 
+const applyLocalSearch = () => {
+  appliedSearchKeyword.value = localSearchKeyword.value.trim()
+  resetRenderLimit()
+  nextTick(() => {
+    updateHasMore()
+    initLoadMoreObserver()
+    scheduleUpdateScrollPage()
+  })
+}
+
 const executeSearch = async () => {
-  const target = buildSearchResultsRoute(localSearchKeyword.value, SEARCH_SOURCE_ITEM)
-  if (!target) return
-  await withRandomLoading(() => router.push(target), { min: 80, max: 300 })
+  applyLocalSearch()
 }
 
 const onSearchClear = () => {
+  localSearchKeyword.value = ''
   appliedSearchKeyword.value = ''
   resetRenderLimit()
   nextTick(() => {
@@ -454,7 +547,9 @@ const onSearchClear = () => {
 const resetSearchFiltersAndView = () => {
   localSearchKeyword.value = ''
   appliedSearchKeyword.value = ''
-  searchScope.value = 'all'
+  wineryFilterVisit.value = ''
+  wineryFilterTag.value = ''
+  winerySortBy.value = 'default'
   resetRenderLimit()
   nextTick(() => {
     updateHasMore()
@@ -529,6 +624,30 @@ watch(() => route.query.hit, () => {
   })
 })
 
+watch(
+  [wineryFilterVisit, wineryFilterTag, winerySortBy],
+  () => {
+    resetRenderLimit()
+    nextTick(() => {
+      updateHasMore()
+      initLoadMoreObserver()
+      scheduleUpdateScrollPage()
+    })
+  }
+)
+
+watch(availableTagOptions, (options) => {
+  if (!wineryFilterTag.value) return
+  if (!options.some((opt) => opt.value === wineryFilterTag.value)) {
+    wineryFilterTag.value = ''
+  }
+})
+
+watch(() => currentSubNav.value?.subNavPath, () => {
+  wineryFilterTag.value = ''
+  wineryFilterVisit.value = ''
+})
+
 watch(filteredDataTotal, () => {
   updateHasMore()
   nextTick(() => initLoadMoreObserver())
@@ -579,13 +698,23 @@ onUnmounted(() => {
             <el-button type="primary" class="wine-filter-submit" @click="executeSearch">搜索</el-button>
           </template>
         </el-input>
-        <el-select v-model="searchScope" class="wine-filter-select" size="large" placeholder="筛选字段">
-          <el-option v-for="opt in SEARCH_SCOPE_OPTIONS" :key="opt.value" :label="opt.label" :value="opt.value" />
+        <el-select v-model="wineryFilterVisit" class="wine-filter-select" size="large" clearable placeholder="参观方式">
+          <el-option v-for="opt in VISIT_FILTER_OPTIONS" :key="'v-' + String(opt.value)" :label="opt.label"
+            :value="opt.value" />
+        </el-select>
+        <el-select v-model="wineryFilterTag" class="wine-filter-select" size="large" clearable filterable
+          placeholder="特色标签" :disabled="!availableTagOptions.length">
+          <el-option label="标签不限" value="" />
+          <el-option v-for="opt in availableTagOptions" :key="'t-' + opt.value" :label="opt.label" :value="opt.value" />
+        </el-select>
+        <el-select v-model="winerySortBy" class="wine-filter-select wine-filter-select--sort" size="large"
+          placeholder="排序">
+          <el-option v-for="opt in WINERY_SORT_OPTIONS" :key="opt.value" :label="opt.label" :value="opt.value" />
         </el-select>
         <el-button size="large" class="wine-filter-reset" @click="resetSearchFiltersAndView">重置</el-button>
       </div>
       <p class="wine-filter-hint">
-        <span v-if="appliedSearchKeyword">筛选结果 · </span>
+        <span v-if="hasActiveWineryFilters">筛选结果 · </span>
         <span v-else>本栏共 </span>
         <strong>{{ filteredDataTotal }}</strong> 家酒庄
       </p>

@@ -245,9 +245,14 @@ const dataList = computed(() => {
 /** —— 酒款筛选 / 排序（参考 tto-demo TripsGrid 搜索 + 多条件下拉，样式独立）—— */
 const localWineSearchKeyword = ref('')
 const appliedWineSearchKeyword = ref('')
+const wineFilterState = ref('')
 const wineFilterPriceTier = ref('')
-const wineFilterRating = ref('')
 const wineSortBy = ref('default')
+
+const WINE_FILTER_STATE_OPTIONS = navData.slice(0, 8).map((region) => ({
+  value: region?.navName || '',
+  label: region?.navName || ''
+})).filter((opt) => opt.value)
 
 const WINE_FILTER_PRICE_OPTIONS = [
   { value: '', label: '价格不限' },
@@ -255,13 +260,6 @@ const WINE_FILTER_PRICE_OPTIONS = [
   { value: '200400', label: '¥200 – ¥400' },
   { value: '400800', label: '¥400 – ¥800' },
   { value: 'gt800', label: '¥800 以上' }
-]
-
-const WINE_FILTER_RATING_OPTIONS = [
-  { value: '', label: '评分不限' },
-  { value: 'gte43', label: '★4.3 及以上' },
-  { value: 'gte45', label: '★4.5 及以上' },
-  { value: 'gte48', label: '★4.8 及以上' }
 ]
 
 const WINE_SORT_OPTIONS = [
@@ -292,14 +290,9 @@ const matchesWinePriceTier = (price, tier) => {
   return true
 }
 
-const matchesWineRatingTier = (rating, opt) => {
-  if (!opt) return true
-  const r = Number(rating)
-  if (!Number.isFinite(r)) return false
-  if (opt === 'gte43') return r >= 4.3 - 1e-6
-  if (opt === 'gte45') return r >= 4.5 - 1e-6
-  if (opt === 'gte48') return r >= 4.8 - 1e-6
-  return true
+const matchesWineState = (regionNavName, stateFilter) => {
+  if (!stateFilter) return true
+  return String(regionNavName || '').trim() === String(stateFilter).trim()
 }
 
 const sortWineFacetSlice = (facets, sortByVal) => {
@@ -320,20 +313,20 @@ const sortWineFacetSlice = (facets, sortByVal) => {
 
 const filteredWineFacetFullList = computed(() => {
   const kw = appliedWineSearchKeyword.value
+  const stateFilter = wineFilterState.value
   const priceT = wineFilterPriceTier.value
-  const ratingT = wineFilterRating.value
   const sortVal = wineSortBy.value
 
   const facets = []
   dataList.value.forEach((entry, idx) => {
     const data = entry.data
     if (!wineMatchesKeyword(data, kw)) return
+    if (!matchesWineState(entry.regionNavName, stateFilter)) return
     const wine = buildWineDisplay(data, { regionNavName: entry.regionNavName })
     const price = Number(wine.saleNum)
     const rating = Number(wine.ratingStars)
     const salesApprox = parseWineTxnSalesApprox(wine.transactionLine || '')
     if (!matchesWinePriceTier(price, priceT)) return
-    if (!matchesWineRatingTier(rating, ratingT)) return
     facets.push({
       idx,
       entry,
@@ -352,8 +345,8 @@ const filteredWineTotal = computed(() => filteredWineFacetFullList.value.length)
 const hasActiveWineFilters = computed(() => {
   return (
     !!appliedWineSearchKeyword.value.trim() ||
+    !!wineFilterState.value ||
     !!wineFilterPriceTier.value ||
-    !!wineFilterRating.value ||
     wineSortBy.value !== 'default'
   )
 })
@@ -384,8 +377,8 @@ const gridRows = computed(() =>
 const resetWineGridFilters = () => {
   localWineSearchKeyword.value = ''
   appliedWineSearchKeyword.value = ''
+  wineFilterState.value = ''
   wineFilterPriceTier.value = ''
-  wineFilterRating.value = ''
   wineSortBy.value = 'default'
 }
 
@@ -862,7 +855,7 @@ watch(() => dataList.value.length, () => {
 })
 
 watch(
-  [wineFilterPriceTier, wineFilterRating, wineSortBy],
+  [wineFilterState, wineFilterPriceTier, wineSortBy],
   () => {
     resetRenderLimit()
     nextTick(() => {
@@ -919,12 +912,13 @@ onUnmounted(() => {
             <el-button type="primary" class="wine-filter-submit" @click="executeWineSearch">搜索</el-button>
           </template>
         </el-input>
-        <el-select v-model="wineFilterPriceTier" class="wine-filter-select" size="large" clearable placeholder="价格">
-          <el-option v-for="opt in WINE_FILTER_PRICE_OPTIONS" :key="'p-' + String(opt.value)" :label="opt.label"
+        <el-select v-model="wineFilterState" class="wine-filter-select" size="large" clearable placeholder="州/领地">
+          <el-option label="全部州/领地" value="" />
+          <el-option v-for="opt in WINE_FILTER_STATE_OPTIONS" :key="'s-' + opt.value" :label="opt.label"
             :value="opt.value" />
         </el-select>
-        <el-select v-model="wineFilterRating" class="wine-filter-select" size="large" clearable placeholder="评分">
-          <el-option v-for="opt in WINE_FILTER_RATING_OPTIONS" :key="'r-' + String(opt.value)" :label="opt.label"
+        <el-select v-model="wineFilterPriceTier" class="wine-filter-select" size="large" clearable placeholder="价格">
+          <el-option v-for="opt in WINE_FILTER_PRICE_OPTIONS" :key="'p-' + String(opt.value)" :label="opt.label"
             :value="opt.value" />
         </el-select>
         <el-select v-model="wineSortBy" class="wine-filter-select wine-filter-select--sort" size="large"
