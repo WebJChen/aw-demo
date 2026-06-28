@@ -39,7 +39,10 @@
               "tag2",
               "tag3"
             ]
-          }
+          },
+          "town": "Yarra Valley",
+          "postcode": "3770",
+          "locationLabel": "Yarra Valley 3770"
         },
         {
           "title": "TarraWarra Estate",
@@ -77,7 +80,10 @@
               "Rosé",
               "Sustainable"
             ]
-          }
+          },
+          "town": "Mornington Peninsula",
+          "postcode": "3931",
+          "locationLabel": "Mornington Peninsula 3931"
         },
         {
           "title": "Panton Hill Vineyard & Winery",
@@ -111,7 +117,10 @@
               "Boutique Winery",
               "Cellar Door"
             ]
-          }
+          },
+          "town": "Heathcote",
+          "postcode": "3523",
+          "locationLabel": "Heathcote 3523"
         },
         {
           "title": "Ringer Reef Winery",
@@ -143,7 +152,10 @@
               "Cellar Door",
               "High Country"
             ]
-          }
+          },
+          "town": "Rutherglen",
+          "postcode": "3685",
+          "locationLabel": "Rutherglen 3685"
         },
         {
           "title": "Seppelt Great Western",

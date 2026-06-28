@@ -39,7 +39,10 @@
               "tag2",
               "tag3"
             ]
-          }
+          },
+          "town": "Canberra District",
+          "postcode": "2600",
+          "locationLabel": "Canberra District 2600"
         },
         {
           "title": "Mount Majura Vineyard",
@@ -72,7 +75,10 @@
               "Sparkling",
               "Riesling"
             ]
-          }
+          },
+          "town": "Murrumbateman",
+          "postcode": "2582",
+          "locationLabel": "Murrumbateman 2582"
         },
         {
           "title": "Contentious Character",

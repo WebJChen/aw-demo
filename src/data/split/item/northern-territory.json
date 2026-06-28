@@ -39,7 +39,10 @@
               "tag2",
               "tag3"
             ]
-          }
+          },
+          "town": "Alice Springs",
+          "postcode": "0870",
+          "locationLabel": "Alice Springs 0870"
         }
       ]
     },
@@ -77,7 +80,10 @@
               "tag2",
               "tag3"
             ]
-          }
+          },
+          "town": "Darwin",
+          "postcode": "0800",
+          "locationLabel": "Darwin 0800"
         },
         {
           "title": "Willing Distillery",
@@ -111,7 +117,10 @@
               "Craft Distillery",
               "Cellar Door"
             ]
-          }
+          },
+          "town": "Katherine",
+          "postcode": "0850",
+          "locationLabel": "Katherine 0850"
         },
         {
           "title": "Darwin Distilling Co",

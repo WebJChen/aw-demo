@@ -55,6 +55,9 @@
             "name": "Ghost Rock Estate 2025 Estate Pinot Noir",
             "wineryName": "Ghost Rock Winery",
             "originRegion": "塔斯马尼亚西北部 · Ghost Rock Estate",
+            "town": "Port Sorell",
+            "postcode": "7307",
+            "locationLabel": "Port Sorell 7307",
             "desc": "深色成熟红果主导香气，覆盆子、李子和黑莓层叠于烘焙香料与黑胡椒之上，底层带有甜菜、砾石与矿物感，并有一丝海风气息。",
             "vintage": "2025",
             "abv": "13.5%vol",
@@ -92,6 +95,9 @@
           "enTitle": "Tolpuddle Vineyard Pinot Noir",
           "wineData": {
             "name": "Tolpuddle Vineyard Pinot Noir",
+            "town": "Coal River Valley",
+            "postcode": "7140",
+            "locationLabel": "Coal River Valley 7140",
             "desc": "From Tolpuddle Vineyard",
             "website": "",
             "features": [
@@ -147,7 +153,10 @@
               "tag1",
               "tag2",
               "tag3"
-            ]
+            ],
+            "town": "Port Sorell",
+            "postcode": "7307",
+            "locationLabel": "Port Sorell 7307"
           }
         },
         {
@@ -179,7 +188,10 @@
               "tag1",
               "tag2",
               "tag3"
-            ]
+            ],
+            "town": "Coal River Valley",
+            "postcode": "7140",
+            "locationLabel": "Coal River Valley 7140"
           }
         },
         {
@@ -211,7 +223,10 @@
               "tag1",
               "tag2",
               "tag3"
-            ]
+            ],
+            "town": "Hobart",
+            "postcode": "7000",
+            "locationLabel": "Hobart 7000"
           }
         },
         {
@@ -243,7 +258,10 @@
               "tag1",
               "tag2",
               "tag3"
-            ]
+            ],
+            "town": "Launceston",
+            "postcode": "7250",
+            "locationLabel": "Launceston 7250"
           }
         },
         {

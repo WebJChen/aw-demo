@@ -72,7 +72,10 @@
               "tag1",
               "tag2",
               "tag3"
-            ]
+            ],
+            "town": "Yarra Valley",
+            "postcode": "3770",
+            "locationLabel": "Yarra Valley 3770"
           }
         }
       ]
@@ -145,7 +148,10 @@
               "tag1",
               "tag2",
               "tag3"
-            ]
+            ],
+            "town": "Mornington Peninsula",
+            "postcode": "3931",
+            "locationLabel": "Mornington Peninsula 3931"
           }
         }
       ]
@@ -218,7 +224,10 @@
               "tag1",
               "tag2",
               "tag3"
-            ]
+            ],
+            "town": "Heathcote",
+            "postcode": "3523",
+            "locationLabel": "Heathcote 3523"
           }
         }
       ]
@@ -291,7 +300,10 @@
               "tag1",
               "tag2",
               "tag3"
-            ]
+            ],
+            "town": "Rutherglen",
+            "postcode": "3685",
+            "locationLabel": "Rutherglen 3685"
           }
         }
       ]

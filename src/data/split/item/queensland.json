@@ -39,7 +39,10 @@
               "tag2",
               "tag3"
             ]
-          }
+          },
+          "town": "Granite Belt",
+          "postcode": "4380",
+          "locationLabel": "Granite Belt 4380"
         },
         {
           "title": "Witches Falls Winery",
@@ -72,7 +75,10 @@
               "Cellar Door",
               "Tamborine Mountain"
             ]
-          }
+          },
+          "town": "Brisbane Valley",
+          "postcode": "4311",
+          "locationLabel": "Brisbane Valley 4311"
         },
         {
           "title": "Bunjurgen Estate Vineyard",
@@ -106,7 +112,10 @@
               "Cellar Door",
               "Dog Friendly"
             ]
-          }
+          },
+          "town": "Gold Coast Hinterland",
+          "postcode": "4211",
+          "locationLabel": "Gold Coast Hinterland 4211"
         },
         {
           "title": "Sirromet",

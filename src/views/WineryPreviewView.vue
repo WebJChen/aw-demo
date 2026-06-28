@@ -20,6 +20,11 @@ import {
   saveSearchTarget
 } from '@/utils/searchUtils'
 import { buildCatalogHitKey, findCatalogEntryIndexByHitKey } from '@/utils/catalogHitKey'
+import {
+  createLocationLazyLoad,
+  resolveLocationLabel,
+  getLocationSortOrder,
+} from '@/utils/ausWineLocationPostcodes'
 
 const INITIAL_RENDER_COUNT = 24
 const RENDER_STEP_COUNT = 24
@@ -35,7 +40,9 @@ const VISIT_FILTER_OPTIONS = [
 const WINERY_SORT_OPTIONS = [
   { value: 'default', label: '默认排序' },
   { value: 'nameAsc', label: '名称 A→Z' },
-  { value: 'nameDesc', label: '名称 Z→A' }
+  { value: 'nameDesc', label: '名称 Z→A' },
+  { value: 'locEn', label: '按英文排序' },
+  { value: 'locCn', label: '按中文排序' },
 ]
 
 const PLACEHOLDER_TAG_RE = /^tag\d+$/i
@@ -59,6 +66,12 @@ const appliedSearchKeyword = ref('')
 const wineryFilterVisit = ref('')
 const wineryFilterTag = ref('')
 const winerySortBy = ref('default')
+
+const selectedLocationKey = ref([])
+const selectedLocationLabel = computed(() => {
+  const arr = selectedLocationKey.value
+  return Array.isArray(arr) && arr.length ? arr[arr.length - 1] : ''
+})
 
 const handledSearchHit = ref('')
 let hitClearTimer = null
@@ -171,6 +184,21 @@ const matchesWineryTag = (item, tagFilter) => {
   return getWineryTagList(item).some((tag) => tag === tagFilter)
 }
 
+const matchesWineryLocation = (item, locLabel) => {
+  if (!locLabel) return true
+  return resolveLocationLabel(item) === locLabel
+}
+
+const locationCascaderProps = computed(() => {
+  const currentItems = buildEntryListForSubNav(currentSubNav.value).map((entry) => entry.data)
+  const modeMap = { default: 'postcode', locPostcode: 'postcode', locEn: 'nameEn', locCn: 'nameZh' }
+  return {
+    lazy: true,
+    lazyLoad: createLocationLazyLoad(currentItems, modeMap[winerySortBy.value] || 'postcode'),
+    showAllLevels: false,
+  }
+})
+
 const compareWineryTitle = (a, b) => {
   const titleA = String(a?.data?.title || a?.data?.enTitle || '').trim()
   const titleB = String(b?.data?.title || b?.data?.enTitle || '').trim()
@@ -216,6 +244,45 @@ const buildHitKeyForEntry = (entry) => {
   return buildCatalogHitKey('item', entry.regionPath, entry.subNavPath, entry.data, entry.sourceItemIndex)
 }
 
+function getLocationDisplayName(item) {
+  return resolveLocationLabel(item)
+}
+
+function getLocationTown(item) {
+  const label = resolveLocationLabel(item)
+  if (!label) return ''
+  const lastSpace = label.lastIndexOf(' ')
+  return lastSpace > 0 ? label.slice(0, lastSpace) : label
+}
+
+function getLocationPostcode(item) {
+  const label = resolveLocationLabel(item)
+  if (!label) return ''
+  const lastSpace = label.lastIndexOf(' ')
+  return lastSpace > 0 ? label.slice(lastSpace + 1) : ''
+}
+
+function sortByLocation(items) {
+  const sortBy = winerySortBy.value
+  const modeMap = { default: 'postcode', locPostcode: 'postcode', locEn: 'nameEn', locCn: 'nameZh' }
+  const mode = modeMap[sortBy] || 'postcode'
+  const list = Array.isArray(items) ? [...items] : []
+  return list.sort((a, b) => {
+    const orderDiff = getLocationSortOrder(a.data, mode) - getLocationSortOrder(b.data, mode)
+    if (orderDiff !== 0) return orderDiff
+    return String(a.data?.title || '').localeCompare(String(b.data?.title || ''), 'zh-Hans-CN')
+  })
+}
+
+function shouldShowLocationTitle(list, index) {
+  if (!Array.isArray(list) || !list.length) return false
+  if (index === 0) return true
+  return getLocationDisplayName(list[index].data) !== getLocationDisplayName(list[index - 1].data)
+}
+
+const isLocationSortMode = (sortBy) =>
+  sortBy === 'default' || sortBy === 'locPostcode' || sortBy === 'locEn' || sortBy === 'locCn'
+
 const dataList = computed(() => {
   const subNav = currentSubNav.value
   if (!subNav) return []
@@ -224,15 +291,20 @@ const dataList = computed(() => {
   const visitFilter = wineryFilterVisit.value
   const tagFilter = wineryFilterTag.value
   const sortBy = winerySortBy.value
+  const locLabel = selectedLocationLabel.value
 
   const rows = buildEntryListForSubNav(subNav).filter((entry) => {
     const item = entry.data
     if (!matchesWineryKeyword(item, kw)) return false
     if (!matchesWineryVisit(item, visitFilter)) return false
     if (!matchesWineryTag(item, tagFilter)) return false
+    if (!matchesWineryLocation(item, locLabel)) return false
     return true
   })
 
+  if (isLocationSortMode(sortBy)) {
+    return sortByLocation(rows)
+  }
   return sortWineryEntries(rows, sortBy)
 })
 
@@ -241,6 +313,7 @@ const hasActiveWineryFilters = computed(() => {
     !!appliedSearchKeyword.value.trim() ||
     !!wineryFilterVisit.value ||
     !!wineryFilterTag.value ||
+    !!selectedLocationLabel.value ||
     winerySortBy.value !== 'default'
   )
 })
@@ -550,6 +623,7 @@ const resetSearchFiltersAndView = () => {
   wineryFilterVisit.value = ''
   wineryFilterTag.value = ''
   winerySortBy.value = 'default'
+  selectedLocationKey.value = []
   resetRenderLimit()
   nextTick(() => {
     updateHasMore()
@@ -711,6 +785,8 @@ onUnmounted(() => {
           placeholder="排序">
           <el-option v-for="opt in WINERY_SORT_OPTIONS" :key="opt.value" :label="opt.label" :value="opt.value" />
         </el-select>
+        <el-cascader v-model="selectedLocationKey" :props="locationCascaderProps" clearable filterable
+          placeholder="地点（邮编）" class="wine-filter-select" size="large" :key="'winery-loc-' + winerySortBy" />
         <el-button size="large" class="wine-filter-reset" @click="resetSearchFiltersAndView">重置</el-button>
       </div>
       <p class="wine-filter-hint">
@@ -747,33 +823,38 @@ onUnmounted(() => {
       </div>
     </template>
 
-    <template #leading>
-      <!-- 【样式测试·可删】仅非 tasmania 州展示八州导航首格 -->
+    <template #items>
+      <!-- 非 tasmania 州：八州导航作为网格第一个格子 -->
       <RegionNavMenuCard v-if="showLeadingNavMenu" :nav-menu-items="navMenuItems" :active-region-path="regionPath"
         @select="openWineryPreviewInNewWindow" />
-    </template>
-
-    <template #items>
-      <div v-for="row in gridRows"
-        :key="`${row.entry?.regionPath || ''}-${row.entry?.subNavPath || ''}-${row.entry?.sourceItemIndex ?? row.idx}`"
-        class="info-item pointer" :data-title="row.data.title" :data-hit-key="buildHitKeyForEntry(row.entry)"
-        @click="openWineryDetailInNewWindow(row.entry)">
-        <div class="info-img-wrap bgfff">
-          <img :src="resolveItemGridImageUrl(row.data)" :alt="row.data.title" class="w100"
-            :loading="getImageLoading(row.idx)" decoding="async" :fetchpriority="getImageFetchPriority(row.idx)">
+      <template v-for="(row, i) in gridRows"
+        :key="`${row.entry?.regionPath || ''}-${row.entry?.subNavPath || ''}-${row.entry?.sourceItemIndex ?? row.idx}`">
+        <div v-if="shouldShowLocationTitle(gridRows, i)" class="info-item location-card">
+          <div class="location-card__bg" :style="`background-image: url(${resolveItemGridImageUrl(row.data)})`"></div>
+          <div class="location-card__overlay">
+            <span class="location-card__town">{{ getLocationTown(row.data) }}</span>
+            <span class="location-card__postcode">{{ getLocationPostcode(row.data) }}</span>
+          </div>
         </div>
-        <div class="info-title fs16" :title="row.data.title">{{ row.data.title }}</div>
-        <div v-if="row.data.enTitle" class="info-sub info-sub--under-title" :title="row.data.enTitle">
-          {{ row.data.enTitle }}
-        </div>
-        <div class="info-meta-line info-meta-line--winery">
-          <span class="info-meta-chip info-meta-chip--type">{{ row.display.wineryType }}</span>
-          <span class="info-meta-chip info-meta-chip--visit">{{ row.display.visitLabel }}</span>
-          <span v-for="tag in row.display.styleTags" :key="tag" class="info-meta-chip info-meta-chip--tag">{{ tag
+        <div class="info-item pointer" :data-title="row.data.title" :data-hit-key="buildHitKeyForEntry(row.entry)"
+          @click="openWineryDetailInNewWindow(row.entry)">
+          <div class="info-img-wrap bgfff">
+            <img :src="resolveItemGridImageUrl(row.data)" :alt="row.data.title" class="w100"
+              :loading="getImageLoading(row.idx)" decoding="async" :fetchpriority="getImageFetchPriority(row.idx)">
+          </div>
+          <div class="info-title fs16" :title="row.data.title">{{ row.data.title }}</div>
+          <div v-if="row.data.enTitle" class="info-sub info-sub--under-title" :title="row.data.enTitle">
+            {{ row.data.enTitle }}
+          </div>
+          <div class="info-meta-line info-meta-line--winery">
+            <span class="info-meta-chip info-meta-chip--type">{{ row.display.wineryType }}</span>
+            <span class="info-meta-chip info-meta-chip--visit">{{ row.display.visitLabel }}</span>
+            <span v-for="tag in row.display.styleTags" :key="tag" class="info-meta-chip info-meta-chip--tag">{{ tag
             }}</span>
+          </div>
+          <p class="info-winery-teaser" :title="row.display.teaser">{{ row.display.teaser }}</p>
         </div>
-        <p class="info-winery-teaser" :title="row.display.teaser">{{ row.display.teaser }}</p>
-      </div>
+      </template>
     </template>
 
     <template #empty>
@@ -785,3 +866,67 @@ onUnmounted(() => {
     </template>
   </CatalogGridShell>
 </template>
+
+<style>
+.info-list .info-item.location-card {
+  padding: 0 !important;
+  gap: 0 !important;
+  border: none !important;
+  border-radius: 8px;
+  cursor: default;
+  background: none !important;
+}
+
+.info-list .info-item.location-card:hover {
+  border: none !important;
+  box-shadow: none !important;
+  transform: none !important;
+  background: none !important;
+}
+
+.location-card {
+  position: relative;
+  height: 100%;
+  min-height: 200px;
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.location-card__bg {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+.location-card__overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.6);
+  padding: 24px 20px;
+  box-sizing: border-box;
+}
+
+.location-card__town {
+  font-size: 34px;
+  font-weight: 800;
+  color: #333;
+  letter-spacing: 0.5px;
+  line-height: 1.3;
+  font-family: Georgia, 'Times New Roman', serif;
+}
+
+.location-card__postcode {
+  font-size: 26px;
+  font-weight: 700;
+  color: #a8163c;
+  letter-spacing: 2px;
+  line-height: 1.3;
+  font-family: 'Courier New', Consolas, monospace;
+}
+</style>

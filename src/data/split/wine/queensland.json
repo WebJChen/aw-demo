@@ -72,7 +72,10 @@
               "tag1",
               "tag2",
               "tag3"
-            ]
+            ],
+            "town": "Granite Belt",
+            "postcode": "4380",
+            "locationLabel": "Granite Belt 4380"
           }
         }
       ]
@@ -145,7 +148,10 @@
               "tag1",
               "tag2",
               "tag3"
-            ]
+            ],
+            "town": "Brisbane Valley",
+            "postcode": "4311",
+            "locationLabel": "Brisbane Valley 4311"
           }
         }
       ]
@@ -218,7 +224,10 @@
               "tag1",
               "tag2",
               "tag3"
-            ]
+            ],
+            "town": "Gold Coast Hinterland",
+            "postcode": "4211",
+            "locationLabel": "Gold Coast Hinterland 4211"
           }
         }
       ]

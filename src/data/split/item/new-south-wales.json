@@ -39,7 +39,10 @@
               "tag2",
               "tag3"
             ]
-          }
+          },
+          "town": "Hunter Valley",
+          "postcode": "2320",
+          "locationLabel": "Hunter Valley 2320"
         },
         {
           "title": "Jubilee Vineyard Estate",
@@ -75,7 +78,10 @@
               "Sparkling",
               "Fortified"
             ]
-          }
+          },
+          "town": "Mudgee",
+          "postcode": "2850",
+          "locationLabel": "Mudgee 2850"
         },
         {
           "title": "Habitat Vineyard",
@@ -111,7 +117,10 @@
               "Biodynamic",
               "Cool Climate"
             ]
-          }
+          },
+          "town": "Orange",
+          "postcode": "2800",
+          "locationLabel": "Orange 2800"
         },
         {
           "title": "Dryridge Estate",

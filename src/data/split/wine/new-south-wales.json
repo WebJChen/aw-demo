@@ -72,7 +72,10 @@
               "tag1",
               "tag2",
               "tag3"
-            ]
+            ],
+            "town": "Hunter Valley",
+            "postcode": "2320",
+            "locationLabel": "Hunter Valley 2320"
           }
         },
         {
@@ -105,7 +108,10 @@
               "Chambourcin",
               "Shiraz",
               "Viognier"
-            ]
+            ],
+            "town": "Mudgee",
+            "postcode": "2850",
+            "locationLabel": "Mudgee 2850"
           }
         },
         {
@@ -138,7 +144,10 @@
               "Shiraz",
               "Merlot",
               "Cabernet Sauvignon"
-            ]
+            ],
+            "town": "Orange",
+            "postcode": "2800",
+            "locationLabel": "Orange 2800"
           }
         },
         {

@@ -39,7 +39,10 @@
               "tag2",
               "tag3"
             ]
-          }
+          },
+          "town": "Margaret River",
+          "postcode": "6285",
+          "locationLabel": "Margaret River 6285"
         },
         {
           "title": "Voyager Estate",
@@ -75,7 +78,10 @@
               "Sparkling Rosé",
               "Organic"
             ]
-          }
+          },
+          "town": "Great Southern",
+          "postcode": "6330",
+          "locationLabel": "Great Southern 6330"
         },
         {
           "title": "Stella Bella Wines",
@@ -110,7 +116,10 @@
               "Pink Moscato",
               "Cabernet Merlot"
             ]
-          }
+          },
+          "town": "Swan Valley",
+          "postcode": "6055",
+          "locationLabel": "Swan Valley 6055"
         },
         {
           "title": "Wise Wine",

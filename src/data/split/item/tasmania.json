@@ -46,14 +46,17 @@
                 "url": "www.baidu.com"
               }
             ]
-          }
+          },
+          "town": "Port Sorell",
+          "postcode": "7307",
+          "locationLabel": "Port Sorell 7307"
         },
         {
           "title": "Ghost Rock Winery",
           "img": "../assets/img/item/Tasmania/GhostRockWinery/bn1.jpg",
           "enTitle": "Ghost Rock Wines",
           "region": "塔斯马尼亚西北部",
-          "town": "Devonport 以东",
+          "town": "Coal River Valley",
           "info": {
             "name": "Ghost Rock Wines · 鬼岩酒庄",
             "desc": "鬼岩酒庄（Ghost Rock Wines）是塔斯马尼亚西北部地区的标杆酒庄，集品鉴室、餐厅、葡萄园与住宿（Vineyard House）于一体，可俯瞰连绵丘陵与巴斯海峡的迷人景致。酒庄始终坚持以葡萄酒、美食与景观为核心体验——Justin Arnold 表示，宾客如今可在葡萄藤旁沉浸式品饮、享用精致餐食，将北塔州之旅浓缩于一处。",
@@ -157,7 +160,9 @@
               "Bass Strait"
             ],
             "website": "https://www.ghostrock.com.au/"
-          }
+          },
+          "postcode": "7140",
+          "locationLabel": "Coal River Valley 7140"
         },
         {
           "title": "Shy Susan Wines",
@@ -188,7 +193,10 @@
               "tag2",
               "tag3"
             ]
-          }
+          },
+          "town": "Hobart",
+          "postcode": "7000",
+          "locationLabel": "Hobart 7000"
         },
         {
           "title": "Domaine A/Stoney Vineyard",
@@ -219,7 +227,10 @@
               "tag2",
               "tag3"
             ]
-          }
+          },
+          "town": "Launceston",
+          "postcode": "7250",
+          "locationLabel": "Launceston 7250"
         },
         {
           "title": "Pirie Tasmania",

@@ -39,7 +39,10 @@
               "tag2",
               "tag3"
             ]
-          }
+          },
+          "town": "McLaren Vale",
+          "postcode": "5171",
+          "locationLabel": "McLaren Vale 5171"
         },
         {
           "title": "Samuel's Gorge",
@@ -74,7 +77,10 @@
               "Grüner Veltliner",
               "Sparkling Shiraz"
             ]
-          }
+          },
+          "town": "Barossa Valley",
+          "postcode": "5352",
+          "locationLabel": "Barossa Valley 5352"
         },
         {
           "title": "Down The Rabbit Hole Wines",
@@ -113,7 +119,10 @@
               "Sparkling",
               "Rosé"
             ]
-          }
+          },
+          "town": "Adelaide Hills",
+          "postcode": "5152",
+          "locationLabel": "Adelaide Hills 5152"
         },
         {
           "title": "Rockford",
