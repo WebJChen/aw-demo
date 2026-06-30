@@ -21,9 +21,11 @@ import {
 } from '@/utils/searchUtils'
 import { buildCatalogHitKey, findCatalogEntryIndexByHitKey } from '@/utils/catalogHitKey'
 import {
+  AUS_WINE_LOCATION_POSTCODES,
   createLocationLazyLoad,
-  resolveLocationLabel,
+  getLocationDisplayLabel,
   getLocationSortOrder,
+  resolveLocationLabel,
 } from '@/utils/ausWineLocationPostcodes'
 
 const INITIAL_RENDER_COUNT = 24
@@ -245,7 +247,10 @@ const buildHitKeyForEntry = (entry) => {
 }
 
 function getLocationDisplayName(item) {
-  return resolveLocationLabel(item)
+  const label = resolveLocationLabel(item)
+  const sortBy = winerySortBy.value
+  const modeMap = { default: 'postcode', locPostcode: 'postcode', locEn: 'nameEn', locCn: 'nameZh' }
+  return getLocationDisplayLabel(label, modeMap[sortBy] || 'postcode')
 }
 
 function getLocationTown(item) {
@@ -253,6 +258,13 @@ function getLocationTown(item) {
   if (!label) return ''
   const lastSpace = label.lastIndexOf(' ')
   return lastSpace > 0 ? label.slice(0, lastSpace) : label
+}
+
+function getLocationNameZh(item) {
+  const label = resolveLocationLabel(item)
+  if (!label) return ''
+  const found = AUS_WINE_LOCATION_POSTCODES.find((e) => e.label === label)
+  return found ? found.nameZh || '' : ''
 }
 
 function getLocationPostcode(item) {
@@ -832,6 +844,7 @@ onUnmounted(() => {
         <div v-if="shouldShowLocationTitle(gridRows, i)" class="info-item location-card">
           <div class="location-card__bg" :style="`background-image: url(${resolveItemGridImageUrl(row.data)})`"></div>
           <div class="location-card__overlay">
+            <span v-if="winerySortBy === 'locCn'" class="location-card__namezh">{{ getLocationNameZh(row.data) }}</span>
             <span class="location-card__town">{{ getLocationTown(row.data) }}</span>
             <span class="location-card__postcode">{{ getLocationPostcode(row.data) }}</span>
           </div>
@@ -919,6 +932,15 @@ onUnmounted(() => {
   letter-spacing: 0.5px;
   line-height: 1.3;
   font-family: Georgia, 'Times New Roman', serif;
+}
+
+.location-card__namezh {
+  font-size: 34px;
+  font-weight: 800;
+  color: #333;
+  letter-spacing: 0.5px;
+  line-height: 1.3;
+  font-family: 'Source Han Serif SC', 'Noto Serif SC', 'SimSun', 'STSong', serif;
 }
 
 .location-card__postcode {

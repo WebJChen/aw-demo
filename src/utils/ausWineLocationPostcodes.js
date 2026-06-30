@@ -17,47 +17,47 @@ export const SORT_MODE_LABELS = {
 /** 全澳酒庄/产区地点邮编目录（示例数据，后续补充） */
 export const AUS_WINE_LOCATION_POSTCODES = [
   // ===== 北领地 NT =====
-  { label: 'Darwin 0800', town: 'Darwin', postcode: '0800' },
-  { label: 'Katherine 0850', town: 'Katherine', postcode: '0850' },
-  { label: 'Alice Springs 0870', town: 'Alice Springs', postcode: '0870' },
+  { label: 'Darwin 0800', town: 'Darwin', postcode: '0800', nameZh: '达尔文' },
+  { label: 'Katherine 0850', town: 'Katherine', postcode: '0850', nameZh: '凯瑟琳' },
+  { label: 'Alice Springs 0870', town: 'Alice Springs', postcode: '0870', nameZh: '艾丽斯斯普林斯' },
 
   // ===== 新南威尔士州 NSW =====
-  { label: 'Hunter Valley 2320', town: 'Hunter Valley', postcode: '2320' },
-  { label: 'Southern Highlands 2576', town: 'Southern Highlands', postcode: '2576' },
+  { label: 'Hunter Valley 2320', town: 'Hunter Valley', postcode: '2320', nameZh: '猎人谷' },
+  { label: 'Southern Highlands 2576', town: 'Southern Highlands', postcode: '2576', nameZh: '南部高地' },
   // ===== 首都领地 ACT =====
-  { label: 'Murrumbateman 2582', town: 'Murrumbateman', postcode: '2582' },
-  { label: 'Canberra District 2600', town: 'Canberra District', postcode: '2600' },
+  { label: 'Murrumbateman 2582', town: 'Murrumbateman', postcode: '2582', nameZh: '马拉巴德曼' },
+  { label: 'Canberra District 2600', town: 'Canberra District', postcode: '2600', nameZh: '堪培拉产区' },
   // ===== 新南威尔士州 NSW（续）=====
-  { label: 'Orange 2800', town: 'Orange', postcode: '2800' },
-  { label: 'Mudgee 2850', town: 'Mudgee', postcode: '2850' },
+  { label: 'Orange 2800', town: 'Orange', postcode: '2800', nameZh: '奥兰治' },
+  { label: 'Mudgee 2850', town: 'Mudgee', postcode: '2850', nameZh: '马奇' },
 
   // ===== 维多利亚州 VIC =====
-  { label: 'Heathcote 3523', town: 'Heathcote', postcode: '3523' },
-  { label: 'Rutherglen 3685', town: 'Rutherglen', postcode: '3685' },
-  { label: 'Yarra Valley 3770', town: 'Yarra Valley', postcode: '3770' },
-  { label: 'Mornington Peninsula 3931', town: 'Mornington Peninsula', postcode: '3931' },
+  { label: 'Heathcote 3523', town: 'Heathcote', postcode: '3523', nameZh: '希思科特' },
+  { label: 'Rutherglen 3685', town: 'Rutherglen', postcode: '3685', nameZh: '拉瑟格伦' },
+  { label: 'Yarra Valley 3770', town: 'Yarra Valley', postcode: '3770', nameZh: '雅拉谷' },
+  { label: 'Mornington Peninsula 3931', town: 'Mornington Peninsula', postcode: '3931', nameZh: '莫宁顿半岛' },
 
   // ===== 昆士兰州 QLD =====
-  { label: 'Gold Coast Hinterland 4211', town: 'Gold Coast Hinterland', postcode: '4211' },
-  { label: 'Brisbane Valley 4311', town: 'Brisbane Valley', postcode: '4311' },
-  { label: 'Granite Belt 4380', town: 'Granite Belt', postcode: '4380' },
+  { label: 'Gold Coast Hinterland 4211', town: 'Gold Coast Hinterland', postcode: '4211', nameZh: '黄金海岸腹地' },
+  { label: 'Brisbane Valley 4311', town: 'Brisbane Valley', postcode: '4311', nameZh: '布里斯班谷' },
+  { label: 'Granite Belt 4380', town: 'Granite Belt', postcode: '4380', nameZh: '花岗岩带' },
 
   // ===== 南澳大利亚州 SA =====
-  { label: 'Adelaide Hills 5152', town: 'Adelaide Hills', postcode: '5152' },
-  { label: 'McLaren Vale 5171', town: 'McLaren Vale', postcode: '5171' },
-  { label: 'Barossa Valley 5352', town: 'Barossa Valley', postcode: '5352' },
-  { label: 'Clare Valley 5453', town: 'Clare Valley', postcode: '5453' },
+  { label: 'Adelaide Hills 5152', town: 'Adelaide Hills', postcode: '5152', nameZh: '阿德莱德山' },
+  { label: 'McLaren Vale 5171', town: 'McLaren Vale', postcode: '5171', nameZh: '麦克拉伦谷' },
+  { label: 'Barossa Valley 5352', town: 'Barossa Valley', postcode: '5352', nameZh: '巴罗萨谷' },
+  { label: 'Clare Valley 5453', town: 'Clare Valley', postcode: '5453', nameZh: '克莱尔谷' },
 
   // ===== 西澳大利亚州 WA =====
-  { label: 'Swan Valley 6055', town: 'Swan Valley', postcode: '6055' },
-  { label: 'Margaret River 6285', town: 'Margaret River', postcode: '6285' },
-  { label: 'Great Southern 6330', town: 'Great Southern', postcode: '6330' },
+  { label: 'Swan Valley 6055', town: 'Swan Valley', postcode: '6055', nameZh: '天鹅谷' },
+  { label: 'Margaret River 6285', town: 'Margaret River', postcode: '6285', nameZh: '玛格丽特河' },
+  { label: 'Great Southern 6330', town: 'Great Southern', postcode: '6330', nameZh: '大南部' },
 
   // ===== 塔斯马尼亚州 TAS =====
-  { label: 'Hobart 7000', town: 'Hobart', postcode: '7000' },
-  { label: 'Coal River Valley 7140', town: 'Coal River Valley', postcode: '7140' },
-  { label: 'Launceston 7250', town: 'Launceston', postcode: '7250' },
-  { label: 'Port Sorell 7307', town: 'Port Sorell', postcode: '7307' },
+  { label: 'Hobart 7000', town: 'Hobart', postcode: '7000', nameZh: '霍巴特' },
+  { label: 'Coal River Valley 7140', town: 'Coal River Valley', postcode: '7140', nameZh: '科尔河谷' },
+  { label: 'Launceston 7250', town: 'Launceston', postcode: '7250', nameZh: '朗塞斯顿' },
+  { label: 'Port Sorell 7307', town: 'Port Sorell', postcode: '7307', nameZh: '索雷尔港' },
 ]
 
 /**
@@ -71,6 +71,9 @@ function buildOrderMap(mode) {
       const numA = parseInt(a.postcode, 10)
       const numB = parseInt(b.postcode, 10)
       if (numA !== numB) return numA - numB
+    } else if (mode === SORT_MODES.NAME_ZH) {
+      const cmp = (a.nameZh || a.town).localeCompare((b.nameZh || b.town), 'zh-Hans-CN')
+      if (cmp !== 0) return cmp
     } else {
       const keyA = (a.town || '').charAt(0).toUpperCase()
       const keyB = (b.town || '').charAt(0).toUpperCase()
@@ -202,11 +205,27 @@ export function createLocationLazyLoad(items = [], mode = SORT_MODES.POSTCODE) {
       const locations = groupMap.get(node.value) || []
       resolve(locations.map((loc) => ({
         value: loc,
-        label: loc,
+        label: getLocationDisplayLabel(loc, mode),
         leaf: true,
       })))
     }
   }
+}
+
+/**
+ * 获取地点显示标签（中文模式时附加中文名）
+ * @param {string} label - 原始标签，如 "Hobart 7000"
+ * @param {string} mode - 排序模式
+ * @returns {string} 显示标签，如 "霍巴特 Hobart 7000"
+ */
+export function getLocationDisplayLabel(label, mode = SORT_MODES.POSTCODE) {
+  if (!label || label === UNCATEGORIZED_LOCATION) return label
+  if (mode !== SORT_MODES.NAME_ZH) return label
+  const entry = AUS_WINE_LOCATION_POSTCODES.find((e) => e.label === label)
+  if (entry && entry.nameZh) {
+    return `${entry.nameZh} ${label}`
+  }
+  return label
 }
 
 /**
