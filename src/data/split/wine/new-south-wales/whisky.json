@@ -1,0 +1,332 @@
+{
+  "subNavPath": "whisky",
+  "subNavName": "威士忌",
+  "isShow": true,
+  "itemData": [
+    {
+      "title": "新南威尔士州威士忌购物车测试酒款",
+      "img": "",
+      "enTitle": "Cart Test - new-south-wales - whisky",
+      "cartTestEnabled": true,
+      "testPrice": 109,
+      "wineData": {
+        "name": "新南威尔士州威士忌购物车测试酒款",
+        "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+        "website": "",
+        "features": [
+          {
+            "icon": "#22c55e",
+            "title": "地址",
+            "desc": "购物车测试地址（示例）"
+          },
+          {
+            "icon": "#3b82f6",
+            "title": "联系方式",
+            "desc": "购物车测试电话（示例）"
+          },
+          {
+            "icon": "#f59e0b",
+            "title": "营业时间",
+            "desc": "购物车测试营业时间（示例）"
+          }
+        ],
+        "tags": [
+          "购物车测试",
+          "可加入购物车",
+          "新南威尔士州",
+          "威士忌"
+        ]
+      }
+    },
+    {
+      "title": "新南威尔士州威士忌示例1",
+      "img": "",
+      "enTitle": "New South Wales Whisky Example 1",
+      "wineData": {
+        "name": "新南威尔士州威士忌文本1",
+        "desc": "新南威尔士州威士忌描述1",
+        "features": [
+          {
+            "icon": "#22c55e",
+            "title": "地址",
+            "desc": "addr"
+          },
+          {
+            "icon": "#3b82f6",
+            "title": "电话",
+            "desc": "phone"
+          },
+          {
+            "icon": "#f59e0b",
+            "title": "营业时间",
+            "desc": "opening time"
+          }
+        ],
+        "tags": [
+          "tag1",
+          "tag2",
+          "tag3"
+        ]
+      }
+    },
+    {
+      "title": "Parrot Distilling Co. Freds' Whisky",
+      "img": "",
+      "enTitle": "Parrot Distilling Co. Freds' Whisky",
+      "wineData": {
+        "name": "Parrot Distilling Co. Freds' Whisky",
+        "desc": "From Parrot Distilling Co.",
+        "website": "",
+        "features": [
+          {
+            "icon": "#22c55e",
+            "title": "地址",
+            "desc": "66 Endsleigh Ave, Orange NSW"
+          },
+          {
+            "icon": "#3b82f6",
+            "title": "联系方式",
+            "desc": "1300 PARROT"
+          },
+          {
+            "icon": "#f59e0b",
+            "title": "营业时间",
+            "desc": "需预约"
+          }
+        ],
+        "tags": [
+          "Whisky",
+          "Single Malt",
+          "Limited Edition"
+        ]
+      }
+    },
+    {
+      "title": "Jones & Smith Distillery First Release Whisky Collection",
+      "img": "",
+      "enTitle": "Jones & Smith Distillery First Release Whisky Collection",
+      "wineData": {
+        "name": "Jones & Smith Distillery First Release Whisky Collection",
+        "desc": "From Jones & Smith Distillery",
+        "website": "",
+        "features": [
+          {
+            "icon": "#22c55e",
+            "title": "地址",
+            "desc": "4617 Mitchell Highway, Lucknow NSW"
+          },
+          {
+            "icon": "#3b82f6",
+            "title": "联系方式",
+            "desc": "+61 428 237 400"
+          },
+          {
+            "icon": "#f59e0b",
+            "title": "营业时间",
+            "desc": "需预约"
+          }
+        ],
+        "tags": [
+          "Whisky",
+          "Single Malt",
+          "Collection"
+        ]
+      }
+    },
+    {
+      "title": "Jones & Smith Distillery Whisky - Distillers Release - French Oak Sherry Cask",
+      "img": "",
+      "enTitle": "Jones & Smith Distillery Whisky - Distillers Release - French Oak Sherry Cask",
+      "wineData": {
+        "name": "Jones & Smith Distillery Whisky - Distillers Release - French Oak Sherry Cask",
+        "desc": "From Jones & Smith Distillery",
+        "website": "",
+        "features": [
+          {
+            "icon": "#22c55e",
+            "title": "地址",
+            "desc": "4617 Mitchell Highway, Lucknow NSW"
+          },
+          {
+            "icon": "#3b82f6",
+            "title": "联系方式",
+            "desc": "+61 428 237 400"
+          },
+          {
+            "icon": "#f59e0b",
+            "title": "营业时间",
+            "desc": "需预约"
+          }
+        ],
+        "tags": [
+          "Whisky",
+          "Single Malt",
+          "French Oak",
+          "Sherry Cask",
+          "Distillers Release"
+        ]
+      }
+    },
+    {
+      "title": "Jones & Smith Distillery Whisky - Signature Series - Black Label Bourbon",
+      "img": "",
+      "enTitle": "Jones & Smith Distillery Whisky - Signature Series - Black Label Bourbon",
+      "wineData": {
+        "name": "Jones & Smith Distillery Whisky - Signature Series - Black Label Bourbon",
+        "desc": "From Jones & Smith Distillery",
+        "website": "",
+        "features": [
+          {
+            "icon": "#22c55e",
+            "title": "地址",
+            "desc": "4617 Mitchell Highway, Lucknow NSW"
+          },
+          {
+            "icon": "#3b82f6",
+            "title": "联系方式",
+            "desc": "+61 428 237 400"
+          },
+          {
+            "icon": "#f59e0b",
+            "title": "营业时间",
+            "desc": "需预约"
+          }
+        ],
+        "tags": [
+          "Whisky",
+          "Single Malt",
+          "Bourbon Cask",
+          "Signature Series"
+        ]
+      }
+    },
+    {
+      "title": "Jones & Smith Distillery Whisky - Classic Collection - Bourbon/Grandmarnier Cask",
+      "img": "",
+      "enTitle": "Jones & Smith Distillery Whisky - Classic Collection - Bourbon/Grandmarnier Cask",
+      "wineData": {
+        "name": "Jones & Smith Distillery Whisky - Classic Collection - Bourbon/Grandmarnier Cask",
+        "desc": "From Jones & Smith Distillery",
+        "website": "",
+        "features": [
+          {
+            "icon": "#22c55e",
+            "title": "地址",
+            "desc": "4617 Mitchell Highway, Lucknow NSW"
+          },
+          {
+            "icon": "#3b82f6",
+            "title": "联系方式",
+            "desc": "+61 428 237 400"
+          },
+          {
+            "icon": "#f59e0b",
+            "title": "营业时间",
+            "desc": "需预约"
+          }
+        ],
+        "tags": [
+          "Whisky",
+          "Single Malt",
+          "Bourbon Cask",
+          "Grand Marnier Cask",
+          "Classic Collection"
+        ]
+      }
+    },
+    {
+      "title": "Jones & Smith Distillery Whisky - Signature Series - Port Cask",
+      "img": "",
+      "enTitle": "Jones & Smith Distillery Whisky - Signature Series - Port Cask",
+      "wineData": {
+        "name": "Jones & Smith Distillery Whisky - Signature Series - Port Cask",
+        "desc": "From Jones & Smith Distillery",
+        "website": "",
+        "features": [
+          {
+            "icon": "#22c55e",
+            "title": "地址",
+            "desc": "4617 Mitchell Highway, Lucknow NSW"
+          },
+          {
+            "icon": "#3b82f6",
+            "title": "联系方式",
+            "desc": "+61 428 237 400"
+          },
+          {
+            "icon": "#f59e0b",
+            "title": "营业时间",
+            "desc": "需预约"
+          }
+        ],
+        "tags": [
+          "Whisky",
+          "Single Malt",
+          "Port Cask",
+          "Signature Series"
+        ]
+      }
+    },
+    {
+      "title": "The Old Shed Distillery OLD SHED WHISKY",
+      "img": "",
+      "enTitle": "The Old Shed Distillery OLD SHED WHISKY",
+      "wineData": {
+        "name": "The Old Shed Distillery OLD SHED WHISKY",
+        "desc": "From The Old Shed Distillery",
+        "website": "",
+        "features": [
+          {
+            "icon": "#22c55e",
+            "title": "地址",
+            "desc": "待补充"
+          },
+          {
+            "icon": "#3b82f6",
+            "title": "联系方式",
+            "desc": "通过网站联系"
+          },
+          {
+            "icon": "#f59e0b",
+            "title": "营业时间",
+            "desc": "待补充"
+          }
+        ],
+        "tags": [
+          "Whisky"
+        ]
+      }
+    },
+    {
+      "title": "Bluestill Distillery James Bentley Whisky",
+      "img": "",
+      "enTitle": "Bluestill Distillery James Bentley Whisky",
+      "wineData": {
+        "name": "Bluestill Distillery James Bentley Whisky",
+        "desc": "From Bluestill Distillery",
+        "website": "",
+        "features": [
+          {
+            "icon": "#22c55e",
+            "title": "地址",
+            "desc": "Young, NSW"
+          },
+          {
+            "icon": "#3b82f6",
+            "title": "联系方式",
+            "desc": "0429 844 265"
+          },
+          {
+            "icon": "#f59e0b",
+            "title": "营业时间",
+            "desc": "周一至周五 10am–2pm"
+          }
+        ],
+        "tags": [
+          "Whisky",
+          "Single Malt"
+        ]
+      }
+    }
+  ]
+}

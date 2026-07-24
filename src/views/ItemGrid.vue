@@ -11,26 +11,32 @@ import { useDeviceStore } from '@/stores/deviceStore';
 import { useNavStore } from '@/stores/navStore';
 import { useCartStore } from '@/stores/cartStore'
 import { useDialogStore } from '@/stores/dialogStore'
-import navData from '@/data/split/nav.json';
-import itemData from '@/data/item.json';
+import { getAvailableNavRegions, findRegionByPath, buildWineFilterStateOptions } from '@/utils/navHelpers'
+import {
+  loadWineRegions,
+  loadWineRegionsIncremental,
+  resolveAllWineRegionPaths,
+  fetchWineCatalogPage,
+} from '@/utils/catalogRepository'
+import { isApiEnabled } from '@/utils/auswineApi'
+import {
+  WINE_GRID_ROUTE_NAME,
+  buildWineGridRoute,
+  getWineSubNavCatalog,
+  isLegacyWineRegionRouteName,
+} from '@/utils/wineGridRoute'
 import {
   readSearchTarget,
   saveSearchTarget,
   buildSearchResultsRoute,
   SEARCH_SOURCE_WINE,
-  matchesWineCatalogItem
+  matchesWineCatalogItem,
 } from '@/utils/searchUtils'
 import { WINERY_DEFAULT_SUB_NAV } from '@/utils/wineryRouteUtils'
 import { buildCatalogHitKey, findCatalogEntryIndexByHitKey } from '@/utils/catalogHitKey'
 import { withRandomLoading } from '@/utils/loadingUtils'
 import { resolveItemGridImageUrl } from '@/utils/itemImageResolver'
-import { getAllWineRegions } from '@/utils/dataRepository'
 import { buildWineDisplay } from '@/utils/wineGridExtras'
-import {
-  WINE_GRID_ROUTE_NAME,
-  buildWineGridRoute,
-  isLegacyWineRegionRouteName
-} from '@/utils/wineGridRoute'
 /** 【样式测试·可删】见 @/utils/tasmaniaGridStyleTestThumbs.js；正式环境移除该 import 与本页 isTasmaniaGridStyleTestThumb、gridItemThumbSrc、相关 class/样式 */
 import { tasGridStyleTestThumbByIndex } from '@/utils/tasmaniaGridStyleTestThumbs'
 
@@ -95,7 +101,7 @@ const isWineCatalogRoute = (routeName) =>
   || routeName === 'Home'
   || isLegacyWineRegionRouteName(routeName)
 const navMenuItems = computed(() =>
-  navData.slice(0, 8).map((region) => ({
+  getAvailableNavRegions().slice(0, 8).map((region) => ({
     navName: region?.navName || '',
     regionPath: region?.path || '',
     capitalLabel:
@@ -129,7 +135,7 @@ const router = useRouter()
 const openWineryPreviewInNewWindow = (menuItem) => {
   const targetRegionPath = menuItem?.regionPath
   if (!targetRegionPath) return
-  const region = (Array.isArray(itemData) ? itemData : []).find((item) => item?.path === targetRegionPath)
+  const region = findRegionByPath(targetRegionPath)
   const firstSubNav = region?.subNavList?.find((subNav) => subNav?.isShow !== false)?.subNavPath || WINERY_DEFAULT_SUB_NAV
   const href = router.resolve({
     name: 'WineryPreview',
@@ -145,6 +151,11 @@ const itemDialogVisible = computed({
 })
 const selectedItem = ref(null)
 const allWineRegionsData = ref([])
+const loadedWineStatePaths = ref(new Set())
+const wineRegionsLoading = ref(false)
+const apiWineEntries = ref([])
+const apiWineTotal = ref(0)
+const apiPageNum = ref(0)
 const selectedItemRegionNavName = ref('')
 
 const handledSearchHit = ref('')
@@ -193,9 +204,7 @@ const playSearchHitHighlight = (targetEl, fallbackMs = 1800) => {
 }
 
 
-const wineSubNavCatalogRegion = computed(() => allWineRegionsData.value[0] || null)
-
-const allSubNavs = computed(() => wineSubNavCatalogRegion.value?.subNavList || [])
+const allSubNavs = computed(() => getWineSubNavCatalog())
 const enabledSubNavs = computed(() => allSubNavs.value.filter((subNav) => subNav?.isShow !== false))
 
 const subNavList = computed(() => allSubNavs.value.map((subNav) => subNav.subNavName))
@@ -218,6 +227,8 @@ const currentSubNav = computed(() => {
 const isTasmaniaGridEntry = (entry) => entry?.regionPath === 'tasmania'
 
 const dataList = computed(() => {
+  if (isApiEnabled()) return apiWineEntries.value
+
   const subNavPath = currentSubNav.value?.subNavPath
   if (!subNavPath) return []
 
@@ -249,10 +260,7 @@ const wineFilterState = ref('')
 const wineFilterPriceTier = ref('')
 const wineSortBy = ref('default')
 
-const WINE_FILTER_STATE_OPTIONS = navData.slice(0, 8).map((region) => ({
-  value: region?.navName || '',
-  label: region?.navName || ''
-})).filter((opt) => opt.value)
+const WINE_FILTER_STATE_OPTIONS = buildWineFilterStateOptions()
 
 const WINE_FILTER_PRICE_OPTIONS = [
   { value: '', label: '价格不限' },
@@ -295,6 +303,20 @@ const matchesWineState = (regionNavName, stateFilter) => {
   return String(regionNavName || '').trim() === String(stateFilter).trim()
 }
 
+const resolveStatePathFromFilter = () => {
+  if (!wineFilterState.value) return ''
+  return getAvailableNavRegions().find((r) => r.navName === wineFilterState.value)?.path || ''
+}
+
+const buildWineFacet = (entry, idx) => {
+  const data = entry.data
+  const wine = buildWineDisplay(data, { regionNavName: entry.regionNavName })
+  const price = Number(wine.saleNum)
+  const rating = Number(wine.ratingStars)
+  const salesApprox = parseWineTxnSalesApprox(wine.transactionLine || '')
+  return { idx, entry, data, wine, price, rating, salesApprox }
+}
+
 const sortWineFacetSlice = (facets, sortByVal) => {
   const out = [...facets]
   switch (sortByVal) {
@@ -312,6 +334,10 @@ const sortWineFacetSlice = (facets, sortByVal) => {
 }
 
 const filteredWineFacetFullList = computed(() => {
+  if (isApiEnabled()) {
+    return dataList.value.map((entry, idx) => buildWineFacet(entry, idx))
+  }
+
   const kw = appliedWineSearchKeyword.value
   const stateFilter = wineFilterState.value
   const priceT = wineFilterPriceTier.value
@@ -340,7 +366,9 @@ const filteredWineFacetFullList = computed(() => {
   return sortWineFacetSlice(facets, sortVal)
 })
 
-const filteredWineTotal = computed(() => filteredWineFacetFullList.value.length)
+const filteredWineTotal = computed(() => (
+  isApiEnabled() ? apiWineTotal.value : filteredWineFacetFullList.value.length
+))
 
 const hasActiveWineFilters = computed(() => {
   return (
@@ -351,9 +379,108 @@ const hasActiveWineFilters = computed(() => {
   )
 })
 
-const syncAllWineRegionsData = async () => {
-  const loadedRegions = await getAllWineRegions()
-  allWineRegionsData.value = loadedRegions
+const mergeWineRegions = (incoming = []) => {
+  const map = new Map(allWineRegionsData.value.map((region) => [region.path, region]))
+  for (const region of incoming) {
+    if (!region?.path) continue
+    const existing = map.get(region.path)
+    if (!existing) {
+      map.set(region.path, region)
+      continue
+    }
+    const subNavMap = new Map((existing.subNavList || []).map((subNav) => [subNav.subNavPath, subNav]))
+    for (const subNav of region.subNavList || []) {
+      if (!subNav?.subNavPath) continue
+      const prev = subNavMap.get(subNav.subNavPath) || {}
+      subNavMap.set(subNav.subNavPath, {
+        ...prev,
+        ...subNav,
+        itemData: Array.isArray(subNav.itemData) && subNav.itemData.length
+          ? subNav.itemData
+          : (prev.itemData || []),
+      })
+    }
+    map.set(region.path, {
+      ...existing,
+      ...region,
+      subNavList: Array.from(subNavMap.values()),
+    })
+  }
+  allWineRegionsData.value = Array.from(map.values())
+}
+
+const syncApiWineCatalog = async ({ append = false } = {}) => {
+  if (!isApiEnabled()) return
+
+  wineRegionsLoading.value = true
+  try {
+    const pageNum = append ? apiPageNum.value + 1 : 1
+    const result = await fetchWineCatalogPage({
+      subNavPath: currentSubNav.value?.subNavPath,
+      statePath: resolveStatePathFromFilter(),
+      stateName: wineFilterState.value,
+      keyword: appliedWineSearchKeyword.value,
+      priceTier: wineFilterPriceTier.value,
+      sortBy: wineSortBy.value,
+      pageNum,
+      pageSize: RENDER_STEP_COUNT,
+      loadedRegions: [],
+    })
+    apiWineTotal.value = Number(result?.total) || 0
+    apiPageNum.value = Number(result?.pageNum) || pageNum
+    const items = Array.isArray(result?.items) ? result.items : []
+    apiWineEntries.value = append ? [...apiWineEntries.value, ...items] : items
+    if (isApiEnabled()) {
+      renderLimit.value = apiWineEntries.value.length
+    }
+  } finally {
+    wineRegionsLoading.value = false
+  }
+}
+
+const syncWineCatalog = async ({ statePaths, loadRemainingStates = false, appendApi = false } = {}) => {
+  if (isApiEnabled()) {
+    await syncApiWineCatalog({ append: appendApi })
+    return
+  }
+
+  wineRegionsLoading.value = true
+  try {
+    const subNavPath = currentSubNav.value?.subNavPath || ''
+    const regionOptions = { subNavPath: subNavPath || undefined }
+
+    let paths = Array.isArray(statePaths) ? statePaths.filter(Boolean) : []
+    if (!paths.length) {
+      const activeRegion = getAvailableNavRegions().find((r) => r.navName === navStore.activeNav)
+        || getAvailableNavRegions()[0]
+      const activePath = activeRegion?.path || ''
+      paths = activePath ? [activePath] : []
+    }
+
+    const pending = paths.filter((path) => !loadedWineStatePaths.value.has(path))
+    if (pending.length) {
+      const regions = await loadWineRegions({ statePaths: pending, ...regionOptions })
+      pending.forEach((path) => loadedWineStatePaths.value.add(path))
+      mergeWineRegions(regions)
+    } else if (subNavPath && paths.length) {
+      // 同州切换 subNav：按二级分片补载当前类目
+      const regions = await loadWineRegions({ statePaths: paths, ...regionOptions })
+      mergeWineRegions(regions)
+    }
+
+    if (loadRemainingStates) {
+      const allPaths = await resolveAllWineRegionPaths()
+      const remaining = allPaths.filter((path) => !loadedWineStatePaths.value.has(path))
+      if (remaining.length) {
+        await loadWineRegionsIncremental(remaining, (region) => {
+          if (region?.path) loadedWineStatePaths.value.add(region.path)
+          mergeWineRegions([region])
+        }, regionOptions)
+      }
+    }
+  } finally {
+    wineRegionsLoading.value = false
+  }
 }
 
 const rowCartQty = reactive({})
@@ -534,11 +661,21 @@ const resetRenderLimit = () => {
 }
 
 const updateHasMore = () => {
+  if (isApiEnabled()) {
+    hasMore.value = apiWineEntries.value.length < apiWineTotal.value
+    return
+  }
   hasMore.value = renderLimit.value < filteredWineTotal.value
 }
 
-const loadMoreItems = () => {
+const loadMoreItems = async () => {
   if (!hasMore.value) return
+  if (isApiEnabled()) {
+    await syncApiWineCatalog({ append: true })
+    renderLimit.value = apiWineEntries.value.length
+    updateHasMore()
+    return
+  }
   renderLimit.value = Math.min(filteredWineTotal.value, renderLimit.value + RENDER_STEP_COUNT)
   updateHasMore()
 }
@@ -803,7 +940,7 @@ const applySubNavFromRoute = () => {
 onMounted(() => {
   deviceStore.startListen()
   applySubNavFromRoute()
-  void syncAllWineRegionsData().then(() => {
+  void syncWineCatalog({ loadRemainingStates: !wineFilterState.value }).then(() => {
     applySubNavFromRoute()
     resetRenderLimit()
     updateHasMore()
@@ -823,11 +960,14 @@ watch(() => route.name, () => {
   applySubNavFromRoute()
 })
 
-watch(() => route.params.subNav, () => {
+watch(() => route.params.subNav, async () => {
   clearSearchHitState()
   applySubNavFromRoute()
   resetWineGridFilters()
   resetRenderLimit()
+  if (isApiEnabled()) {
+    await syncWineCatalog()
+  }
   updateHasMore()
   selectedItem.value = null
   selectedItemRegionNavName.value = ''
@@ -856,7 +996,18 @@ watch(() => dataList.value.length, () => {
 
 watch(
   [wineFilterState, wineFilterPriceTier, wineSortBy],
-  () => {
+  async () => {
+    if (isApiEnabled()) {
+      resetRenderLimit()
+      await syncWineCatalog()
+    } else if (wineFilterState.value) {
+      const region = getAvailableNavRegions().find((r) => r.navName === wineFilterState.value)
+      if (region?.path) {
+        await syncWineCatalog({ statePaths: [region.path] })
+      }
+    } else {
+      await syncWineCatalog({ loadRemainingStates: true })
+    }
     resetRenderLimit()
     nextTick(() => {
       updateHasMore()

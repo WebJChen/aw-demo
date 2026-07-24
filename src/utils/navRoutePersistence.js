@@ -1,7 +1,5 @@
-import navData from '@/data/split/nav.json'
+import { findRegionByPath } from '@/utils/navHelpers'
 import { useNavStore } from '@/stores/navStore'
-
-const findRegionByPath = (path) => navData.find((region) => region.path === path)
 
 /**
  * 记录酒款网格 / 酒庄页最后访问路由，供根路径恢复。

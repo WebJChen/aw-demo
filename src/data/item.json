@@ -3515,6 +3515,35 @@
                                 "家族经营"
                             ]
                         }
+                    },
+                    {
+                        "title": "南特酒厂",
+                        "img": "",
+                        "enTitle": "Nant Distillery",
+                        "info": {
+                            "name": "Nant Distillery",
+                            "desc": "位于塔斯马尼亚中央高地Bothwell的历史水动力面粉厂改造而成的威士忌蒸馏厂，由Ramsay家族运营。生产单一麦芽威士忌和定制金酒，提供蒸馏厂导览（周四至周一10:00和14:30，约45分钟）、品鉴体验。餐厅Mill Kitchen使用本地食材。",
+                            "features": [
+                                {
+                                    "icon": "#22c55e",
+                                    "title": "地址",
+                                    "desc": "Bothwell TAS 7030, Australia"
+                                },
+                                {
+                                    "icon": "#3b82f6",
+                                    "title": "联系方式",
+                                    "desc": "待修改"
+                                },
+                                {
+                                    "icon": "#f59e0b",
+                                    "title": "营业时间",
+                                    "desc": "待修改"
+                                }
+                            ],
+                            "tags": [
+                                "历史水磨坊"
+                            ]
+                        }
                     }
                 ]
             },

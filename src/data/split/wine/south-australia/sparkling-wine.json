@@ -1,0 +1,545 @@
+{
+  "subNavPath": "sparkling-wine",
+  "subNavName": "气泡酒",
+  "isShow": true,
+  "itemData": [
+    {
+      "title": "南澳大利亚州气泡酒购物车测试酒款",
+      "img": "",
+      "enTitle": "Cart Test - south-australia - sparkling-wine",
+      "cartTestEnabled": true,
+      "testPrice": 114,
+      "wineData": {
+        "name": "南澳大利亚州气泡酒购物车测试酒款",
+        "desc": "这是用于购物车页面联调的测试酒款，仅用于本地购物车功能测试。",
+        "website": "",
+        "features": [
+          {
+            "icon": "#22c55e",
+            "title": "地址",
+            "desc": "购物车测试地址（示例）"
+          },
+          {
+            "icon": "#3b82f6",
+            "title": "联系方式",
+            "desc": "购物车测试电话（示例）"
+          },
+          {
+            "icon": "#f59e0b",
+            "title": "营业时间",
+            "desc": "购物车测试营业时间（示例）"
+          }
+        ],
+        "tags": [
+          "购物车测试",
+          "可加入购物车",
+          "南澳大利亚州",
+          "气泡酒"
+        ]
+      }
+    },
+    {
+      "title": "南澳大利亚州气泡酒示例1",
+      "img": "",
+      "enTitle": "South Australia Sparkling Wine Example 1",
+      "wineData": {
+        "name": "南澳大利亚州气泡酒文本1",
+        "desc": "南澳大利亚州气泡酒描述1",
+        "features": [
+          {
+            "icon": "#22c55e",
+            "title": "地址",
+            "desc": "addr"
+          },
+          {
+            "icon": "#3b82f6",
+            "title": "电话",
+            "desc": "phone"
+          },
+          {
+            "icon": "#f59e0b",
+            "title": "营业时间",
+            "desc": "opening time"
+          }
+        ],
+        "tags": [
+          "tag1",
+          "tag2",
+          "tag3"
+        ]
+      }
+    },
+    {
+      "title": "2022 Comet Tail Sparkling Shiraz",
+      "img": "",
+      "enTitle": "2022 Comet Tail Sparkling Shiraz",
+      "wineData": {
+        "name": "2022 Comet Tail Sparkling Shiraz",
+        "desc": "From Samuel's Gorge",
+        "website": "",
+        "features": [
+          {
+            "icon": "#22c55e",
+            "title": "地址",
+            "desc": "McLaren Vale SA"
+          },
+          {
+            "icon": "#3b82f6",
+            "title": "联系方式",
+            "desc": "通过官网联系"
+          },
+          {
+            "icon": "#f59e0b",
+            "title": "营业时间",
+            "desc": "需预约"
+          }
+        ],
+        "tags": [
+          "Sparkling",
+          "Shiraz",
+          "Red Sparkling"
+        ]
+      }
+    },
+    {
+      "title": "Aimez Beaucoup - 2025 Blanc de Blancs",
+      "img": "",
+      "enTitle": "Aimez Beaucoup - 2025 Blanc de Blancs",
+      "wineData": {
+        "name": "Aimez Beaucoup - 2025 Blanc de Blancs",
+        "desc": "From Down The Rabbit Hole Wines",
+        "website": "",
+        "features": [
+          {
+            "icon": "#22c55e",
+            "title": "地址",
+            "desc": "McLaren Vale SA"
+          },
+          {
+            "icon": "#3b82f6",
+            "title": "联系方式",
+            "desc": "通过官网联系"
+          },
+          {
+            "icon": "#f59e0b",
+            "title": "营业时间",
+            "desc": "需预约"
+          }
+        ],
+        "tags": [
+          "Sparkling",
+          "Blanc de Blancs"
+        ]
+      }
+    },
+    {
+      "title": "NV K1 Sparkling",
+      "img": "",
+      "enTitle": "NV K1 Sparkling",
+      "wineData": {
+        "name": "NV K1 Sparkling",
+        "desc": "From K1 Wines",
+        "website": "",
+        "features": [
+          {
+            "icon": "#22c55e",
+            "title": "地址",
+            "desc": "159 Tynan Road, Kuitpo SA"
+          },
+          {
+            "icon": "#3b82f6",
+            "title": "联系方式",
+            "desc": "+61 8 8388 3700"
+          },
+          {
+            "icon": "#f59e0b",
+            "title": "营业时间",
+            "desc": "请查询官网"
+          }
+        ],
+        "tags": [
+          "Sparkling",
+          "NV"
+        ]
+      }
+    },
+    {
+      "title": "2023 Miss Molly Sparkling Shiraz",
+      "img": "",
+      "enTitle": "2023 Miss Molly Sparkling Shiraz",
+      "wineData": {
+        "name": "2023 Miss Molly Sparkling Shiraz",
+        "desc": "From Mollydooker Wines",
+        "website": "",
+        "features": [
+          {
+            "icon": "#22c55e",
+            "title": "地址",
+            "desc": "23 Coppermine Road, McLaren Vale SA"
+          },
+          {
+            "icon": "#3b82f6",
+            "title": "联系方式",
+            "desc": "08 8323 6500"
+          },
+          {
+            "icon": "#f59e0b",
+            "title": "营业时间",
+            "desc": "请查询官网"
+          }
+        ],
+        "tags": [
+          "Sparkling",
+          "Shiraz",
+          "Lefty Series"
+        ]
+      }
+    },
+    {
+      "title": "2025 Euphoria Sparkling Verdelho",
+      "img": "",
+      "enTitle": "2025 Euphoria Sparkling Verdelho",
+      "wineData": {
+        "name": "2025 Euphoria Sparkling Verdelho",
+        "desc": "From Mollydooker Wines",
+        "website": "",
+        "features": [
+          {
+            "icon": "#22c55e",
+            "title": "地址",
+            "desc": "23 Coppermine Road, McLaren Vale SA"
+          },
+          {
+            "icon": "#3b82f6",
+            "title": "联系方式",
+            "desc": "08 8323 6500"
+          },
+          {
+            "icon": "#f59e0b",
+            "title": "营业时间",
+            "desc": "请查询官网"
+          }
+        ],
+        "tags": [
+          "Sparkling",
+          "Verdelho",
+          "Fun Series"
+        ]
+      }
+    },
+    {
+      "title": "Black Beauty Sparkling Shiraz (2025 disgorged)",
+      "img": "",
+      "enTitle": "Black Beauty Sparkling Shiraz (2025 disgorged)",
+      "wineData": {
+        "name": "Black Beauty Sparkling Shiraz (2025 disgorged)",
+        "desc": "From Hentley Farm",
+        "website": "",
+        "features": [
+          {
+            "icon": "#22c55e",
+            "title": "地址",
+            "desc": "Gerald Roberts Road, Seppeltsfield SA"
+          },
+          {
+            "icon": "#3b82f6",
+            "title": "联系方式",
+            "desc": "+61 8 8562 8427"
+          },
+          {
+            "icon": "#f59e0b",
+            "title": "营业时间",
+            "desc": "每日 10am–4pm"
+          }
+        ],
+        "tags": [
+          "Sparkling",
+          "Shiraz",
+          "Luxury Wines"
+        ]
+      }
+    },
+    {
+      "title": "2025 Blanc de Noir Sparkling White",
+      "img": "",
+      "enTitle": "2025 Blanc de Noir Sparkling White",
+      "wineData": {
+        "name": "2025 Blanc de Noir Sparkling White",
+        "desc": "From Hentley Farm",
+        "website": "",
+        "features": [
+          {
+            "icon": "#22c55e",
+            "title": "地址",
+            "desc": "Gerald Roberts Road, Seppeltsfield SA"
+          },
+          {
+            "icon": "#3b82f6",
+            "title": "联系方式",
+            "desc": "+61 8 8562 8427"
+          },
+          {
+            "icon": "#f59e0b",
+            "title": "营业时间",
+            "desc": "每日 10am–4pm"
+          }
+        ],
+        "tags": [
+          "Sparkling",
+          "White",
+          "Barossa Wines"
+        ]
+      }
+    },
+    {
+      "title": "2025 Chalk Hill Prosecco",
+      "img": "",
+      "enTitle": "2025 Chalk Hill Prosecco",
+      "wineData": {
+        "name": "2025 Chalk Hill Prosecco",
+        "desc": "From Chalk Hill",
+        "website": "",
+        "features": [
+          {
+            "icon": "#22c55e",
+            "title": "地址",
+            "desc": "56 Field Street, McLaren Vale SA"
+          },
+          {
+            "icon": "#3b82f6",
+            "title": "联系方式",
+            "desc": "winebar@chalkhill.com.au"
+          },
+          {
+            "icon": "#f59e0b",
+            "title": "营业时间",
+            "desc": "每日 11am–4pm"
+          }
+        ],
+        "tags": [
+          "Prosecco",
+          "Sparkling"
+        ]
+      }
+    },
+    {
+      "title": "NV The Peppermint Paddock Sparkling Red",
+      "img": "",
+      "enTitle": "NV The Peppermint Paddock Sparkling Red",
+      "wineData": {
+        "name": "NV The Peppermint Paddock Sparkling Red",
+        "desc": "From d'Arenberg",
+        "website": "",
+        "features": [
+          {
+            "icon": "#22c55e",
+            "title": "地址",
+            "desc": "PO Box 195, McLaren Vale SA"
+          },
+          {
+            "icon": "#3b82f6",
+            "title": "联系方式",
+            "desc": "08 8329 4888"
+          },
+          {
+            "icon": "#f59e0b",
+            "title": "营业时间",
+            "desc": "请咨询酒庄"
+          }
+        ],
+        "tags": [
+          "Sparkling",
+          "Red",
+          "Chambourcin",
+          "Graciano"
+        ]
+      }
+    },
+    {
+      "title": "2019 Lucky Duck Sparkling",
+      "img": "",
+      "enTitle": "2019 Lucky Duck Sparkling",
+      "wineData": {
+        "name": "2019 Lucky Duck Sparkling",
+        "desc": "From Two Hands Wines",
+        "website": "",
+        "features": [
+          {
+            "icon": "#22c55e",
+            "title": "地址",
+            "desc": "273 Neldner Road, Marananga SA"
+          },
+          {
+            "icon": "#3b82f6",
+            "title": "联系方式",
+            "desc": "+61 8 8568 7900"
+          },
+          {
+            "icon": "#f59e0b",
+            "title": "营业时间",
+            "desc": "每日 11am–5pm"
+          }
+        ],
+        "tags": [
+          "Sparkling"
+        ]
+      }
+    },
+    {
+      "title": "Lois NV Sparkling Blanc de Blancs",
+      "img": "",
+      "enTitle": "Lois NV Sparkling Blanc de Blancs",
+      "wineData": {
+        "name": "Lois NV Sparkling Blanc de Blancs",
+        "desc": "From The Lane Vineyard",
+        "website": "",
+        "features": [
+          {
+            "icon": "#22c55e",
+            "title": "地址",
+            "desc": "5 Ravenswood Lane, Hahndorf SA"
+          },
+          {
+            "icon": "#3b82f6",
+            "title": "联系方式",
+            "desc": "08 8388 1250"
+          },
+          {
+            "icon": "#f59e0b",
+            "title": "营业时间",
+            "desc": "品酒室每日 10am–5pm"
+          }
+        ],
+        "tags": [
+          "Sparkling",
+          "Blanc de Blancs"
+        ]
+      }
+    },
+    {
+      "title": "2022 Estate Cuvée Blanc de Blancs",
+      "img": "",
+      "enTitle": "2022 Estate Cuvée Blanc de Blancs",
+      "wineData": {
+        "name": "2022 Estate Cuvée Blanc de Blancs",
+        "desc": "From The Lane Vineyard",
+        "website": "",
+        "features": [
+          {
+            "icon": "#22c55e",
+            "title": "地址",
+            "desc": "5 Ravenswood Lane, Hahndorf SA"
+          },
+          {
+            "icon": "#3b82f6",
+            "title": "联系方式",
+            "desc": "08 8388 1250"
+          },
+          {
+            "icon": "#f59e0b",
+            "title": "营业时间",
+            "desc": "品酒室每日 10am–5pm"
+          }
+        ],
+        "tags": [
+          "Sparkling",
+          "Blanc de Blancs"
+        ]
+      }
+    },
+    {
+      "title": "2017 Heritage Late Disgorged Cuvée",
+      "img": "",
+      "enTitle": "2017 Heritage Late Disgorged Cuvée",
+      "wineData": {
+        "name": "2017 Heritage Late Disgorged Cuvée",
+        "desc": "From The Lane Vineyard",
+        "website": "",
+        "features": [
+          {
+            "icon": "#22c55e",
+            "title": "地址",
+            "desc": "5 Ravenswood Lane, Hahndorf SA"
+          },
+          {
+            "icon": "#3b82f6",
+            "title": "联系方式",
+            "desc": "08 8388 1250"
+          },
+          {
+            "icon": "#f59e0b",
+            "title": "营业时间",
+            "desc": "品酒室每日 10am–5pm"
+          }
+        ],
+        "tags": [
+          "Sparkling",
+          "Late Disgorged"
+        ]
+      }
+    },
+    {
+      "title": "The Drama Queen Méthode Traditionnelle 2017",
+      "img": "",
+      "enTitle": "The Drama Queen Méthode Traditionnelle 2017",
+      "wineData": {
+        "name": "The Drama Queen Méthode Traditionnelle 2017",
+        "desc": "From Hugh Hamilton Wines",
+        "website": "",
+        "features": [
+          {
+            "icon": "#22c55e",
+            "title": "地址",
+            "desc": "94 McMurtrie Rd, McLaren Vale SA"
+          },
+          {
+            "icon": "#3b82f6",
+            "title": "联系方式",
+            "desc": "+61 8 8323 8689"
+          },
+          {
+            "icon": "#f59e0b",
+            "title": "营业时间",
+            "desc": "请查询官网"
+          }
+        ],
+        "tags": [
+          "Sparkling",
+          "Methode Traditionnelle"
+        ]
+      }
+    },
+    {
+      "title": "Field of Wonders Chardonnay & Lemon Myrtle Spritzer",
+      "img": "",
+      "enTitle": "Field of Wonders Chardonnay & Lemon Myrtle Spritzer",
+      "wineData": {
+        "name": "Field of Wonders Chardonnay & Lemon Myrtle Spritzer",
+        "desc": "From Dandelion Vineyards",
+        "website": "",
+        "features": [
+          {
+            "icon": "#22c55e",
+            "title": "地址",
+            "desc": "191 Chaffeys Road, McLaren Vale SA"
+          },
+          {
+            "icon": "#3b82f6",
+            "title": "联系方式",
+            "desc": "0459 802 413"
+          },
+          {
+            "icon": "#f59e0b",
+            "title": "营业时间",
+            "desc": "每日 10am–6pm"
+          }
+        ],
+        "tags": [
+          "Sparkling",
+          "Chardonnay",
+          "Lemon Myrtle"
+        ]
+      }
+    }
+  ]
+}

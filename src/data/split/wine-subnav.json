@@ -1,0 +1,32 @@
+[
+  {
+    "subNavName": "红酒",
+    "subNavPath": "red-wine",
+    "isShow": true
+  },
+  {
+    "subNavName": "白葡萄酒",
+    "subNavPath": "white-wine",
+    "isShow": true
+  },
+  {
+    "subNavName": "气泡酒",
+    "subNavPath": "sparkling-wine",
+    "isShow": true
+  },
+  {
+    "subNavName": "威士忌",
+    "subNavPath": "whisky",
+    "isShow": true
+  },
+  {
+    "subNavName": "其它洋酒",
+    "subNavPath": "other-spirits",
+    "isShow": true
+  },
+  {
+    "subNavName": "苹果酒",
+    "subNavPath": "cider",
+    "isShow": true
+  }
+]

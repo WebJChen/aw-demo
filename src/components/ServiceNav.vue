@@ -4,7 +4,7 @@ import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useNavStore } from '@/stores/navStore'
-import navData from '@/data/split/nav.json'
+import { buildNavMenuItems, findRegionByPath } from '@/utils/navHelpers'
 import { WINE_GRID_ROUTE_NAME, buildWineGridRoute } from '@/utils/wineGridRoute'
 import { withRandomLoading } from '@/utils/loadingUtils'
 import CategoryDetailPanel from '@/views/CategoryDetailPanel.vue'
@@ -21,14 +21,7 @@ const syncKeywordFromRoute = () => {
   keyword.value = typeof route.query.s === 'string' ? route.query.s : ''
 }
 
-const navItems = computed(() => navData.map((item) => ({
-  tag: item.navName,
-  slug: item.path,
-  available: item.available !== false,
-  capital: item.capital,
-  // 大导航点击后默认进入该地区第一个可用子导航，避免 URL 停留在仅地区层级
-  firstSubNavPath: item.subNavList?.find((subNav) => subNav?.isShow !== false)?.subNavPath
-})))
+const navItems = computed(() => buildNavMenuItems())
 
 const slugTagMap = computed(() => Object.fromEntries(navItems.value.map((item) => [item.slug, item.tag])))
 
@@ -87,7 +80,7 @@ onUnmounted(() => {
 watch(() => [route.name, route.params.regionPath], ([name, regionPathValue]) => {
   if (name === 'OrderList' || name === 'OrderDetail') return
   if (name === 'WineryPreview') {
-    const region = navData.find((item) => item.path === regionPathValue)
+    const region = findRegionByPath(regionPathValue)
     if (region?.navName) navStore.setActiveNav(region.navName)
     return
   }

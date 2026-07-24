@@ -1,18 +1,18 @@
 import { createRouter, createWebHashHistory } from "vue-router"
 
-import navData from "@/data/split/nav.json"
+import {
+  getNavDataSync,
+  findRegionByPath,
+} from "@/utils/navHelpers"
 
 import {
-
 	FALLBACK_WINE_SUB_NAV_PATH,
-
 	WINE_GRID_ROUTE_NAME,
-
 	isLegacyWineRegionRouteName,
-
 	resolveWineSubNavPath
-
 } from "@/utils/wineGridRoute"
+
+const navData = getNavDataSync()
 
 
 
@@ -221,8 +221,6 @@ const router = createRouter({
 })
 
 
-
-const findRegionByPath = (path) => navData.find((region) => region.path === path)
 
 const findRegionByNavName = (navName) => navData.find((region) => region.navName === navName)
 

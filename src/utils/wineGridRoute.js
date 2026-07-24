@@ -1,12 +1,12 @@
-import navData from '@/data/split/nav.json'
-import wineCatalog from '@/data/split/wine/tasmania.json'
+import wineSubNavCatalog from '@/data/split/wine-subnav.json'
+import { isLegacyWineRegionRouteName as isLegacyRegionRoute } from '@/utils/navHelpers'
 
 export const WINE_GRID_ROUTE_NAME = 'WineGrid'
 export const FALLBACK_WINE_SUB_NAV_PATH = 'red-wine'
 
-/** 酒款子分类与路径以首州 wine 子导航为基准（八州一致） */
+/** 酒款子分类与路径以 wine-subnav.json 为基准（八州一致） */
 export function getWineSubNavCatalog() {
-  return wineCatalog?.subNavList || []
+  return Array.isArray(wineSubNavCatalog) ? wineSubNavCatalog : []
 }
 
 export function resolveWineSubNavPath(options = {}) {
@@ -31,11 +31,10 @@ export function buildWineGridRoute(options = {}) {
   const subNav = resolveWineSubNavPath(options)
   return {
     name: WINE_GRID_ROUTE_NAME,
-    params: { subNav }
+    params: { subNav },
   }
 }
 
 export function isLegacyWineRegionRouteName(name) {
-  if (typeof name !== 'string' || !name) return false
-  return navData.some((region) => region.path === name)
+  return isLegacyRegionRoute(name)
 }

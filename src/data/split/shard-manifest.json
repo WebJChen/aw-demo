@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "shardMinChars": 102400,
+  "item": {},
+  "wine": {
+    "new-south-wales": [
+      "red-wine",
+      "white-wine",
+      "sparkling-wine",
+      "whisky",
+      "other-spirits",
+      "cider"
+    ],
+    "south-australia": [
+      "red-wine",
+      "white-wine",
+      "sparkling-wine",
+      "whisky",
+      "other-spirits",
+      "cider"
+    ],
+    "western-australia": [
+      "red-wine",
+      "white-wine",
+      "sparkling-wine",
+      "whisky",
+      "other-spirits",
+      "cider"
+    ]
+  }
+}

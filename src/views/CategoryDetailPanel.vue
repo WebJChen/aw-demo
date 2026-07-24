@@ -7,8 +7,9 @@ import { useDeviceStore } from '@/stores/deviceStore'
 import { useCartStore } from '@/stores/cartStore'
 import { useDialogStore } from '@/stores/dialogStore'
 const WineryItemDialog = defineAsyncComponent(() => import('@/components/dialogs/page/home/WineryItemDialog.vue'))
-import navData from '@/data/split/nav.json'
-import { getItemRegionByPath } from '@/utils/dataRepository'
+import { findRegionByPath, getNavDataSync } from '@/utils/navHelpers'
+import { loadItemRegion, loadNavCatalog, loadRegionNavMeta, fetchWineryCatalogPage } from '@/utils/catalogRepository'
+import { isApiEnabled } from '@/utils/auswineApi'
 import { buildCatalogHitKey, findCatalogEntryIndexByHitKey } from '@/utils/catalogHitKey'
 
 const isExpanded = ref(false)
@@ -29,6 +30,8 @@ const { isPhone, isTablet } = storeToRefs(deviceStore)
 const cartStore = useCartStore()
 const currentRegionData = ref(null)
 const loadedRegionPath = ref('')
+const apiPanelWineries = ref([])
+const apiPanelLoading = ref(false)
 
 onUnmounted(() => {
   clearPanelHitState()
@@ -53,6 +56,7 @@ const getSubNavItems = (subNav) => {
 const getItemInfo = (item) => item?.info || item?.itemData || null
 
 const currentRegionPath = computed(() => {
+  const navData = getNavDataSync()
   const byNavName = navData.find((item) => item.navName === activeNav.value)
   return byNavName?.path || navData[0]?.path || ''
 })
@@ -61,16 +65,30 @@ const syncCurrentRegionData = async () => {
   const regionPath = currentRegionPath.value
   if (!regionPath) {
     currentRegionData.value = null
+    apiPanelWineries.value = []
     return
   }
-  const loadedRegion = await getItemRegionByPath(regionPath)
+  if (isApiEnabled()) {
+    const navRegion = await loadRegionNavMeta(regionPath)
+    if (regionPath !== currentRegionPath.value) return
+    currentRegionData.value = navRegion
+      ? {
+        path: navRegion.path,
+        navName: navRegion.navName,
+        subNavList: Array.isArray(navRegion.subNavList) ? navRegion.subNavList : [],
+      }
+      : null
+    await syncApiPanelWineries(regionPath)
+    return
+  }
+  const loadedRegion = await loadItemRegion(regionPath)
   if (regionPath !== currentRegionPath.value) return
   if (loadedRegion) {
     currentRegionData.value = loadedRegion
     return
   }
 
-  const navRegion = navData.find((item) => item.path === regionPath) || null
+  const navRegion = findRegionByPath(regionPath) || null
   currentRegionData.value = navRegion
     ? {
       path: navRegion.path,
@@ -78,6 +96,76 @@ const syncCurrentRegionData = async () => {
       subNavList: Array.isArray(navRegion.subNavList) ? navRegion.subNavList : []
     }
     : null
+}
+
+const shouldIncludeSubNavForCategory = (subNavName = '') => {
+  switch (activeCategoryType.value) {
+    case '葡萄酒酒庄':
+      return subNavName.includes('葡萄酒')
+    case '洋酒酒庄':
+      return subNavName.includes('洋酒')
+    case '其它酒类酒庄':
+      return !subNavName.includes('葡萄酒')
+        && !subNavName.includes('红酒')
+        && !subNavName.includes('白酒')
+        && !subNavName.includes('洋酒')
+        && !subNavName.includes('威士忌')
+        && !subNavName.includes('白兰地')
+        && !subNavName.includes('伏特加')
+    default:
+      return true
+  }
+}
+
+const syncApiPanelWineries = async (regionPath) => {
+  if (!isApiEnabled() || !regionPath) {
+    apiPanelWineries.value = []
+    return
+  }
+  apiPanelLoading.value = true
+  try {
+    const nav = await loadNavCatalog()
+    if (regionPath !== currentRegionPath.value) return
+    const region = nav.find((row) => row?.path === regionPath)
+    const subNavList = Array.isArray(region?.subNavList) ? region.subNavList : []
+    const items = []
+    for (const subNav of subNavList) {
+      if (subNav?.isShow === false) continue
+      if (!shouldIncludeSubNavForCategory(subNav.subNavName || '')) continue
+      let pageNum = 1
+      let total = Infinity
+      while ((pageNum - 1) * 100 < total) {
+        const result = await fetchWineryCatalogPage({
+          statePath: regionPath,
+          subNavPath: subNav.subNavPath,
+          pageNum,
+          pageSize: 100,
+        })
+        total = Number(result?.total) || 0
+        const pageItems = Array.isArray(result?.items) ? result.items : []
+        pageItems.forEach((entry) => {
+          items.push({
+            ...entry.data,
+            subNavName: entry.subNavName || subNav.subNavName || '',
+            __hitKey: buildCatalogHitKey(
+              'item',
+              entry.regionPath || regionPath,
+              entry.subNavPath || subNav.subNavPath,
+              entry.data,
+              entry.sourceItemIndex
+            ),
+          })
+        })
+        if (!pageItems.length) break
+        pageNum += 1
+      }
+    }
+    if (regionPath === currentRegionPath.value) {
+      apiPanelWineries.value = items
+    }
+  } finally {
+    apiPanelLoading.value = false
+  }
 }
 
 const ensureCurrentRegionData = async () => {
@@ -96,25 +184,17 @@ const ensureCurrentRegionData = async () => {
 
 // 获取所有项目数据
 const allItems = computed(() => {
+  if (isApiEnabled()) {
+    return apiPanelWineries.value.filter((item) => {
+      if (!shouldIncludeSubNavForCategory(item?.subNavName || '')) return false
+      return true
+    })
+  }
   const items = []
   const category = currentRegionData.value
   if (category && category.subNavList) {
     category.subNavList.forEach(subNav => {
-      // 根据当前选中的子导航过滤数据
-      let shouldInclude = false
-      switch (activeCategoryType.value) {
-        case '葡萄酒酒庄':
-          shouldInclude = subNav.subNavName.includes('葡萄酒')
-          break
-        case '洋酒酒庄':
-          shouldInclude = subNav.subNavName.includes('洋酒')
-          break
-        case '其它酒类酒庄':
-          shouldInclude = !subNav.subNavName.includes('葡萄酒') && !subNav.subNavName.includes('红酒') && !subNav.subNavName.includes('白酒') && !subNav.subNavName.includes('洋酒') && !subNav.subNavName.includes('威士忌') && !subNav.subNavName.includes('白兰地') && !subNav.subNavName.includes('伏特加')
-          break
-        default:
-          shouldInclude = true
-      }
+      const shouldInclude = shouldIncludeSubNavForCategory(subNav.subNavName || '')
 
       const subNavItems = getSubNavItems(subNav)
       if (shouldInclude && subNavItems.length) {
@@ -232,7 +312,7 @@ const focusByHit = async (hitKey) => {
   const subNavPath = parsed[2] || ''
   if (!regionPath || !subNavPath) return false
 
-  const region = await getItemRegionByPath(regionPath)
+  const region = await loadRegionNavMeta(regionPath)
   if (!region) return false
   const subNav = region.subNavList?.find((item) => item.subNavPath === subNavPath)
   if (!subNav) return false
@@ -248,6 +328,7 @@ const focusByHit = async (hitKey) => {
     (item) => item?.__hitKey || ''
   )
   if (allIndex < 0) return false
+  const targetItem = allItems.value[allIndex]
   currentPage.value = Math.floor(allIndex / pageSize.value) + 1
 
   await nextTick()
@@ -277,6 +358,12 @@ defineExpose({
  * - handleSubNavClick / activeCategoryType / allItems / paginatedItems
  * - openWineryDetail / addToCart / WineryItemDialog
  */
+
+watch(() => activeCategoryType.value, () => {
+  if (!isApiEnabled() || !isExpanded.value) return
+  resetPage()
+  void ensureCurrentRegionData()
+})
 
 watch(() => currentRegionPath.value, () => {
   loadedRegionPath.value = ''

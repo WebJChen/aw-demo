@@ -1,4 +1,12 @@
-import { getItemRegionByPath, getWineRegionByPath } from '@/utils/dataRepository'
+import {
+  loadItemRegion,
+  loadWineRegion,
+  loadWineryDetailByIndex,
+  loadNavCatalog,
+  mapApiCatalogDetailToItemData,
+  loadWineryClassicWines,
+} from '@/utils/catalogRepository'
+import { isApiEnabled } from '@/utils/auswineApi'
 import { buildCatalogHitKey } from '@/utils/catalogHitKey'
 import { buildWineryGridDisplay } from '@/utils/wineryGridExtras'
 import { buildWineDisplay } from '@/utils/wineGridExtras'
@@ -194,7 +202,27 @@ export async function loadWineryDetailContext(regionPath, subNavPath, itemIndexR
   const itemIndex = Number(itemIndexRaw)
   if (!Number.isInteger(itemIndex) || itemIndex < 0) return null
 
-  const region = await getItemRegionByPath(regionPath)
+  if (isApiEnabled()) {
+    const dto = await loadWineryDetailByIndex(regionPath, subNavPath, itemIndex)
+    if (!dto) return null
+    const item = mapApiCatalogDetailToItemData(dto)
+    const nav = await loadNavCatalog()
+    const region = nav.find((row) => row?.path === regionPath)
+    const subNav = region?.subNavList?.find((row) => row?.subNavPath === subNavPath)
+    if (!item || !region || !subNav) return null
+    return {
+      region,
+      subNav,
+      item,
+      itemIndex,
+      regionPath,
+      subNavPath,
+      regionNavName: region.navName || '',
+      subNavName: subNav.subNavName || '',
+    }
+  }
+
+  const region = await loadItemRegion(regionPath)
   if (!region) return null
 
   const subNav = (region.subNavList || []).find((nav) => nav.subNavPath === subNavPath)
@@ -314,7 +342,40 @@ function scoreWineForWinery(wineItem, wineryItem) {
 
 export async function loadClassicWinesForWinery(ctx, limit = 5) {
   const { regionPath, item, itemIndex } = ctx
-  const wineRegion = await getWineRegionByPath(regionPath)
+
+  if (isApiEnabled()) {
+    const wineryId = item?.id
+    if (!wineryId) return []
+    const entries = await loadWineryClassicWines(wineryId, { pageSize: Math.max(limit * 3, 24) })
+    const pool = entries.map(({ data, subNavPath, subNavName, sourceItemIndex }) => ({
+      wineItem: data,
+      subNavPath,
+      subNavName,
+      sourceItemIndex,
+      score: scoreWineForWinery(data, item),
+      isTest: data?.cartTestEnabled === true,
+    }))
+    if (!pool.length) return []
+    const testPool = pool.filter((row) => row.isTest)
+    const matched = pool.filter((row) => row.score > 0).sort((a, b) => b.score - a.score)
+    let sorted
+    if (matched.length) sorted = matched
+    else if (testPool.length) sorted = testPool
+    else sorted = [...pool]
+    const offset = (Number(itemIndex) || 0) % Math.max(1, sorted.length)
+    const rotated = [...sorted.slice(offset), ...sorted.slice(0, offset)]
+    return rotated.slice(0, limit).map((row) => ({
+      wineItem: row.wineItem,
+      subNavPath: row.subNavPath,
+      subNavName: row.subNavName,
+      sourceItemIndex: row.sourceItemIndex,
+      regionPath,
+      regionNavName: ctx.regionNavName || '',
+      display: buildWineDisplay(row.wineItem, { regionNavName: ctx.regionNavName || '' }),
+    }))
+  }
+
+  const wineRegion = await loadWineRegion(regionPath, { hydrateAll: true })
   if (!wineRegion) return []
 
   const pool = []

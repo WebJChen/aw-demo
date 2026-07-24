@@ -5,11 +5,15 @@
   "type": "module",
   "scripts": {
     "data:split": "node scripts/split-data.mjs",
-    "dev": "npm run data:split && vite",
+    "build:catalog-index": "node scripts/build-catalog-index.mjs",
+    "sync:fallback": "node scripts/sync-fallback.mjs",
+    "data:sync": "npm run data:split && npm run build:catalog-index && npm run sync:fallback",
+    "dev": "npm run data:sync && vite",
     "images:thumb": "node scripts/generate-thumbs.mjs",
-    "prebuild": "npm run data:split && npm run images:thumb",
+    "prebuild": "npm run data:sync && npm run images:thumb",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "lint": "eslint src"
   },
   "dependencies": {
     "element-plus": "^2.13.5",

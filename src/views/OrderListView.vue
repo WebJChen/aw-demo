@@ -17,6 +17,7 @@ import {
   fulfillmentVariantForPhaseKey,
   ORDER_PROGRESS_FILTER_OPTIONS
 } from '@/utils/orderFulfillmentDemo'
+import { isRemoteOrderEnabled, listOrders } from '@/utils/orderService'
 
 const router = useRouter()
 const dialogStore = useDialogStore()
@@ -34,7 +35,28 @@ const numericPaidTime = (row) => {
   return Number.isFinite(n) && n > 0 ? n : 0
 }
 
-const refresh = () => {
+const refresh = async () => {
+  if (isRemoteOrderEnabled()) {
+    try {
+      const remoteRows = await listOrders({ pageNum: 1, pageSize: 50 })
+      orders.value = (remoteRows || []).map((row, index) => {
+        const { key, label } = getDemoFulfillmentForOrder(row, index)
+        return {
+          ...row,
+          _fulfillmentKey: key,
+          _fulfillmentLabel: label,
+          _sortTime: numericPaidTime(row),
+          _sortAmount: Number.isFinite(Number(row?.paidAmount)) ? Number(row.paidAmount) : 0,
+          _sortQty: Number.isFinite(Number(row?.paidQuantity)) ? Number(row.paidQuantity) : 0,
+        }
+      })
+      return
+    } catch {
+      orders.value = []
+      return
+    }
+  }
+
   const sessionRows = listMockOrders().filter((r) => !String(r?.orderNo || '').startsWith('DEMO-'))
   const merged = [...STATIC_DEMO_ORDERS, ...sessionRows]
   orders.value = merged.map((row, index) => {

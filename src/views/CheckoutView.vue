@@ -11,6 +11,7 @@ import { resolveDataImage } from '@/utils/dataImageResolver'
 import { tasGridStyleTestThumbByIndex } from '@/utils/tasmaniaGridStyleTestThumbs'
 import { withRandomLoading } from '@/utils/loadingUtils'
 import { saveMockOrderDetail } from '@/utils/mockOrderStorage'
+import { isRemoteOrderEnabled, submitRemoteOrder } from '@/utils/orderService'
 
 const router = useRouter()
 const cartStore = useCartStore()
@@ -105,18 +106,11 @@ const submitCheckout = async () => {
 
   if (result.status === 'success') {
     const payMethodLabel = payMethods.find((m) => m.value === form.payMethod)?.label || form.payMethod
-    saveMockOrderDetail({
-      orderNo: orderNo.value,
-      paidAt: Date.now(),
-      status: 'paid',
-      paidAmount: paidAmountSnapshot.toFixed(2),
-      paidQuantity: paidQuantitySnapshot,
-      contact: {
-        contactName: form.contactName,
-        phone: form.phone,
-        email: form.email,
-        address: form.address
-      },
+    const orderPayload = {
+      contactName: form.contactName,
+      phone: form.phone,
+      email: form.email,
+      address: form.address,
       payMethod: form.payMethod,
       payMethodLabel,
       remark: String(form.remark || '').trim(),
@@ -132,10 +126,55 @@ const submitCheckout = async () => {
         regionName: item.regionName,
         subNavName: item.subNavName,
         regionPath: item.regionPath,
-        lineIndex
-      }))
-    })
-    cartStore.removeSelectedItems()
+        lineIndex,
+      })),
+    }
+
+    if (isRemoteOrderEnabled()) {
+      try {
+        const created = await submitRemoteOrder(orderPayload)
+        if (created?.orderNo) {
+          orderNo.value = created.orderNo
+          paymentResult.value = {
+            ...paymentResult.value,
+            orderNo: created.orderNo,
+            paidAmount: String(created.paidAmount ?? paidAmountSnapshot.toFixed(2)),
+            paidQuantity: created.paidQuantity ?? paidQuantitySnapshot,
+          }
+        }
+      } catch (error) {
+        paymentResult.value = {
+          status: 'fail',
+          title: '下单失败',
+          desc: error?.message || '订单提交失败，请稍后重试',
+          orderNo: orderNo.value,
+          paidAmount: paidAmountSnapshot.toFixed(2),
+          paidQuantity: paidQuantitySnapshot,
+        }
+        submitLoading.value = false
+        return
+      }
+    } else {
+      saveMockOrderDetail({
+        orderNo: orderNo.value,
+        paidAt: Date.now(),
+        status: 'paid',
+        paidAmount: paidAmountSnapshot.toFixed(2),
+        paidQuantity: paidQuantitySnapshot,
+        contact: {
+          contactName: form.contactName,
+          phone: form.phone,
+          email: form.email,
+          address: form.address,
+        },
+        payMethod: form.payMethod,
+        payMethodLabel,
+        remark: String(form.remark || '').trim(),
+        items: orderPayload.items,
+      })
+    }
+
+    await cartStore.removeSelectedItems()
     ElMessage.success('支付成功，已结算的商品已从购物车移除')
   }
 

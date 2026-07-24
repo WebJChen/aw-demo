@@ -8,6 +8,7 @@ import { getStaticDemoOrderByNo } from '@/utils/demoStaticOrders'
 /** 【样式测试·可删】与结算页塔斯缩略图一致；见 tasmaniaGridStyleTestThumbs.js */
 import { tasGridStyleTestThumbByIndex } from '@/utils/tasmaniaGridStyleTestThumbs'
 import { withRandomLoading } from '@/utils/loadingUtils'
+import { getOrderDetail, isRemoteOrderEnabled } from '@/utils/orderService'
 
 const route = useRoute()
 const router = useRouter()
@@ -26,9 +27,22 @@ const syncEntrySourceFlags = () => {
   }
 }
 
-const loadFromRoute = () => {
+const loadFromRoute = async () => {
   const no = typeof route.params.orderNo === 'string' ? route.params.orderNo.trim() : ''
-  order.value = no ? (loadMockOrderDetail(no) ?? getStaticDemoOrderByNo(no)) : null
+  if (!no) {
+    order.value = null
+    return
+  }
+  if (isRemoteOrderEnabled()) {
+    try {
+      order.value = await getOrderDetail(no)
+      return
+    } catch {
+      order.value = null
+      return
+    }
+  }
+  order.value = loadMockOrderDetail(no) ?? getStaticDemoOrderByNo(no)
 }
 
 const consumeFreshQuery = async () => {

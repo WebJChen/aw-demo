@@ -3,30 +3,26 @@ import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ArrowLeft, Search } from '@element-plus/icons-vue'
 import {
-  buildSearchIndex,
-  scoreRow,
   getHighlightSegments,
   normalizeSearchSourceType,
   resolveSearchResultRoute,
   saveSearchTarget,
   buildSearchResultsRoute,
   SEARCH_SOURCE_ITEM,
-  SEARCH_SOURCE_WINE
 } from '@/utils/searchUtils'
-import { getItemJson, getWineJson } from '@/utils/dataRepository'
+import { searchCatalog, SEARCH_PAGE_SIZE } from '@/utils/searchService'
 import { withRandomLoading } from '@/utils/loadingUtils'
+import { showApiError } from '@/utils/apiFeedback'
 
 const route = useRoute()
 const router = useRouter()
 
-const pageSize = 10
+const pageSize = SEARCH_PAGE_SIZE
 const currentPage = ref(1)
 const pageLoading = ref(false)
 const searchRows = ref([])
+const totalResults = ref(0)
 const localKeyword = ref('')
-let indexRows = []
-let hasBuiltSearchIndex = false
-let buildSearchIndexPromise = null
 
 const keyword = computed(() => (typeof route.query.s === 'string' ? route.query.s.trim() : ''))
 const sourceTypeFilter = computed(() => normalizeSearchSourceType(route.query.type))
@@ -37,69 +33,32 @@ const searchScopeLabel = computed(() => {
   return '全站搜索'
 })
 
-const ensureSearchIndex = async () => {
-  if (hasBuiltSearchIndex) return
-  if (!buildSearchIndexPromise) {
-    buildSearchIndexPromise = Promise.all([getItemJson(), getWineJson()])
-      .then(([itemJson, wineJson]) => {
-        indexRows = [...buildSearchIndex(itemJson, 'item'), ...buildSearchIndex(wineJson, 'wine')]
-        hasBuiltSearchIndex = true
-      })
-      .catch(() => {
-        indexRows = []
-        hasBuiltSearchIndex = true
-      })
-  }
-  await buildSearchIndexPromise
-}
-
-const performSearch = async (rawKeyword) => {
+const performSearch = async (rawKeyword, pageNum = 1) => {
   const currentKeyword = String(rawKeyword || '').trim()
   if (!currentKeyword) {
     searchRows.value = []
+    totalResults.value = 0
     return
   }
 
-  await ensureSearchIndex()
-
-  const rows = []
-  for (const row of indexRows) {
-    if (sourceTypeFilter.value && row.sourceType !== sourceTypeFilter.value) continue
-    const scoreData = scoreRow(row, currentKeyword)
-    if (!scoreData.matched) continue
-
-    rows.push({
-      id: row.id,
-      score: scoreData.score,
-      navName: row.navName,
-      regionPath: row.regionPath,
-      subNavName: row.subNavName,
-      subNavPath: row.subNavPath,
-      sectionTag: row.navName,
-      groupName: row.subNavName,
-      title: row.title,
-      enTitle: row.enTitle,
-      tags: Array.isArray(row.tags) ? row.tags : [],
-      desc: row.desc || '',
-      itemIndex: row.itemIndex,
-      itemTitle: row.title,
-      matchField: scoreData.matchField,
-      sourceType: row.sourceType
+  try {
+    const type = sourceTypeFilter.value || 'all'
+    const payload = await searchCatalog(currentKeyword, {
+      type,
+      pageNum,
+      pageSize,
     })
+    searchRows.value = Array.isArray(payload?.results) ? payload.results : []
+    totalResults.value = Number(payload?.total) || searchRows.value.length
+  } catch (error) {
+    showApiError(error, '搜索失败，请稍后再试')
+    searchRows.value = []
+    totalResults.value = 0
   }
-
-  rows.sort((a, b) => b.score - a.score)
-  searchRows.value = rows
 }
 
-const allResults = computed(() => searchRows.value)
-
-const totalResults = computed(() => allResults.value.length)
 const hasResults = computed(() => totalResults.value > 0)
-const pagedResults = computed(() => {
-  const start = (currentPage.value - 1) * pageSize
-  return allResults.value.slice(start, start + pageSize)
-})
+const pagedResults = computed(() => searchRows.value)
 
 watch(keyword, (value) => {
   localKeyword.value = value
@@ -109,7 +68,7 @@ watch([keyword, sourceTypeFilter], async () => {
   await withRandomLoading(async () => {
     pageLoading.value = true
     currentPage.value = 1
-    await performSearch(keyword.value)
+    await performSearch(keyword.value, 1)
   }, { min: 80, max: 300 })
   pageLoading.value = false
 }, { immediate: true })
@@ -119,6 +78,7 @@ const handlePageChange = async (page) => {
   await withRandomLoading(async () => {
     pageLoading.value = true
     currentPage.value = page
+    await performSearch(keyword.value, page)
   }, { min: 80, max: 300 })
   pageLoading.value = false
 }

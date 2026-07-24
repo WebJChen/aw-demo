@@ -7,11 +7,12 @@ import CatalogGridShell from '@/components/CatalogGridShell.vue'
 import RegionNavMenuCard from '@/components/RegionNavMenuCard.vue'
 import { useDeviceStore } from '@/stores/deviceStore'
 import { useNavStore } from '@/stores/navStore'
-import navData from '@/data/split/nav.json'
+import { getAvailableNavRegions, findRegionByPath, getNavDataSync } from '@/utils/navHelpers'
 import { buildWineGridRoute } from '@/utils/wineGridRoute'
 import { buildWineryDetailRouteTarget } from '@/utils/wineryDetailPage'
 import { resolveWinerySubNavPath, WINERY_DEFAULT_SUB_NAV } from '@/utils/wineryRouteUtils'
-import { getItemRegionByPath } from '@/utils/dataRepository'
+import { loadItemRegion, fetchWineryCatalogPage, loadNavCatalog } from '@/utils/catalogRepository'
+import { isApiEnabled } from '@/utils/auswineApi'
 import { resolveItemGridImageUrl } from '@/utils/itemImageResolver'
 import { buildWineryGridDisplay } from '@/utils/wineryGridExtras'
 import {
@@ -69,6 +70,11 @@ const wineryFilterVisit = ref('')
 const wineryFilterTag = ref('')
 const winerySortBy = ref('default')
 
+const apiWineryEntries = ref([])
+const apiWineryTotal = ref(0)
+const apiPageNum = ref(1)
+const wineryCatalogLoading = ref(false)
+
 const selectedLocationKey = ref([])
 const selectedLocationLabel = computed(() => {
   const arr = selectedLocationKey.value
@@ -86,7 +92,7 @@ const regionTitle = computed(() => currentRegionData.value?.navName || '')
 const isTasmaniaWineryLayoutTest = computed(() => regionPath.value === 'tasmania')
 const showLeadingNavMenu = computed(() => !isTasmaniaWineryLayoutTest.value)
 const navMenuItems = computed(() =>
-  navData.slice(0, 8).map((region) => ({
+  getAvailableNavRegions().slice(0, 8).map((region) => ({
     navName: region?.navName || '',
     regionPath: region?.path || '',
     capitalLabel:
@@ -230,6 +236,10 @@ const availableTagOptions = computed(() => {
 })
 
 const buildEntryListForSubNav = (subNav) => {
+  if (isApiEnabled()) {
+    const snPath = subNav?.subNavPath
+    return apiWineryEntries.value.filter((entry) => !snPath || entry.subNavPath === snPath)
+  }
   if (!subNav) return []
   return getSubNavItems(subNav).map((data, sourceItemIndex) => ({
     data,
@@ -330,8 +340,13 @@ const hasActiveWineryFilters = computed(() => {
   )
 })
 
-const filteredDataTotal = computed(() => dataList.value.length)
-const visibleDataList = computed(() => dataList.value.slice(0, renderLimit.value))
+const filteredDataTotal = computed(() => (
+  isApiEnabled() ? apiWineryTotal.value : dataList.value.length
+))
+const visibleDataList = computed(() => {
+  if (isApiEnabled()) return dataList.value
+  return dataList.value.slice(0, renderLimit.value)
+})
 
 const gridRows = computed(() =>
   visibleDataList.value.map((entry, idx) => ({
@@ -358,10 +373,52 @@ const resetRenderLimit = () => {
 }
 
 const updateHasMore = () => {
+  if (isApiEnabled()) {
+    hasMore.value = apiWineryEntries.value.length < apiWineryTotal.value
+    return
+  }
   hasMore.value = renderLimit.value < filteredDataTotal.value
 }
 
+const syncApiWineryCatalog = async ({ append = false } = {}) => {
+  if (!isApiEnabled()) return
+  const path = regionPath.value
+  const subNavPath = currentSubNav.value?.subNavPath
+  if (!path || !subNavPath) {
+    apiWineryEntries.value = []
+    apiWineryTotal.value = 0
+    return
+  }
+  wineryCatalogLoading.value = true
+  try {
+    const pageNum = append ? apiPageNum.value + 1 : 1
+    const result = await fetchWineryCatalogPage({
+      statePath: path,
+      subNavPath,
+      pageNum,
+      pageSize: RENDER_STEP_COUNT,
+    })
+    if (path !== regionPath.value || subNavPath !== currentSubNav.value?.subNavPath) return
+    apiWineryTotal.value = Number(result?.total) || 0
+    apiPageNum.value = Number(result?.pageNum) || pageNum
+    const items = Array.isArray(result?.items) ? result.items : []
+    apiWineryEntries.value = append ? [...apiWineryEntries.value, ...items] : items
+    if (isApiEnabled()) {
+      renderLimit.value = apiWineryEntries.value.length
+    }
+  } finally {
+    wineryCatalogLoading.value = false
+  }
+}
+
 const loadMoreItems = () => {
+  if (isApiEnabled()) {
+    if (!hasMore.value || wineryCatalogLoading.value) return
+    void syncApiWineryCatalog({ append: true }).then(() => {
+      updateHasMore()
+    })
+    return
+  }
   if (!hasMore.value) return
   renderLimit.value = Math.min(filteredDataTotal.value, renderLimit.value + RENDER_STEP_COUNT)
   updateHasMore()
@@ -399,7 +456,7 @@ const teardownLoadMoreObserver = () => {
 const openWineryPreviewInNewWindow = (menuItem) => {
   const regionPathValue = menuItem?.regionPath
   if (!regionPathValue) return
-  const region = navData.find((item) => item?.path === regionPathValue)
+  const region = findRegionByPath(regionPathValue)
   const firstSubNav = region?.subNavList?.find((subNav) => subNav?.isShow !== false)?.subNavPath || WINERY_DEFAULT_SUB_NAV
   const href = router.resolve({
     name: 'WineryPreview',
@@ -566,11 +623,20 @@ const syncRegionData = async () => {
   const path = regionPath.value
   if (!path) {
     currentRegionData.value = null
+    apiWineryEntries.value = []
+    apiWineryTotal.value = 0
     return
   }
-  const loaded = await getItemRegionByPath(path)
+  if (isApiEnabled()) {
+    const nav = await loadNavCatalog()
+    if (path !== regionPath.value) return
+    currentRegionData.value = nav.find((region) => region?.path === path) || findRegionByPath(path) || null
+    await syncApiWineryCatalog()
+    return
+  }
+  const loaded = await loadItemRegion(path)
   if (path !== regionPath.value) return
-  currentRegionData.value = loaded || navData.find((region) => region.path === path) || null
+  currentRegionData.value = loaded || findRegionByPath(path) || null
 }
 
 const normalizeSubNavRoute = () => {
@@ -684,6 +750,9 @@ const handleWindowScroll = () => {
 }
 
 watch(() => route.params.regionPath, () => {
+  apiWineryEntries.value = []
+  apiWineryTotal.value = 0
+  apiPageNum.value = 1
   void syncRegionData().then(() => {
     normalizeSubNavRoute()
     resetRenderLimit()
@@ -695,6 +764,18 @@ watch(() => route.params.regionPath, () => {
 watch(() => route.params.subNav, () => {
   clearSearchHitState()
   resetRenderLimit()
+  if (isApiEnabled()) {
+    apiWineryEntries.value = []
+    apiWineryTotal.value = 0
+    void syncApiWineryCatalog().then(() => {
+      updateHasMore()
+      nextTick(() => {
+        initLoadMoreObserver()
+        handleSearchTargetFocus()
+      })
+    })
+    return
+  }
   updateHasMore()
   nextTick(() => {
     initLoadMoreObserver()

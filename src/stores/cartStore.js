@@ -3,6 +3,8 @@ import { defineStore } from 'pinia'
 import { buildWineDisplay, resolveWineCartUnitPrice } from '@/utils/wineGridExtras'
 import { createDemoPinnedCartRows, isDemoPinnedCartId } from '@/utils/demoStaticCartShowcase'
 import { getItemCoverPath } from '@/utils/itemImageResolver'
+import { isRemoteCartEnabled, loadRemoteCart, syncRemoteCart } from '@/utils/cartService'
+import { useUserStore } from '@/stores/userStore'
 
 const DEFAULT_PRICE = 188
 const STORAGE_KEY = 'aw_cart_items'
@@ -45,7 +47,56 @@ const normalizeLoadedItem = (item) => {
   }
 }
 
+const normalizeRemoteCartRow = (item) => {
+  if (!item || typeof item !== 'object') return null
+  const cartId = normalizeText(item.cartId || item.cartKey)
+  if (!cartId) return null
+  return normalizeLoadedItem({
+    cartId,
+    title: normalizeText(item.title, '商品'),
+    enTitle: normalizeText(item.enTitle),
+    desc: normalizeText(item.desc),
+    img: normalizeText(item.img || item.coverUrl),
+    wineOrigin: normalizeText(item.wineOrigin),
+    wineVintage: normalizeText(item.wineVintage),
+    price: Number(item.price) || DEFAULT_PRICE,
+    quantity: Math.max(1, Number(item.quantity) || 1),
+    regionPath: normalizeText(item.regionPath),
+    regionName: normalizeText(item.regionName),
+    subNavPath: normalizeText(item.subNavPath),
+    subNavName: normalizeText(item.subNavName),
+    selected: item.selected === true,
+    addedAt: Date.now(),
+  })
+}
+
+const toRemoteSyncPayload = (items) => items
+  .filter((item) => item && !item.demoPersistent)
+  .map((item) => ({
+    cartId: item.cartId,
+    title: item.title,
+    enTitle: item.enTitle || '',
+    img: item.img || '',
+    price: Number(item.price) || 0,
+    quantity: Math.max(1, Number(item.quantity) || 1),
+    wineOrigin: item.wineOrigin || '',
+    wineVintage: item.wineVintage || '',
+    regionPath: item.regionPath || '',
+    regionName: item.regionName || '',
+    subNavPath: item.subNavPath || '',
+    subNavName: item.subNavName || '',
+    selected: item.selected === true,
+  }))
+
 export const useCartStore = defineStore('cart', () => {
+  let remoteSyncTimer = null
+  let skipNextRemoteSync = false
+
+  const shouldUseRemoteCart = () => {
+    if (!isRemoteCartEnabled()) return false
+    const userStore = useUserStore()
+    return userStore.loggedIn
+  }
   /** 仅从 localStorage 读取（过滤内置演示 cartId，避免与种子重复） */
   const loadStoredCartOnly = () => {
     if (typeof window === 'undefined') return []
@@ -58,8 +109,7 @@ export const useCartStore = defineStore('cart', () => {
         .map(normalizeLoadedItem)
         .filter(Boolean)
         .filter((item) => !isDemoPinnedCartId(item.cartId))
-    } catch (error) {
-      console.error('加载购物车数据失败:', error)
+    } catch {
     }
     return []
   }
@@ -70,12 +120,38 @@ export const useCartStore = defineStore('cart', () => {
   ]
 
   const savePersistedSlice = (items) => {
-    if (typeof window === 'undefined') return
+    if (typeof window === 'undefined' || shouldUseRemoteCart()) return
     try {
       const payload = items.filter((item) => !item.demoPersistent)
       localStorage.setItem(STORAGE_KEY, JSON.stringify(payload))
-    } catch (error) {
-      console.error('保存购物车数据失败:', error)
+    } catch {
+    }
+  }
+
+  const scheduleRemoteSync = () => {
+    if (!shouldUseRemoteCart() || skipNextRemoteSync) return
+    if (remoteSyncTimer) {
+      clearTimeout(remoteSyncTimer)
+    }
+    remoteSyncTimer = setTimeout(() => {
+      void syncRemoteCart(toRemoteSyncPayload(cartItems.value)).catch(() => {})
+    }, 700)
+  }
+
+  const loadFromRemote = async () => {
+    if (!shouldUseRemoteCart()) return false
+    try {
+      skipNextRemoteSync = true
+      const rows = await loadRemoteCart()
+      const mapped = (Array.isArray(rows) ? rows : [])
+        .map(normalizeRemoteCartRow)
+        .filter(Boolean)
+      cartItems.value = [...createDemoPinnedCartRows(), ...mapped]
+      return true
+    } catch {
+      return false
+    } finally {
+      skipNextRemoteSync = false
     }
   }
 
@@ -85,6 +161,7 @@ export const useCartStore = defineStore('cart', () => {
     cartItems,
     (newVal) => {
       savePersistedSlice(newVal)
+      scheduleRemoteSync()
     },
     { deep: true }
   )
@@ -217,13 +294,20 @@ export const useCartStore = defineStore('cart', () => {
   /**
    * 移除已勾选的普通商品（模拟支付成功后）；内置演示备货始终保留，并取消其勾选以免影响下次。
    */
-  const removeSelectedItems = () => {
+  const removeSelectedItems = async () => {
     cartItems.value = cartItems.value.filter(
       (item) => item.demoPersistent || !item.selected
     )
     cartItems.value.forEach((item) => {
       if (item.demoPersistent) item.selected = false
     })
+    if (shouldUseRemoteCart()) {
+      try {
+        await syncRemoteCart(toRemoteSyncPayload(cartItems.value))
+      } catch {
+        // ignore sync errors after checkout
+      }
+    }
   }
 
   const setItemSelected = (cartId, selected) => {
@@ -255,6 +339,7 @@ export const useCartStore = defineStore('cart', () => {
     clearCart,
     removeSelectedItems,
     setItemSelected,
-    setAllSelected
+    setAllSelected,
+    loadFromRemote,
   }
 })
