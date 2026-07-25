@@ -206,7 +206,7 @@ export async function loadWineryDetailContext(regionPath, subNavPath, itemIndexR
     const dto = await loadWineryDetailByIndex(regionPath, subNavPath, itemIndex)
     if (!dto) return null
     const item = mapApiCatalogDetailToItemData(dto)
-    const nav = await loadNavCatalog()
+    const nav = await loadNavCatalog({ catalogType: 'item' })
     const region = nav.find((row) => row?.path === regionPath)
     const subNav = region?.subNavList?.find((row) => row?.subNavPath === subNavPath)
     if (!item || !region || !subNav) return null

@@ -1,7 +1,6 @@
 <script setup>
 import { computed } from 'vue'
 import { Location, Phone, Message, ArrowUp, ArrowDown, ChatRound } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
 import { useRoute, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useDialogStore } from '@/stores/dialogStore';
@@ -11,19 +10,18 @@ import { resolveDataImage } from '@/utils/dataImageResolver'
 
 const dialogStore = useDialogStore()
 const userStore = useUserStore()
-const { loggedIn, userId } = storeToRefs(userStore)
+const { loggedIn, userId, username, displayName } = storeToRefs(userStore)
 const router = useRouter()
 const route = useRoute()
+
+const loggedInLabel = computed(() => displayName.value || username.value || userId.value || '')
 
 /** 支付成功查看订单快照（见 OrderDetail consumeFreshQuery）：不显示全站顶栏与页脚 */
 const hideGlobalChrome = computed(
   () => route.name === 'OrderDetail' && route.query.snapshot === '1'
 )
 
-const handleDemoLogin = () => {
-  userStore.loginDemo()
-  ElMessage.success('已为模拟登录（本地演示，未连接真实账号体系）')
-}
+const openLoginPrompt = () => dialogStore.openOnly('loginPrompt')
 
 const goPersonalCart = () => {
   if (!loggedIn.value) {
@@ -107,11 +105,11 @@ const getFooterImg = (name) => (
           <li class="pointer" @click="dialogStore.openDialog('contactUs')">联系我们</li>
           <li class="pointer" @click="goPersonalCart">购物车</li>
           <!-- 最右侧：未登录入口 / 登录后账号下拉（内含会员｜订单｜退出） -->
-          <li v-if="!loggedIn" class="pointer header-user-login-wrap" @click="handleDemoLogin">用户注册/登录</li>
+          <li v-if="!loggedIn" class="pointer header-user-login-wrap" @click="openLoginPrompt">用户注册/登录</li>
           <li v-else class="pointer dropdown header-user-wrap">
             <el-dropdown class="header-user-dropdown" trigger="click" teleported>
               <span class="header-user-trigger el-dropdown-link">
-                {{ userId }}<el-icon class="el-icon--right">
+                {{ loggedInLabel }}<el-icon class="el-icon--right">
                   <ArrowDown />
                 </el-icon>
               </span>

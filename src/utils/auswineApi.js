@@ -120,8 +120,10 @@ export async function pingApi() {
   return requestJson('/common/ping')
 }
 
-export async function fetchNavTree() {
-  return requestJson('/aw/nav')
+export async function fetchNavTree({ catalogType } = {}) {
+  return requestJson('/aw/nav', {
+    params: { catalogType },
+  })
 }
 
 export async function fetchWineCatalog({

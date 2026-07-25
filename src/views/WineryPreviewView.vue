@@ -628,7 +628,7 @@ const syncRegionData = async () => {
     return
   }
   if (isApiEnabled()) {
-    const nav = await loadNavCatalog()
+    const nav = await loadNavCatalog({ catalogType: 'item' })
     if (path !== regionPath.value) return
     currentRegionData.value = nav.find((region) => region?.path === path) || findRegionByPath(path) || null
     await syncApiWineryCatalog()

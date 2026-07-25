@@ -20,6 +20,28 @@ import {
 import { buildWineDisplay, resolveWineCartUnitPrice } from '@/utils/wineGridExtras'
 import { resolveRegionPathFromNavName } from '@/utils/navHelpers'
 
+function hasWinerySubNav(region) {
+  return (region?.subNavList || []).some((subNav) =>
+    subNav?.subNavPath === 'wineries' || String(subNav?.subNavName || '').includes('酒庄')
+  )
+}
+
+function mergeApiNavMeta(apiTree, localTree, catalogType) {
+  const localByPath = new Map((localTree || []).map((region) => [region?.path, region]))
+  return (apiTree || []).map((region) => {
+    const local = localByPath.get(region?.path) || {}
+    const shouldUseLocalItemSubNav = catalogType === 'item' && !hasWinerySubNav(region)
+    return {
+      ...region,
+      navName: region?.navName || local.navName || '',
+      capital: region?.capital || local.capital || '',
+      subNavList: shouldUseLocalItemSubNav
+        ? (Array.isArray(local.subNavList) ? local.subNavList : [])
+        : (Array.isArray(region?.subNavList) ? region.subNavList : []),
+    }
+  })
+}
+
 function parseCardExtraJson(row) {
   if (!row?.cardExtraJson) return {}
   try {
@@ -174,10 +196,12 @@ function sortWineEntries(entries, sortBy) {
   }
 }
 
-export async function loadNavCatalog() {
+export async function loadNavCatalog({ catalogType } = {}) {
   if (isApiEnabled()) {
-    const tree = await fetchNavTree()
-    return Array.isArray(tree) ? tree : []
+    const tree = await fetchNavTree({ catalogType })
+    const apiTree = Array.isArray(tree) ? tree : []
+    const localTree = await getNavData()
+    return mergeApiNavMeta(apiTree, localTree, catalogType)
   }
   if (isLocalJsonFallbackEnabled()) {
     try {
@@ -190,16 +214,16 @@ export async function loadNavCatalog() {
   return getNavData()
 }
 
-export async function loadRegionNavMeta(regionPath) {
+export async function loadRegionNavMeta(regionPath, { catalogType } = {}) {
   const path = String(regionPath || '').trim()
   if (!path) return null
-  const nav = await loadNavCatalog()
+  const nav = await loadNavCatalog({ catalogType })
   return nav.find((region) => region?.path === path) || null
 }
 
 export async function loadItemRegion(regionPath, options = {}) {
   if (isApiEnabled()) {
-    return loadRegionNavMeta(regionPath)
+    return loadRegionNavMeta(regionPath, { catalogType: 'item' })
   }
   const { subNavPath, hydrateAll = false } = options
   if (isLocalJsonFallbackEnabled()) {
@@ -241,7 +265,7 @@ export async function loadItemRegion(regionPath, options = {}) {
 
 export async function loadWineRegion(regionPath, options = {}) {
   if (isApiEnabled()) {
-    return loadRegionNavMeta(regionPath)
+    return loadRegionNavMeta(regionPath, { catalogType: 'wine' })
   }
   const { subNavPath, hydrateAll = false } = options
   if (isLocalJsonFallbackEnabled()) {

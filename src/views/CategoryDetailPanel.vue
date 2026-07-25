@@ -69,7 +69,7 @@ const syncCurrentRegionData = async () => {
     return
   }
   if (isApiEnabled()) {
-    const navRegion = await loadRegionNavMeta(regionPath)
+    const navRegion = await loadRegionNavMeta(regionPath, { catalogType: 'item' })
     if (regionPath !== currentRegionPath.value) return
     currentRegionData.value = navRegion
       ? {
@@ -124,7 +124,7 @@ const syncApiPanelWineries = async (regionPath) => {
   }
   apiPanelLoading.value = true
   try {
-    const nav = await loadNavCatalog()
+    const nav = await loadNavCatalog({ catalogType: 'item' })
     if (regionPath !== currentRegionPath.value) return
     const region = nav.find((row) => row?.path === regionPath)
     const subNavList = Array.isArray(region?.subNavList) ? region.subNavList : []
@@ -312,7 +312,7 @@ const focusByHit = async (hitKey) => {
   const subNavPath = parsed[2] || ''
   if (!regionPath || !subNavPath) return false
 
-  const region = await loadRegionNavMeta(regionPath)
+  const region = await loadRegionNavMeta(regionPath, { catalogType: 'item' })
   if (!region) return false
   const subNav = region.subNavList?.find((item) => item.subNavPath === subNavPath)
   if (!subNav) return false

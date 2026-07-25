@@ -5,6 +5,8 @@ import { storeToRefs } from 'pinia'
 import { ElMessage } from 'element-plus'
 import { ArrowLeft, CircleCheckFilled, CircleCloseFilled, WarningFilled } from '@element-plus/icons-vue'
 import { useCartStore } from '@/stores/cartStore'
+import { useDialogStore } from '@/stores/dialogStore'
+import { useUserStore } from '@/stores/userStore'
 import { useLoadingStore } from '@/stores/loadingStore'
 import { resolveDataImage } from '@/utils/dataImageResolver'
 /** 【样式测试·可删】结算摘要缩略图轮换；正式发布前移除（见 tasmaniaGridStyleTestThumbs.js） */
@@ -15,7 +17,10 @@ import { isRemoteOrderEnabled, submitRemoteOrder } from '@/utils/orderService'
 
 const router = useRouter()
 const cartStore = useCartStore()
+const dialogStore = useDialogStore()
+const userStore = useUserStore()
 const { selectedItems, selectedQuantity, selectedAmount } = storeToRefs(cartStore)
+const { loggedIn } = storeToRefs(userStore)
 const loadingStore = useLoadingStore()
 const { fullscreenLoading } = storeToRefs(loadingStore)
 const loadingState = computed(() => fullscreenLoading.value)
@@ -89,6 +94,11 @@ const submitCheckout = async () => {
 
   const valid = await checkoutFormRef.value?.validate?.().catch(() => false)
   if (!valid) return
+  if (!loggedIn.value) {
+    ElMessage.warning('请先登录后再提交订单')
+    dialogStore.openOnly('loginPrompt')
+    return
+  }
 
   submitLoading.value = true
   await new Promise((resolve) => setTimeout(resolve, 900))
@@ -143,6 +153,12 @@ const submitCheckout = async () => {
           }
         }
       } catch (error) {
+        if (error?.status === 401 || error?.code === 401) {
+          ElMessage.warning('登录状态已失效，请重新登录后再提交订单')
+          dialogStore.openOnly('loginPrompt')
+          submitLoading.value = false
+          return
+        }
         paymentResult.value = {
           status: 'fail',
           title: '下单失败',

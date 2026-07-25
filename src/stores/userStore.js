@@ -16,17 +16,20 @@ export const useUserStore = defineStore(
     const loggedIn = ref(false)
     const userId = ref('')
     const username = ref('')
+    const displayName = ref('')
 
     const applySession = (session) => {
       if (session?.userId != null) {
         loggedIn.value = true
         userId.value = String(session.userId)
         username.value = String(session.username || session.userId || '')
+        displayName.value = String(session.displayName || session.display_name || session.username || session.userId || '')
         return true
       }
       loggedIn.value = false
       userId.value = ''
       username.value = ''
+      displayName.value = ''
       return false
     }
 
@@ -45,7 +48,11 @@ export const useUserStore = defineStore(
       }
       const data = await loginAccount(account, password)
       applySession(data)
-      await useCartStore().loadFromRemote()
+      try {
+        await useCartStore().loadFromRemote()
+      } catch {
+        // 登录成功后同步购物车失败，不阻断登录主流程
+      }
       return data
     }
 
@@ -56,7 +63,11 @@ export const useUserStore = defineStore(
       }
       const data = await registerAccount(payload)
       applySession(data)
-      await useCartStore().loadFromRemote()
+      try {
+        await useCartStore().loadFromRemote()
+      } catch {
+        // 注册成功后同步购物车失败，不阻断登录主流程
+      }
       return data
     }
 
@@ -71,6 +82,7 @@ export const useUserStore = defineStore(
       loggedIn.value = false
       userId.value = ''
       username.value = ''
+      displayName.value = ''
     }
 
     const restoreSession = async () => {
@@ -92,7 +104,7 @@ export const useUserStore = defineStore(
       loggedIn,
       userId,
       username,
-      loginDemo,
+      displayName,
       login,
       register,
       logout,
