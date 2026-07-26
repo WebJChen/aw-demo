@@ -41,13 +41,22 @@ jobs:
             echo "Missing GitHub repository variable or secret: AW_API_BASE_URL"
             exit 1
           fi
+          if [[ "$CLOUD_API_BASE_URL" != http* ]]; then
+            echo "AW_API_BASE_URL must be a full https URL, got: $CLOUD_API_BASE_URL"
+            exit 1
+          fi
+          if [[ "$CLOUD_API_BASE_URL" != */api ]]; then
+            echo "AW_API_BASE_URL missing /api suffix, auto-normalizing"
+            CLOUD_API_BASE_URL="${CLOUD_API_BASE_URL%/}/api"
+          fi
+          echo "CLOUD_API_BASE_URL=$CLOUD_API_BASE_URL" >> "$GITHUB_ENV"
 
       - name: Build production bundle
         run: npm run build
         env:
           VITE_USE_API: 'true'
           VITE_USE_LOCAL_JSON_FALLBACK: 'false'
-          VITE_API_BASE_URL: ${{ vars.AW_API_BASE_URL || secrets.AW_API_BASE_URL }}
+          VITE_API_BASE_URL: ${{ env.CLOUD_API_BASE_URL }}
           VITE_APP_BASE: /aw-demo/
 
       - name: Deploy to gh-pages branch

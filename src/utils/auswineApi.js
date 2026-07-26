@@ -3,8 +3,24 @@ import { getAuthToken, persistAuthToken } from '@/utils/authToken'
 const DEFAULT_BASE = '/api'
 let tokenRefreshHandler = persistAuthToken
 
+function normalizeApiBaseUrl(rawBase) {
+  const trimmed = String(rawBase || DEFAULT_BASE).trim().replace(/\/+$/, '')
+  if (!trimmed) return DEFAULT_BASE
+
+  // 本地/相对路径保持 /api，由 vite 代理或同域反代处理
+  if (!/^https?:\/\//i.test(trimmed)) {
+    return trimmed.endsWith('/api') ? trimmed : DEFAULT_BASE
+  }
+
+  // 云后端完整 URL 必须落到 .../api，避免请求 /aw/* 导致 404
+  if (trimmed.endsWith('/api')) {
+    return trimmed
+  }
+  return `${trimmed}/api`
+}
+
 function apiBaseUrl() {
-  return (import.meta.env.VITE_API_BASE_URL || DEFAULT_BASE).replace(/\/$/, '')
+  return normalizeApiBaseUrl(import.meta.env.VITE_API_BASE_URL || DEFAULT_BASE)
 }
 
 function buildUrl(path, params) {
