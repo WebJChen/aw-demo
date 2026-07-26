@@ -66,6 +66,7 @@ const hasMore = ref(false)
 const currentRegionData = ref(null)
 const localSearchKeyword = ref('')
 const appliedSearchKeyword = ref('')
+const localSearchLoading = ref(false)
 const wineryFilterVisit = ref('')
 const wineryFilterTag = ref('')
 const winerySortBy = ref('default')
@@ -584,7 +585,20 @@ const handleSearchTargetFocus = async () => {
   localSearchKeyword.value = ''
   appliedSearchKeyword.value = ''
 
-  const allEntries = buildEntryListForSubNav(currentSubNav.value)
+  let allEntries = buildEntryListForSubNav(currentSubNav.value)
+
+  if (isApiEnabled()) {
+    let guard = 0
+    while (hasMore.value && guard < 200) {
+      const index = findCatalogEntryIndexByHitKey(allEntries, targetHit, buildHitKeyForEntry)
+      if (index >= 0) break
+      guard += 1
+      await syncApiWineryCatalog({ append: true })
+      updateHasMore()
+      allEntries = buildEntryListForSubNav(currentSubNav.value)
+    }
+  }
+
   const targetIndex = findCatalogEntryIndexByHitKey(allEntries, targetHit, buildHitKeyForEntry)
   if (targetIndex < 0) return
 
@@ -670,18 +684,40 @@ const handleSubNavClick = (subItem) => {
   })
 }
 
-const applyLocalSearch = () => {
+const applyLocalSearch = async () => {
   appliedSearchKeyword.value = localSearchKeyword.value.trim()
+  if (isApiEnabled() && appliedSearchKeyword.value) {
+    let guard = 0
+    while (hasMore.value && guard < 200) {
+      const rows = buildEntryListForSubNav(currentSubNav.value)
+      const matched = rows.some((entry) => matchesWineryKeyword(entry.data, appliedSearchKeyword.value))
+      if (matched) break
+      guard += 1
+      await syncApiWineryCatalog({ append: true })
+      updateHasMore()
+    }
+  }
   resetRenderLimit()
   nextTick(() => {
     updateHasMore()
     initLoadMoreObserver()
     scheduleUpdateScrollPage()
   })
+
+  if (!appliedSearchKeyword.value) return
+
+  await nextTick()
+  const matchedEntry = dataList.value.find((entry) => matchesWineryKeyword(entry.data, appliedSearchKeyword.value))
+  if (!matchedEntry) return
+  const hitKey = buildHitKeyForEntry(matchedEntry)
+  const targetEl = await waitForSearchTargetReady(hitKey)
+  if (!targetEl) return
+  targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' })
+  await playSearchHitHighlight(targetEl)
 }
 
 const executeSearch = async () => {
-  applyLocalSearch()
+  await applyLocalSearch()
 }
 
 const onSearchClear = () => {
@@ -850,6 +886,7 @@ onUnmounted(() => {
 <template>
   <CatalogGridShell ref="shellRef" variant="winery" :sub-nav-items="subNavList" :active-sub-nav="activeSubNavLabel"
     :sub-nav-disabled-map="subNavDisabledMap" :toolbar-before-sub-nav="isTasmaniaWineryLayoutTest"
+    :loading="wineryCatalogLoading || localSearchLoading"
     :show-grid="filteredDataTotal > 0" :has-more="hasMore" :show-pagination="filteredDataTotal > 0"
     :scroll-page="scrollPage" :total-pages="totalPages" @sub-nav-select="handleSubNavClick">
     <template #filter>
@@ -862,7 +899,7 @@ onUnmounted(() => {
             </el-icon>
           </template>
           <template #append>
-            <el-button type="primary" class="wine-filter-submit" @click="executeSearch">搜索</el-button>
+            <el-button type="primary" class="wine-filter-submit" :loading="localSearchLoading" @click="executeSearch">搜索</el-button>
           </template>
         </el-input>
         <el-select v-model="wineryFilterVisit" class="wine-filter-select" size="large" clearable placeholder="参观方式">

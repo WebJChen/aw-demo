@@ -47,6 +47,14 @@ defineProps({
   toolbarBeforeSubNav: {
     type: Boolean,
     default: false
+  },
+  loading: {
+    type: Boolean,
+    default: false
+  },
+  loadingText: {
+    type: String,
+    default: '加载中...'
   }
 })
 
@@ -88,6 +96,8 @@ defineExpose({
       ref="gridRef"
       class="info-list"
       :class="`info-list--${variant}`"
+      v-loading="loading"
+      :element-loading-text="loadingText"
     >
       <slot name="leading" />
       <slot name="items" />

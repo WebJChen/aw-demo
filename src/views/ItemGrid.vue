@@ -34,7 +34,6 @@ import {
 } from '@/utils/searchUtils'
 import { WINERY_DEFAULT_SUB_NAV } from '@/utils/wineryRouteUtils'
 import { buildCatalogHitKey, findCatalogEntryIndexByHitKey } from '@/utils/catalogHitKey'
-import { withRandomLoading } from '@/utils/loadingUtils'
 import { resolveItemGridImageUrl } from '@/utils/itemImageResolver'
 import { buildWineDisplay } from '@/utils/wineGridExtras'
 /** 【样式测试·可删】见 @/utils/tasmaniaGridStyleTestThumbs.js；正式环境移除该 import 与本页 isTasmaniaGridStyleTestThumb、gridItemThumbSrc、相关 class/样式 */
@@ -512,7 +511,7 @@ const resetWineGridFilters = () => {
 const executeWineSearch = async () => {
   const target = buildSearchResultsRoute(localWineSearchKeyword.value, SEARCH_SOURCE_WINE)
   if (!target) return
-  await withRandomLoading(() => router.push(target), { min: 80, max: 300 })
+  await router.push(target)
 }
 
 const onWineSearchClear = () => {
@@ -876,6 +875,17 @@ const handleSearchTargetFocus = async () => {
 
   resetWineGridFilters()
 
+  if (isApiEnabled()) {
+    let guard = 0
+    while (hasMore.value && guard < 200) {
+      const index = findCatalogEntryIndexByHitKey(dataList.value, targetHit, buildHitKeyForEntry)
+      if (index >= 0) break
+      guard += 1
+      await syncApiWineCatalog({ append: true })
+      updateHasMore()
+    }
+  }
+
   const targetIndex = findCatalogEntryIndexByHitKey(dataList.value, targetHit, buildHitKeyForEntry)
   if (targetIndex < 0) return
 
@@ -1042,6 +1052,7 @@ onUnmounted(() => {
     :sub-nav-items="subNavList"
     :active-sub-nav="activeSubNav"
     :sub-nav-disabled-map="subNavDisabledMap"
+    :loading="wineRegionsLoading"
     :show-grid="filteredWineTotal > 0"
     :has-more="hasMore"
     :show-pagination="filteredWineTotal > 0"

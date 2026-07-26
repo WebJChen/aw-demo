@@ -11,7 +11,6 @@ import {
   SEARCH_SOURCE_ITEM,
 } from '@/utils/searchUtils'
 import { searchCatalog, SEARCH_PAGE_SIZE } from '@/utils/searchService'
-import { withRandomLoading } from '@/utils/loadingUtils'
 import { showApiError } from '@/utils/apiFeedback'
 
 const route = useRoute()
@@ -65,22 +64,24 @@ watch(keyword, (value) => {
 })
 
 watch([keyword, sourceTypeFilter], async () => {
-  await withRandomLoading(async () => {
-    pageLoading.value = true
-    currentPage.value = 1
+  pageLoading.value = true
+  currentPage.value = 1
+  try {
     await performSearch(keyword.value, 1)
-  }, { min: 80, max: 300 })
-  pageLoading.value = false
+  } finally {
+    pageLoading.value = false
+  }
 }, { immediate: true })
 
 const handlePageChange = async (page) => {
   if (page === currentPage.value) return
-  await withRandomLoading(async () => {
-    pageLoading.value = true
-    currentPage.value = page
+  pageLoading.value = true
+  currentPage.value = page
+  try {
     await performSearch(keyword.value, page)
-  }, { min: 80, max: 300 })
-  pageLoading.value = false
+  } finally {
+    pageLoading.value = false
+  }
 }
 
 const submitSearch = async () => {
@@ -221,7 +222,7 @@ const openResult = (result) => {
         </article>
       </div>
 
-      <div v-else class="empty-state">
+      <div v-else-if="!pageLoading" class="empty-state">
         <p>未找到匹配的内容，可以尝试更换关键词。</p>
       </div>
 
