@@ -2,49 +2,20 @@
 
 
 
-> 版本：2026-07 · 适用项目：`auswine-demo` + `auswine-backend`
-
-
+> 版本：2026-07-27 · 适用项目：`auswine-demo` + `auswine-backend`
 
 ## 进度（2026-07 更新）
 
-
-
 | 模块 | 状态 |
-
 |------|------|
-
 | 前端 API 层（`auswineApi.js`） | ✅ |
-
+| gh-pages **云 API**（`AW_API_BASE_URL`） | ✅ |
 | `catalogRepository` 双模式 | ✅ |
-
-| `ItemGrid` API 分页 | ✅ |
-
-| 搜索 index 按州分片 | ✅ |
-
-| 去除全量 `item.json`/`wine.json` 运行时依赖 | ✅ |
-
-| gh-pages fallback（tasmania + search 分片） | ✅ |
-
-| `auswine-backend` 基础脚手架 | ✅ |
-
-| MySQL 表 + JSON Import | ✅ |
-
-| Catalog API（nav / wines / wineries / search / 详情） | ✅ |
-
-| Auth API（login / register / session / logout） | ✅ |
-
-| Cart API（GET/PUT `/api/aw/cart`） | ✅ |
-
-| Order API（POST/GET `/api/aw/orders`） | ✅ |
-
-| 前端 cart / order / 登录对接 | ✅ |
-
-| `WineryPreviewView` API 分页 | ✅ |
-
-| `WineryDetailView` / 经典酒款 API | ✅ |
-
-| `CategoryDetailPanel` 酒庄 API | ✅ |
+| `ItemGrid` / `WineryPreviewView` API 分页 + loading | ✅ |
+| 搜索定位自动预加载分页 | ✅ |
+| 跨域 JWT（`localStorage` + `token` 头） | ✅ |
+| Auth / Cart / Order API | ✅ |
+| `auswine-backend` Docker + Render | ✅ |
 
 
 
@@ -56,12 +27,9 @@
 
 
 
-- 开发环境（`npm run dev`）：**无条件**走 `/api/aw/*`，不读 split/fallback 业务数据
-
-- gh-pages：`VITE_USE_LOCAL_JSON_FALLBACK=true` → fallback 快照，不走 API
-
-- 正式生产：`VITE_USE_API=true` 且非 fallback
-
+- 开发环境（`npm run dev`）：**无条件**走 `/api/aw/*`
+- gh-pages（2026-07 起）：`VITE_USE_API=true` + GitHub 变量 `AW_API_BASE_URL`（须含 `/api`），**走云 API**
+- `VITE_USE_LOCAL_JSON_FALLBACK=false`：不再依赖静态 fallback 读业务数据
 - 全国数据量：按州加载、搜索分片、API 分页
 
 
@@ -74,15 +42,12 @@
 
 
 
-| 变量 | 开发联调 (`npm run dev`) | gh-pages | 正式生产 |
-
-|------|----------|----------|----------|
-
-| `VITE_USE_API` | 忽略（DEV 强制 API） | `false` | `true` |
-
-| `VITE_API_BASE_URL` | `/api` | `/api` | `/api` |
-
-| `VITE_USE_LOCAL_JSON_FALLBACK` | `false` | `true` | `false` |
+| 变量 | 开发联调 | gh-pages | 说明 |
+|------|----------|----------|------|
+| `VITE_USE_API` | DEV 强制 true | `true`（Actions 注入） | 请求云 / 本地 API |
+| `VITE_API_BASE_URL` | `/api` | `AW_API_BASE_URL` 完整 URL | 必须 `https://.../api` |
+| `VITE_USE_LOCAL_JSON_FALLBACK` | `false` | `false` | 已关闭 JSON 兜底 |
+| `VITE_APP_BASE` | `/aw-demo/` | `/aw-demo/` | gh-pages 子路径 |
 
 
 
@@ -102,11 +67,18 @@
 
 | `AW_IMPORT_WINE_JSON_PATH` | 指向 `wine.json` |
 
-| `AW_CORS_ALLOWED_ORIGINS` | 前端 origin |
+| `AW_CORS_ALLOWED_ORIGINS` | 前端 origin，如 `https://webjchen.github.io` |
 
+## 3. gh-pages 云部署清单
 
+1. Render 部署 `auswine-backend`，健康检查 `/api/common/ping`
+2. GitHub 仓库 Variables：`AW_API_BASE_URL=https://<host>.onrender.com/api`
+3. 后端 `AW_CORS_ALLOWED_ORIGINS` 包含 `https://webjchen.github.io`
+4. 推 `main`，Actions 构建并发布 `gh-pages`
 
-## 3. 前端分层
+数据维护见 [../DATA-MAINTENANCE.md](../DATA-MAINTENANCE.md)。
+
+## 4. 前端分层
 
 
 
@@ -120,7 +92,7 @@ Views → catalogRepository / cartService / orderService → auswineApi → back
 
 
 
-## 4. API 契约
+## 5. API 契约
 
 
 
@@ -192,7 +164,7 @@ GET  /api/aw/orders/{orderNo}
 
 
 
-## 5. 数据流水线
+## 6. 数据流水线
 
 
 
@@ -218,7 +190,7 @@ npm run data:sync
 
 
 
-## 6. 规模化策略
+## 7. 规模化策略
 
 
 
@@ -252,7 +224,7 @@ npm run data:sync
 
 
 
-## 7. 本地开发
+## 8. 本地开发
 
 
 
@@ -272,14 +244,16 @@ cd auswine-demo && npm run dev
 
 
 
-> 当前策略：`npm run dev` 下 `import.meta.env.DEV` 会强制 API 模式，本地开发按真实后端 + 本地数据库联调。
-> gh-pages 暂时仍然只保留 JSON fallback，不依赖云后端和服务器。
-> 登录后的头部展示优先使用 `displayName`，再回退到 `username`，最后才是 `userId`。
-> 登录/注册后如果购物车同步失败，不阻断主流程，避免成功后又闪一下错误提示。
+> 当前策略：`npm run dev` 强制 API 模式。**gh-pages 同样走云 API**（2026-07 起）。
+> 登录后的头部展示优先使用 `displayName`，再回退到 `username`。
 
 
-## 8. 常见联调问题
+## 9. 常见联调问题
 
+
+### gh-pages 显示「接口不存在」
+
+通常是 `AW_API_BASE_URL` 少了 `/api` 后缀，请求到了 `https://host/aw/nav` 而非 `https://host/api/aw/nav`。前端 `normalizeApiBaseUrl()` 与 Actions workflow 会自动补 `/api`，变量仍建议写全。
 
 ### 重启后数据库手改 title 被覆盖
 
@@ -319,7 +293,7 @@ cd auswine-demo && npm run dev
 
 
 
-## 9. 后端结构
+## 10. 后端结构
 
 
 
