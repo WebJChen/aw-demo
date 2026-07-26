@@ -6,7 +6,9 @@ import {
   loginAccount,
   logoutAccount,
   registerAccount,
+  registerTokenRefreshHandler,
 } from '@/utils/auswineApi'
+import { clearAuthToken, getAuthToken, persistAuthToken } from '@/utils/authToken'
 import { useCartStore } from '@/stores/cartStore'
 
 /** 登录：API 模式走 /auth/*；否则本地模拟 */
@@ -18,20 +20,30 @@ export const useUserStore = defineStore(
     const username = ref('')
     const displayName = ref('')
 
-    const applySession = (session) => {
+    const applySession = (session, { keepToken = false } = {}) => {
       if (session?.userId != null) {
         loggedIn.value = true
         userId.value = String(session.userId)
         username.value = String(session.username || session.userId || '')
         displayName.value = String(session.displayName || session.display_name || session.username || session.userId || '')
+        if (session.token) {
+          persistAuthToken(session.token)
+        } else if (!keepToken) {
+          persistAuthToken(getAuthToken())
+        }
         return true
       }
       loggedIn.value = false
       userId.value = ''
       username.value = ''
       displayName.value = ''
+      if (!keepToken) {
+        clearAuthToken()
+      }
       return false
     }
+
+    registerTokenRefreshHandler(persistAuthToken)
 
     const loginDemo = () => {
       if (!userId.value) {
@@ -83,13 +95,18 @@ export const useUserStore = defineStore(
       userId.value = ''
       username.value = ''
       displayName.value = ''
+      clearAuthToken()
     }
 
     const restoreSession = async () => {
       if (!isApiEnabled()) return false
+      if (!getAuthToken()) {
+        applySession(null)
+        return false
+      }
       try {
         const data = await fetchAuthSession()
-        const ok = applySession(data)
+        const ok = applySession(data, { keepToken: true })
         if (ok) {
           await useCartStore().loadFromRemote()
         }

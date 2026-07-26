@@ -1,5 +1,7 @@
+import { getAuthToken, persistAuthToken } from '@/utils/authToken'
+
 const DEFAULT_BASE = '/api'
-let tokenRefreshHandler = null
+let tokenRefreshHandler = persistAuthToken
 
 function apiBaseUrl() {
   return (import.meta.env.VITE_API_BASE_URL || DEFAULT_BASE).replace(/\/$/, '')
@@ -70,11 +72,12 @@ async function parseResponse(response) {
   return payload.data
 }
 
-async function requestJson(path, { params, method = 'GET', body, token } = {}) {
+async function requestJson(path, { params, method = 'GET', body, token, skipAuth = false } = {}) {
+  const resolvedToken = skipAuth ? '' : (token ?? getAuthToken())
   try {
     const response = await fetch(buildUrl(path, params), {
       method,
-      headers: buildHeaders(token, body !== undefined),
+      headers: buildHeaders(resolvedToken, body !== undefined),
       credentials: 'include',
       body: body === undefined ? undefined : JSON.stringify(body),
     })
@@ -196,14 +199,15 @@ export async function fetchCatalogFacets({ state } = {}) {
   })
 }
 
-export async function fetchAuthSession() {
-  return requestJson('/auth/session')
+export async function fetchAuthSession(token = getAuthToken()) {
+  return requestJson('/auth/session', { token })
 }
 
 export async function loginAccount(username, password) {
   return requestJson('/auth/login', {
     method: 'POST',
     body: { username, password },
+    skipAuth: true,
   })
 }
 
@@ -211,6 +215,7 @@ export async function registerAccount(payload) {
   return requestJson('/auth/register', {
     method: 'POST',
     body: payload,
+    skipAuth: true,
   })
 }
 
@@ -220,33 +225,30 @@ export async function logoutAccount() {
   })
 }
 
-export async function fetchCart(token) {
-  return requestJson('/aw/cart', { token })
+export async function fetchCart() {
+  return requestJson('/aw/cart')
 }
 
-export async function saveCart(items, token) {
+export async function saveCart(items) {
   return requestJson('/aw/cart', {
     method: 'PUT',
     body: { items: Array.isArray(items) ? items : [] },
-    token,
   })
 }
 
-export async function createOrder(payload, token) {
+export async function createOrder(payload) {
   return requestJson('/aw/orders', {
     method: 'POST',
     body: payload,
-    token,
   })
 }
 
-export async function fetchOrders(token, { pageNum = 1, pageSize = 20 } = {}) {
+export async function fetchOrders({ pageNum = 1, pageSize = 20 } = {}) {
   return requestJson('/aw/orders', {
-    token,
     params: { pageNum, pageSize },
   })
 }
 
-export async function fetchOrderDetail(orderNo, token) {
-  return requestJson(`/aw/orders/${orderNo}`, { token })
+export async function fetchOrderDetail(orderNo) {
+  return requestJson(`/aw/orders/${orderNo}`)
 }
