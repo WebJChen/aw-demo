@@ -1,0 +1,1 @@
+import{_ as t,d as e,y as s}from"./index-C8lU8BqK.js";const c={},o={class:"box"};function _(a,n){return s(),e("div",o,"test text")}const d=t(c,[["render",_],["__scopeId","data-v-ba278378"]]);export{d as default};
