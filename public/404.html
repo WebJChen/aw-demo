@@ -5,17 +5,19 @@
   <meta charset="utf-8" />
   <title>Redirecting...</title>
   <script>
-    // GitHub Pages SPA fallback:
-    // /aw-demo/test -> /aw-demo/?/test
+    // GitHub Pages SPA fallback（必须是 ?/path，不能是 ?path）：
+    // /aw-demo/winery/tasmania/wineries/key -> /aw-demo/?/winery/tasmania/wineries/key
     (function () {
       var l = window.location;
       var repoBase = "/aw-demo/";
-      var path = l.pathname;
-      var normalized = path.indexOf(repoBase) === 0 ? path.slice(repoBase.length - 1) : path;
+      var path = l.pathname || "/";
+      var rest = path.indexOf(repoBase) === 0
+        ? path.slice(repoBase.length)
+        : path.replace(/^\//, "");
       var target =
         repoBase +
-        "?" +
-        normalized.slice(1).replace(/&/g, "~and~") +
+        "?/" +
+        rest.replace(/&/g, "~and~") +
         (l.search ? "&" + l.search.slice(1).replace(/&/g, "~and~") : "") +
         l.hash;
       l.replace(target);
