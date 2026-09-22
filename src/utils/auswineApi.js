@@ -196,6 +196,14 @@ export async function fetchWineryDetail(wineryId) {
   return requestJson(`/aw/wineries/${wineryId}`)
 }
 
+export async function fetchWineryDetailByKey(itemKey) {
+  const key = encodeURIComponent(String(itemKey || '').trim())
+  if (!key) {
+    throw new ApiError('无效的酒庄 key', { status: 400 })
+  }
+  return requestJson(`/aw/wineries/by-key/${key}`)
+}
+
 export async function fetchWineryWines(wineryId, { pageNum = 1, pageSize = 24 } = {}) {
   return requestJson(`/aw/wineries/${wineryId}/wines`, {
     params: { pageNum, pageSize },

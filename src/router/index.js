@@ -1,4 +1,5 @@
-import { createRouter, createWebHashHistory } from "vue-router"
+import { applyPrivatePageSeo } from "@/utils/pageSeo"
+import { createRouter, createWebHistory } from "vue-router"
 
 import {
   getNavDataSync,
@@ -11,6 +12,7 @@ import {
 	isLegacyWineRegionRouteName,
 	resolveWineSubNavPath
 } from "@/utils/wineGridRoute"
+import { buildWineryItemKey } from "@/utils/wineryItemKey"
 
 const navData = getNavDataSync()
 
@@ -148,6 +150,38 @@ const routes = [
 
 						path: 'winery/:regionPath/:subNav/item/:itemIndex',
 
+						redirect: (to) => ({
+
+							name: 'WineryDetail',
+
+							params: {
+
+								regionPath: to.params.regionPath,
+
+								subNav: to.params.subNav,
+
+								itemKey: buildWineryItemKey(
+
+									to.params.regionPath,
+
+									to.params.subNav,
+
+									to.params.itemIndex
+
+								)
+
+							},
+
+							query: to.query
+
+						})
+
+					},
+
+					{
+
+						path: 'winery/:regionPath/:subNav/:itemKey',
+
 						name: 'WineryDetail',
 
 						component: () => import("@/views/WineryDetailView.vue")
@@ -214,7 +248,7 @@ const routes = [
 
 const router = createRouter({
 
-	history: createWebHashHistory(import.meta.env.BASE_URL),
+	history: createWebHistory(import.meta.env.BASE_URL),
 
 	routes
 
@@ -288,15 +322,19 @@ const buildRestoreTargetFromLastRoute = (lastRoute, persisted) => {
 
 		const itemSubNav = itemSubNavRaw === 'wine' ? 'wineries' : itemSubNavRaw
 
-		const itemIndex = String(params.itemIndex ?? '').trim()
+		const itemKey = String(params.itemKey ?? '').trim()
 
-		if (!itemIndex) return null
+			|| (String(params.itemIndex ?? '').trim()
+				? buildWineryItemKey(regionPath, itemSubNav, params.itemIndex)
+				: '')
+
+		if (!itemKey) return null
 
 		return {
 
 			name: 'WineryDetail',
 
-			params: { regionPath, subNav: itemSubNav, itemIndex }
+			params: { regionPath, subNav: itemSubNav, itemKey }
 
 		}
 
@@ -414,7 +452,35 @@ router.beforeEach((to, _from, next) => {
 
 })
 
+const PRIVATE_SEO_BY_NAME = {
+	SearchResults: {
+		title: '搜索',
+		description: '搜索酒庄或酒款。搜索结果页不对外开放收录。',
+	},
+	Cart: {
+		title: '购物车',
+		description: '购物车为登录用户私有页面，不对外开放收录。',
+	},
+	Checkout: {
+		title: '订单结算',
+		description: '订单结算为私有流程，不对外开放收录。',
+	},
+	OrderList: {
+		title: '我的订单',
+		description: '订单列表为登录用户私有页面，不对外开放收录。',
+	},
+	OrderDetail: {
+		title: '订单详情',
+		description: '订单详情为私有页面，不对外开放收录。',
+	},
+}
 
+router.afterEach((to) => {
+	const privateSeo = PRIVATE_SEO_BY_NAME[to.name]
+	if (privateSeo) {
+		applyPrivatePageSeo(privateSeo.title, privateSeo.description)
+	}
+})
 
 export { catalogRouteNames, WINE_GRID_ROUTE_NAME }
 

@@ -4,6 +4,7 @@ import {
   fetchWineDetail,
   fetchWineryCatalog,
   fetchWineryDetail,
+  fetchWineryDetailByKey,
   fetchWineryWines,
   isApiEnabled,
   isLocalJsonFallbackEnabled,
@@ -19,6 +20,7 @@ import {
 } from '@/utils/dataRepository'
 import { buildWineDisplay, resolveWineCartUnitPrice } from '@/utils/wineGridExtras'
 import { resolveRegionPathFromNavName } from '@/utils/navHelpers'
+import { buildWineryItemKey } from '@/utils/wineryItemKey'
 
 function hasWinerySubNav(region) {
   return (region?.subNavList || []).some((subNav) =>
@@ -63,6 +65,7 @@ export function mapApiCatalogDetailToItemData(dto) {
     ...extra,
     ...detail,
     id: dto.id ?? extra.id,
+    itemKey: dto.itemKey || extra.itemKey || '',
     title: dto.title || extra.title || '',
     enTitle: dto.enTitle ?? extra.enTitle ?? '',
     img: dto.coverUrl ?? dto.cover ?? extra.img,
@@ -86,6 +89,9 @@ export function mapApiWineryRow(dto) {
     subNavName: dto.subNavName || '',
     sourceItemIndex: dto.sourceItemIndex ?? dto.itemIndex ?? 0,
     catalogId: dto.id,
+    itemKey: dto.itemKey
+      || data.itemKey
+      || buildWineryItemKey(dto.statePath || dto.regionPath, dto.subNavPath, dto.sourceItemIndex ?? dto.itemIndex),
   }
 }
 
@@ -448,6 +454,13 @@ export async function loadWineryDetailByIndex(regionPath, subNavPath, itemIndex)
     .find((item) => Number(item?.sourceItemIndex) === idx)
   if (!row?.id) return null
   return fetchWineryDetail(row.id)
+}
+
+export async function loadWineryDetailByKey(itemKey) {
+  if (!isApiEnabled()) return null
+  const key = String(itemKey || '').trim()
+  if (!key) return null
+  return fetchWineryDetailByKey(key)
 }
 
 export async function loadWineryClassicWines(wineryId, { pageSize = 50 } = {}) {

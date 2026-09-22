@@ -10,12 +10,14 @@ import { useNavStore } from '@/stores/navStore'
 import { getAvailableNavRegions, findRegionByPath, getNavDataSync } from '@/utils/navHelpers'
 import { buildWineGridRoute } from '@/utils/wineGridRoute'
 import { buildWineryDetailRouteTarget } from '@/utils/wineryDetailPage'
+import { resolveWineryItemKey } from '@/utils/wineryItemKey'
 import { resolveWinerySubNavPath, WINERY_DEFAULT_SUB_NAV } from '@/utils/wineryRouteUtils'
 import { loadItemRegion, fetchWineryCatalogPage, loadNavCatalog } from '@/utils/catalogRepository'
 import { isApiEnabled } from '@/utils/auswineApi'
 import { withLoading } from '@/utils/loadingUtils'
 import { notifyApiError } from '@/utils/apiFeedback'
 import { useLoadingStore } from '@/stores/loadingStore'
+import { applyPageSeo, applyCatalogListJsonLd, clearCatalogListJsonLd, toAbsoluteUrl } from '@/utils/pageSeo'
 import { resolveItemGridImageUrl } from '@/utils/itemImageResolver'
 import { buildWineryGridDisplay } from '@/utils/wineryGridExtras'
 import {
@@ -125,6 +127,22 @@ const currentSubNav = computed(() => {
 })
 
 const activeSubNavLabel = computed(() => currentSubNav.value?.subNavName || '')
+
+const pageSeoHeading = computed(() => {
+  const region = regionTitle.value || '澳洲'
+  const sub = activeSubNavLabel.value || '酒庄'
+  return `${region} · ${sub}`
+})
+
+const applyWineryListSeo = () => {
+  applyPageSeo({
+    title: pageSeoHeading.value,
+    description: `浏览${regionTitle.value || '澳洲'}酒庄列表（${activeSubNavLabel.value || '酒庄'}），含城镇与参观方式筛选。当前为演示站，暂不对外开放收录。`,
+    noindex: true,
+  })
+}
+
+watch(pageSeoHeading, () => applyWineryListSeo(), { immediate: true })
 
 const getSubNavItems = (subNav) => {
   if (Array.isArray(subNav?.itemData)) return subNav.itemData
@@ -252,7 +270,12 @@ const buildEntryListForSubNav = (subNav) => {
     regionNavName: currentRegionData.value?.navName || '',
     subNavPath: subNav.subNavPath,
     subNavName: subNav.subNavName,
-    sourceItemIndex
+    sourceItemIndex,
+    itemKey: resolveWineryItemKey({
+      regionPath: regionPath.value,
+      subNavPath: subNav.subNavPath,
+      sourceItemIndex,
+    }),
   }))
 }
 
@@ -369,6 +392,26 @@ const gridRows = computed(() =>
       idx
     })
   }))
+)
+
+watch(
+  [pageSeoHeading, gridRows],
+  () => {
+    applyCatalogListJsonLd({
+      name: pageSeoHeading.value,
+      items: gridRows.value.map((row) => ({
+        name: row.data?.title || row.data?.enTitle || '',
+        entry: row.entry,
+      })),
+      itemUrlBuilder: (item) => {
+        const entry = item?.entry
+        if (!entry?.regionPath || !entry?.subNavPath) return ''
+        const key = resolveWineryItemKey(entry)
+        return toAbsoluteUrl(`winery/${entry.regionPath}/${entry.subNavPath}/${key}`)
+      },
+    })
+  },
+  { immediate: true }
 )
 
 const eachPageCount = computed(() => {
@@ -502,9 +545,9 @@ const goBackToWineGrid = () => {
 const openWineryDetailInNewWindow = (entry) => {
   const rp = entry?.regionPath || regionPath.value
   const sp = entry?.subNavPath || currentSubNav.value?.subNavPath
-  const idx = entry?.sourceItemIndex
-  if (!rp || !sp || idx == null) return
-  const href = router.resolve(buildWineryDetailRouteTarget(rp, sp, idx)).href
+  const key = resolveWineryItemKey(entry)
+  if (!rp || !sp || !key) return
+  const href = router.resolve(buildWineryDetailRouteTarget(rp, sp, key)).href
   window.open(href, '_blank', 'noopener,noreferrer')
 }
 
@@ -906,6 +949,7 @@ onUnmounted(() => {
   }
   deviceStore.stopListen()
   window.removeEventListener('scroll', handleWindowScroll)
+  clearCatalogListJsonLd()
 })
 </script>
 
@@ -916,6 +960,7 @@ onUnmounted(() => {
     :show-grid="showWineryGrid" :has-more="hasMore" :show-pagination="filteredDataTotal > 0"
     :scroll-page="scrollPage" :total-pages="totalPages" @sub-nav-select="handleSubNavClick">
     <template #filter>
+      <h1 class="aw-seo-title">{{ pageSeoHeading }}</h1>
       <div class="wine-filter-toolbar wine-filter-toolbar--winery">
         <el-input v-model="localSearchKeyword" class="wine-filter-search" size="large" clearable
           placeholder="搜索酒庄名称、简介、标签…" @keyup.enter="executeSearch" @clear="onSearchClear">
@@ -996,7 +1041,7 @@ onUnmounted(() => {
         <div class="info-item pointer" :data-title="row.data.title" :data-hit-key="buildHitKeyForEntry(row.entry)"
           @click="openWineryDetailInNewWindow(row.entry)">
           <div class="info-img-wrap bgfff">
-            <img :src="resolveItemGridImageUrl(row.data)" :alt="row.data.title" class="w100"
+            <img :src="resolveItemGridImageUrl(row.data)" :alt="`${row.data.title}${row.display?.visitLabel ? `，${row.display.visitLabel}` : ''}`" class="w100"
               :loading="getImageLoading(row.idx)" decoding="async" :fetchpriority="getImageFetchPriority(row.idx)">
           </div>
           <div class="info-title fs16" :title="row.data.title">{{ row.data.title }}</div>

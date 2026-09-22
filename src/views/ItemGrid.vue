@@ -19,6 +19,7 @@ import {
   fetchWineCatalogPage,
 } from '@/utils/catalogRepository'
 import { isApiEnabled } from '@/utils/auswineApi'
+import { applyPageSeo, applyCatalogListJsonLd, clearCatalogListJsonLd } from '@/utils/pageSeo'
 import { withLoading } from '@/utils/loadingUtils'
 import { notifyApiError } from '@/utils/apiFeedback'
 import { useLoadingStore } from '@/stores/loadingStore'
@@ -222,6 +223,21 @@ const currentSubNav = computed(() => {
   const byStore = enabledSubNavs.value.find((subNav) => subNav.subNavName === activeSubNav.value)
   return byStore || enabledSubNavs.value[0] || allSubNavs.value[0]
 })
+
+const pageSeoHeading = computed(() => {
+  const subName = currentSubNav.value?.subNavName || '酒款'
+  return `澳洲葡萄酒 · ${subName}`
+})
+
+const applyWineGridSeo = () => {
+  applyPageSeo({
+    title: pageSeoHeading.value,
+    description: `按州与类别浏览澳洲在售酒款（${currentSubNav.value?.subNavName || '全部'}）。当前为演示站，暂不对外开放收录。`,
+    noindex: true,
+  })
+}
+
+watch(pageSeoHeading, () => applyWineGridSeo(), { immediate: true })
 
 /** 【样式测试·可删】塔斯马尼亚酒款：列表缩略图用 tasGridStyleTestThumbByIndex */
 const isTasmaniaGridEntry = (entry) => entry?.regionPath === 'tasmania'
@@ -520,6 +536,19 @@ const gridRows = computed(() =>
     priceParts: splitIntoGridPriceParts(facet.wine.saleNum, facet.wine.currencySymbol),
     listParts: splitIntoGridPriceParts(facet.wine.listNum, facet.wine.currencySymbol)
   }))
+)
+
+watch(
+  [pageSeoHeading, gridRows],
+  () => {
+    applyCatalogListJsonLd({
+      name: pageSeoHeading.value,
+      items: gridRows.value.map((row) => ({
+        name: row.data?.title || row.data?.enTitle || row.wine?.name || '',
+      })),
+    })
+  },
+  { immediate: true }
 )
 
 const resetWineGridFilters = () => {
@@ -1060,6 +1089,7 @@ onUnmounted(() => {
   deviceStore.stopListen()
   window.removeEventListener('scroll', handleWindowScroll)
   navStore.flushScrollY()
+  clearCatalogListJsonLd()
 })
 </script>
 
@@ -1080,6 +1110,7 @@ onUnmounted(() => {
     @sub-nav-select="handleSubNavClick"
   >
     <template #filter>
+      <h1 class="aw-seo-title">{{ pageSeoHeading }}</h1>
       <div class="wine-filter-toolbar wine-filter-toolbar--wine">
         <el-input v-model="localWineSearchKeyword" class="wine-filter-search" size="large" clearable
           placeholder="搜索酒款名称、产地、标签…" @keyup.enter="executeWineSearch" @clear="onWineSearchClear">
@@ -1133,7 +1164,7 @@ onUnmounted(() => {
             </div>
             <span v-else class="info-img-top-bar-spacer" aria-hidden="true"></span>
           </div>
-          <img :src="gridItemThumbSrc(row)" :alt="row.data.title" class="w100" :loading="getImageLoading(row.idx)"
+          <img :src="gridItemThumbSrc(row)" :alt="`${row.data.title}${row.wine.origin ? `，${row.wine.origin}` : ''}${row.wine.vintage ? ` ${row.wine.vintage}` : ''}`" class="w100" :loading="getImageLoading(row.idx)"
             decoding="async" :fetchpriority="getImageFetchPriority(row.idx)">
         </div>
         <div class="info-title fs16" :title="row.data.title">{{ row.data.title }}</div>

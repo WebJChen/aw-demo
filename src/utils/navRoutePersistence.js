@@ -18,8 +18,8 @@ export function attachNavRoutePersistence(router, catalogRouteNames) {
       if (typeof to.params.subNav === 'string' && to.params.subNav) {
         params.subNav = to.params.subNav
       }
-      if (to.name === 'WineryDetail' && typeof to.params.itemIndex === 'string' && to.params.itemIndex) {
-        params.itemIndex = to.params.itemIndex
+      if (to.name === 'WineryDetail' && typeof to.params.itemKey === 'string' && to.params.itemKey) {
+        params.itemKey = to.params.itemKey
       }
       const region = findRegionByPath(params.regionPath)
       if (region?.navName) navStore.setActiveNav(region.navName)

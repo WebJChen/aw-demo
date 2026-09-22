@@ -2,12 +2,14 @@ import {
   loadItemRegion,
   loadWineRegion,
   loadWineryDetailByIndex,
+  loadWineryDetailByKey,
   loadNavCatalog,
   mapApiCatalogDetailToItemData,
   loadWineryClassicWines,
 } from '@/utils/catalogRepository'
 import { isApiEnabled } from '@/utils/auswineApi'
 import { buildCatalogHitKey } from '@/utils/catalogHitKey'
+import { buildWineryItemKey, parseCatalogItemKey } from '@/utils/wineryItemKey'
 import { buildWineryGridDisplay } from '@/utils/wineryGridExtras'
 import { buildWineDisplay } from '@/utils/wineGridExtras'
 import { resolveItemDetailImageUrls } from '@/utils/itemImageResolver'
@@ -198,34 +200,56 @@ export function getClassicWineGridClass(device) {
   return 'winery-detail-wines--cols-4'
 }
 
-export async function loadWineryDetailContext(regionPath, subNavPath, itemIndexRaw) {
-  const itemIndex = Number(itemIndexRaw)
-  if (!Number.isInteger(itemIndex) || itemIndex < 0) return null
+export async function loadWineryDetailContext(regionPath, subNavPath, itemKeyRaw) {
+  const parsed = parseCatalogItemKey(itemKeyRaw)
+  const itemKey = parsed?.itemKey || String(itemKeyRaw || '').trim()
+  const itemIndex = parsed?.itemIndex
+  const rp = String(regionPath || parsed?.regionPath || '').trim()
+  const sp = String(subNavPath || parsed?.subNavPath || '').trim()
+  if (!rp || !sp || !itemKey) return null
+  if (parsed && parsed.itemType !== 'winery') return null
 
   if (isApiEnabled()) {
-    const dto = await loadWineryDetailByIndex(regionPath, subNavPath, itemIndex)
+    let dto = null
+    if (itemKey.includes('__')) {
+      try {
+        dto = await loadWineryDetailByKey(itemKey)
+      } catch {
+        dto = null
+      }
+    }
+    if (!dto && Number.isInteger(itemIndex)) {
+      dto = await loadWineryDetailByIndex(rp, sp, itemIndex)
+    }
     if (!dto) return null
     const item = mapApiCatalogDetailToItemData(dto)
     const nav = await loadNavCatalog({ catalogType: 'item' })
-    const region = nav.find((row) => row?.path === regionPath)
-    const subNav = region?.subNavList?.find((row) => row?.subNavPath === subNavPath)
+    const resolvedRegionPath = dto.statePath || rp
+    const resolvedSubNavPath = dto.subNavPath || sp
+    const region = nav.find((row) => row?.path === resolvedRegionPath) || nav.find((row) => row?.path === rp)
+    const subNav = region?.subNavList?.find((row) => row?.subNavPath === resolvedSubNavPath)
+      || region?.subNavList?.find((row) => row?.subNavPath === sp)
     if (!item || !region || !subNav) return null
+    const resolvedIndex = Number(dto.sourceItemIndex)
     return {
       region,
       subNav,
       item,
-      itemIndex,
-      regionPath,
-      subNavPath,
+      itemIndex: Number.isInteger(resolvedIndex) ? resolvedIndex : itemIndex,
+      itemKey: dto.itemKey || itemKey,
+      regionPath: resolvedRegionPath,
+      subNavPath: resolvedSubNavPath,
       regionNavName: region.navName || '',
       subNavName: subNav.subNavName || '',
     }
   }
 
-  const region = await loadItemRegion(regionPath)
+  if (!Number.isInteger(itemIndex) || itemIndex < 0) return null
+
+  const region = await loadItemRegion(rp)
   if (!region) return null
 
-  const subNav = (region.subNavList || []).find((nav) => nav.subNavPath === subNavPath)
+  const subNav = (region.subNavList || []).find((nav) => nav.subNavPath === sp)
   if (!subNav) return null
 
   const items = Array.isArray(subNav.itemData)
@@ -241,8 +265,9 @@ export async function loadWineryDetailContext(regionPath, subNavPath, itemIndexR
     subNav,
     item,
     itemIndex,
-    regionPath,
-    subNavPath,
+    itemKey,
+    regionPath: rp,
+    subNavPath: sp,
     regionNavName: region.navName || '',
     subNavName: subNav.subNavName || ''
   }
@@ -427,13 +452,17 @@ export function buildWineHitKey(regionPath, subNavPath, sourceItemIndex, wineIte
   return buildCatalogHitKey('wine', regionPath, subNavPath, wineItem, sourceItemIndex)
 }
 
-export function buildWineryDetailRouteTarget(regionPath, subNavPath, itemIndex) {
+export function buildWineryDetailRouteTarget(regionPath, subNavPath, itemKeyOrIndex) {
+  const raw = String(itemKeyOrIndex ?? '').trim()
+  const itemKey = raw.includes('__')
+    ? raw
+    : buildWineryItemKey(regionPath, subNavPath, itemKeyOrIndex)
   return {
     name: 'WineryDetail',
     params: {
       regionPath,
       subNav: subNavPath,
-      itemIndex: String(itemIndex)
+      itemKey
     }
   }
 }

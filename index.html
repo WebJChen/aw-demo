@@ -1,23 +1,42 @@
 <!doctype html>
-<html lang="en">
+<html lang="zh-CN">
 
 <head>
   <meta charset="UTF-8" />
-  <!-- <link rel="icon" type="image/svg+xml" href="/vite.svg" /> -->
+  <link rel="icon" type="image/png" href="og-default.png" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AusWine · 澳洲葡萄酒与酒庄目录</title>
+  <meta name="description" content="浏览澳大利亚各州酒庄与酒款，含产区、城镇、品鉴说明与在售酒款。当前为 gh-pages 演示站，暂不对外开放收录。" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta property="og:title" content="AusWine · 澳洲葡萄酒与酒庄目录" />
+  <meta property="og:description" content="浏览澳大利亚各州酒庄与酒款。当前为演示站，暂不对外开放收录。" />
+  <meta property="og:type" content="website" />
+  <meta property="og:locale" content="zh_CN" />
+  <meta property="og:site_name" content="AusWine" />
+  <meta property="og:image" content="/aw-demo/og-default.png" />
+  <meta property="og:url" content="https://webjchen.github.io/aw-demo/" />
   <script>
-    // GitHub Pages SPA fallback:
-    // /aw-demo/?/test -> /aw-demo/test
-    (function (l) {
-      if (l.search[1] === "/") {
-        var decoded = l.search
-          .slice(1)
-          .replace(/~and~/g, "&");
-        window.history.replaceState(null, null, l.pathname.slice(0, -1) + decoded + l.hash);
+    // GitHub Pages：History 模式仍可部署。
+    // 1) 旧 Hash 书签 /aw-demo/#/wine/... -> /aw-demo/wine/...
+    // 2) 刷新 404：/aw-demo/?/wine/... -> /aw-demo/wine/...
+    (function () {
+      var l = window.location;
+      var repoBase = "/aw-demo/";
+      if (l.hash && l.hash.indexOf("#/") === 0) {
+        var body = l.hash.slice(1);
+        var qi = body.indexOf("?");
+        var hp = qi >= 0 ? body.slice(0, qi) : body;
+        var hq = qi >= 0 ? body.slice(qi) : "";
+        window.history.replaceState(null, "", repoBase.replace(/\/$/, "") + hp + (hq || l.search || ""));
+        l = window.location;
       }
-    })(window.location);
+      if (l.search[1] === "/") {
+        var decoded = l.search.slice(1).replace(/~and~/g, "&");
+        var prefix = l.pathname.endsWith("/") ? l.pathname.slice(0, -1) : l.pathname;
+        window.history.replaceState(null, "", prefix + decoded);
+      }
+    })();
   </script>
-  <title>auswine-demo</title>
 </head>
 
 <body>

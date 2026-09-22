@@ -14,6 +14,7 @@ import { searchCatalog, SEARCH_PAGE_SIZE } from '@/utils/searchService'
 import { notifyApiError } from '@/utils/apiFeedback'
 import { withLoading } from '@/utils/loadingUtils'
 import { useLoadingStore } from '@/stores/loadingStore'
+import { applyPrivatePageSeo } from '@/utils/pageSeo'
 import { storeToRefs } from 'pinia'
 
 const route = useRoute()
@@ -67,6 +68,17 @@ const pagedResults = computed(() => searchRows.value)
 
 watch(keyword, (value) => {
   localKeyword.value = value
+})
+
+watch([keyword, sourceTypeFilter, totalResults, searchScopeLabel], () => {
+  const scope = searchScopeLabel.value
+  const kw = keyword.value
+  applyPrivatePageSeo(
+    kw ? `${scope}：${kw}` : scope,
+    kw
+      ? `“${kw}”的${scope}结果。搜索页不对外开放收录。`
+      : '搜索酒庄或酒款。搜索页不对外开放收录。'
+  )
 })
 
 watch([keyword, sourceTypeFilter], async () => {

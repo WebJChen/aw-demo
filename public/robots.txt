@@ -1,0 +1,8 @@
+# gh-pages 演示站：请勿向 Search Console 提交。
+User-agent: *
+Allow: /
+Disallow: /cart
+Disallow: /checkout
+Disallow: /account/
+Disallow: /search
+Sitemap: https://webjchen.github.io/aw-demo/sitemap.xml

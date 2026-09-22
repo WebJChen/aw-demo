@@ -19,6 +19,7 @@ import {
 import { withLoading } from '@/utils/loadingUtils'
 import { getApiErrorMessage, notifyApiError } from '@/utils/apiFeedback'
 import { useLoadingStore } from '@/stores/loadingStore'
+import { applyPageSeo, applyWineryJsonLd, clearWineryJsonLd, clipSeoText } from '@/utils/pageSeo'
 
 const GRID_PRICE_COLOR = '#a8163c'
 
@@ -39,7 +40,7 @@ const bannerCarouselRef = ref(null)
 
 const regionPath = computed(() => (typeof route.params.regionPath === 'string' ? route.params.regionPath : ''))
 const subNavPath = computed(() => (typeof route.params.subNav === 'string' ? route.params.subNav : ''))
-const itemIndex = computed(() => (typeof route.params.itemIndex === 'string' ? route.params.itemIndex : ''))
+const itemKey = computed(() => (typeof route.params.itemKey === 'string' ? route.params.itemKey : ''))
 
 const classicWineGridClass = computed(() =>
   getClassicWineGridClass({
@@ -82,7 +83,7 @@ const syncDetail = async () => {
 
   try {
     await withLoading(async () => {
-      const ctx = await loadWineryDetailContext(regionPath.value, subNavPath.value, itemIndex.value)
+      const ctx = await loadWineryDetailContext(regionPath.value, subNavPath.value, itemKey.value)
       if (!ctx) {
         loadError.value = '未找到该酒庄，可能链接已失效或数据尚未加载。'
         return
@@ -100,6 +101,25 @@ const syncDetail = async () => {
     loading.value = false
   }
 }
+
+watch(
+  () => [pageModel.value, bannerImages.value[0]],
+  () => {
+    const model = pageModel.value
+    if (!model) return
+    const place = [model.regionLabel, model.townLabel].filter(Boolean).join('，')
+    applyPageSeo({
+      title: `${model.title}${model.enTitle ? `（${model.enTitle}）` : ''}`,
+      description: clipSeoText(
+        model.intro,
+        `${model.title}位于${place || '澳洲'}，${model.wineryType || '酒庄'}。当前为演示站，暂不对外开放收录。`
+      ),
+      image: bannerImages.value[0] || '',
+      noindex: true,
+    })
+    applyWineryJsonLd(model, bannerImages.value[0] || '')
+  }
+)
 
 const goBackToWineryList = () => {
   if (!regionPath.value || !subNavPath.value) return
@@ -146,7 +166,7 @@ const featureIcon = (title) => {
   return Location
 }
 
-watch([regionPath, subNavPath, itemIndex], () => {
+watch([regionPath, subNavPath, itemKey], () => {
   void syncDetail()
 })
 
@@ -157,6 +177,7 @@ onMounted(() => {
 
 onUnmounted(() => {
   deviceStore.stopListen()
+  clearWineryJsonLd()
 })
 </script>
 
@@ -186,7 +207,7 @@ onUnmounted(() => {
             <el-carousel ref="bannerCarouselRef" :interval="0" indicator-position="inside" arrow="hover"
               :height="`${heroHeight}px`">
               <el-carousel-item v-for="(image, index) in bannerImages" :key="index">
-                <img :src="image" :alt="pageModel.title" class="winery-detail-banner-img">
+                <img :src="image" :alt="index === 0 ? `${pageModel.title} 酒庄` : `${pageModel.title} 图片 ${index + 1}`" class="winery-detail-banner-img">
               </el-carousel-item>
             </el-carousel>
           </div>
@@ -417,7 +438,7 @@ onUnmounted(() => {
             <button v-for="(row, idx) in classicWines" :key="`${row.subNavPath}-${idx}-${row.data?.title || idx}`"
               type="button" class="winery-detail-wine-card" @click="openClassicWineWithFocus(row)">
               <div class="winery-detail-wine-thumb">
-                <img :src="resolveWineThumb(row.data)" :alt="row.data?.title" loading="lazy">
+                <img :src="resolveWineThumb(row.data)" :alt="`${row.data?.title || '酒款'}${row.display?.origin ? `，${row.display.origin}` : ''}`" loading="lazy">
               </div>
               <div class="winery-detail-wine-body">
                 <div class="winery-detail-wine-title" :title="row.data?.title">{{ row.data?.title }}</div>
