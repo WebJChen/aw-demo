@@ -11,14 +11,18 @@ import {
   SEARCH_SOURCE_ITEM,
 } from '@/utils/searchUtils'
 import { searchCatalog, SEARCH_PAGE_SIZE } from '@/utils/searchService'
-import { showApiError } from '@/utils/apiFeedback'
+import { notifyApiError } from '@/utils/apiFeedback'
+import { withLoading } from '@/utils/loadingUtils'
+import { useLoadingStore } from '@/stores/loadingStore'
+import { storeToRefs } from 'pinia'
 
 const route = useRoute()
 const router = useRouter()
+const loadingStore = useLoadingStore()
+const { fullscreenLoading } = storeToRefs(loadingStore)
 
 const pageSize = SEARCH_PAGE_SIZE
 const currentPage = ref(1)
-const pageLoading = ref(false)
 const searchRows = ref([])
 const totalResults = ref(0)
 const localKeyword = ref('')
@@ -41,16 +45,18 @@ const performSearch = async (rawKeyword, pageNum = 1) => {
   }
 
   try {
-    const type = sourceTypeFilter.value || 'all'
-    const payload = await searchCatalog(currentKeyword, {
-      type,
-      pageNum,
-      pageSize,
-    })
-    searchRows.value = Array.isArray(payload?.results) ? payload.results : []
-    totalResults.value = Number(payload?.total) || searchRows.value.length
+    await withLoading(async () => {
+      const type = sourceTypeFilter.value || 'all'
+      const payload = await searchCatalog(currentKeyword, {
+        type,
+        pageNum,
+        pageSize,
+      })
+      searchRows.value = Array.isArray(payload?.results) ? payload.results : []
+      totalResults.value = Number(payload?.total) || searchRows.value.length
+    }, { text: '搜索中...' })
   } catch (error) {
-    showApiError(error, '搜索失败，请稍后再试')
+    notifyApiError(error, { action: '搜索', dedupeKey: 'search:results' })
     searchRows.value = []
     totalResults.value = 0
   }
@@ -64,24 +70,14 @@ watch(keyword, (value) => {
 })
 
 watch([keyword, sourceTypeFilter], async () => {
-  pageLoading.value = true
   currentPage.value = 1
-  try {
-    await performSearch(keyword.value, 1)
-  } finally {
-    pageLoading.value = false
-  }
+  await performSearch(keyword.value, 1)
 }, { immediate: true })
 
 const handlePageChange = async (page) => {
   if (page === currentPage.value) return
-  pageLoading.value = true
   currentPage.value = page
-  try {
-    await performSearch(keyword.value, page)
-  } finally {
-    pageLoading.value = false
-  }
+  await performSearch(keyword.value, page)
 }
 
 const submitSearch = async () => {
@@ -162,12 +158,7 @@ const openResult = (result) => {
       </div>
     </div>
 
-    <div
-      class="results-section"
-      v-loading.fullscreen="pageLoading"
-      element-loading-spinner-color="#a8163c"
-      element-loading-background="rgba(255, 255, 255, 0.8)"
-    >
+    <div class="results-section">
       <div v-if="hasResults" class="results-list">
         <article v-for="result in pagedResults" :key="result.id" class="result-card">
           <div class="result-meta">
@@ -222,7 +213,7 @@ const openResult = (result) => {
         </article>
       </div>
 
-      <div v-else-if="!pageLoading" class="empty-state">
+      <div v-else-if="!fullscreenLoading" class="empty-state">
         <p>未找到匹配的内容，可以尝试更换关键词。</p>
       </div>
 

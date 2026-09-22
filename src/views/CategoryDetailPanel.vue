@@ -10,6 +10,7 @@ const WineryItemDialog = defineAsyncComponent(() => import('@/components/dialogs
 import { findRegionByPath, getNavDataSync } from '@/utils/navHelpers'
 import { loadItemRegion, loadNavCatalog, loadRegionNavMeta, fetchWineryCatalogPage } from '@/utils/catalogRepository'
 import { isApiEnabled } from '@/utils/auswineApi'
+import { notifyApiError } from '@/utils/apiFeedback'
 import { buildCatalogHitKey, findCatalogEntryIndexByHitKey } from '@/utils/catalogHitKey'
 
 const isExpanded = ref(false)
@@ -31,7 +32,6 @@ const cartStore = useCartStore()
 const currentRegionData = ref(null)
 const loadedRegionPath = ref('')
 const apiPanelWineries = ref([])
-const apiPanelLoading = ref(false)
 
 onUnmounted(() => {
   clearPanelHitState()
@@ -122,7 +122,6 @@ const syncApiPanelWineries = async (regionPath) => {
     apiPanelWineries.value = []
     return
   }
-  apiPanelLoading.value = true
   try {
     const nav = await loadNavCatalog({ catalogType: 'item' })
     if (regionPath !== currentRegionPath.value) return
@@ -163,8 +162,11 @@ const syncApiPanelWineries = async (regionPath) => {
     if (regionPath === currentRegionPath.value) {
       apiPanelWineries.value = items
     }
-  } finally {
-    apiPanelLoading.value = false
+  } catch (error) {
+    notifyApiError(error, { action: '加载酒庄分类', dedupeKey: 'winery:category-panel' })
+    if (regionPath === currentRegionPath.value) {
+      apiPanelWineries.value = []
+    }
   }
 }
 

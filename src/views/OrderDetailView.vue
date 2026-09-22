@@ -1,5 +1,5 @@
 <script setup>
-import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ArrowLeft } from '@element-plus/icons-vue'
 import { resolveDataImage } from '@/utils/dataImageResolver'
@@ -7,8 +7,9 @@ import { loadMockOrderDetail } from '@/utils/mockOrderStorage'
 import { getStaticDemoOrderByNo } from '@/utils/demoStaticOrders'
 /** 【样式测试·可删】与结算页塔斯缩略图一致；见 tasmaniaGridStyleTestThumbs.js */
 import { tasGridStyleTestThumbByIndex } from '@/utils/tasmaniaGridStyleTestThumbs'
-import { withRandomLoading } from '@/utils/loadingUtils'
 import { getOrderDetail, isRemoteOrderEnabled } from '@/utils/orderService'
+import { withLoading } from '@/utils/loadingUtils'
+import { notifyApiError } from '@/utils/apiFeedback'
 
 const route = useRoute()
 const router = useRouter()
@@ -35,12 +36,14 @@ const loadFromRoute = async () => {
   }
   if (isRemoteOrderEnabled()) {
     try {
-      order.value = await getOrderDetail(no)
-      return
-    } catch {
+      await withLoading(async () => {
+        order.value = await getOrderDetail(no)
+      }, { text: '订单加载中...' })
+    } catch (error) {
+      notifyApiError(error, { action: '加载订单', dedupeKey: 'order:detail' })
       order.value = null
-      return
     }
+    return
   }
   order.value = loadMockOrderDetail(no) ?? getStaticDemoOrderByNo(no)
 }
@@ -74,16 +77,12 @@ watch(
   () => [route.params.orderNo, route.query.fresh, route.query.from],
   async () => {
     syncEntrySourceFlags()
-    loadFromRoute()
+    await loadFromRoute()
     await consumeFreshQuery()
     await consumeOrdersEntryQuery()
   },
   { immediate: true }
 )
-
-onMounted(() => {
-  void withRandomLoading(undefined, { min: 0, max: 400 })
-})
 
 const hasOrder = computed(() => !!(order.value && order.value.orderNo))
 
@@ -150,43 +149,26 @@ const formatMoney = (value) => {
   <div class="order-detail-page" :class="{ 'order-detail-page--pay-snapshot': isPaySnapshotLayout }">
     <header class="order-detail-head">
       <div class="order-detail-head-inner">
-        <div v-if="!entryFromOrders" class="od-top-actions">
+        <div class="od-top-actions">
           <el-button text class="back-link" @click="goOrderList">
             <el-icon>
               <ArrowLeft />
             </el-icon>
             返回订单列表
           </el-button>
-          <el-button
-            v-if="!isPaySnapshotLayout"
-            text
-            class="back-link back-link--minor"
-            @click="goBackCart"
-          >
-            购物车
-          </el-button>
         </div>
         <div class="order-detail-titles">
           <h1>订单详情</h1>
-        <p v-if="hasOrder && order.demoFulfillmentKey">本单为<strong>内置状态演示</strong>数据，不写入本地会话，仅用于界面与进度展示。</p>
-        <p v-else-if="hasOrder && entryFromOrders">来自「我的订单」：以下为当前浏览器内保存的支付快照，便于核对商品与收货信息。</p>
-        <p v-else-if="hasOrder">本页展示模拟支付成功后保存的快照（仅存于当前浏览器会话）。</p>
-        <p v-else>在结算页支付成功后可从结果页点击「查看订单」，或从我的订单列表进入。</p>
+          <p v-if="hasOrder && order.demoFulfillmentKey">本单为<strong>内置状态演示</strong>数据，不写入本地会话，仅用于界面与进度展示。</p>
+          <p v-else-if="hasOrder && !entryFromOrders">本页展示模拟支付成功后保存的快照（仅存于当前浏览器会话）。</p>
+          <p v-else-if="!hasOrder">在结算页支付成功后可从结果页点击「查看订单」，或从我的订单列表进入。</p>
         </div>
       </div>
     </header>
 
     <div v-if="hasOrder" class="order-detail-body">
-      <el-alert
-        v-if="showFreshSnapshotBanner"
-        class="od-fresh-banner"
-        type="success"
-        show-icon
-        :closable="true"
-        title="本次支付已成功"
-        description="此为当次跳转的一次性确认条；快照仍可在「我的订单」中再次查看。"
-        @close="showFreshSnapshotBanner = false"
-      />
+      <el-alert v-if="showFreshSnapshotBanner" class="od-fresh-banner" type="success" show-icon :closable="true"
+        title="本次支付已成功" description="此为当次跳转的一次性确认条；快照仍可在「我的订单」中再次查看。" @close="showFreshSnapshotBanner = false" />
       <section class="od-card od-card--status">
         <span class="od-status-pill od-status-pill--paid">已支付</span>
         <div class="od-kv-grid">
@@ -213,13 +195,11 @@ const formatMoney = (value) => {
         <ul class="od-line-list">
           <li v-for="(line, li) in order.items" :key="line.cartId || li" class="od-line">
             <!-- 【样式测试·可删】塔斯行缩略图；与 CheckoutView paying-thumb 同源逻辑 -->
-            <el-image :src="lineThumbSrc(line)" :alt="line.title"
-              :class="[
-                'od-line-thumb',
-                'bgfff',
-                { 'od-line-thumb--tas': line.regionPath === 'tasmania' && !(typeof line.img === 'string' && line.img.trim()) }
-              ]"
-              :fit="lineThumbFit(line)" />
+            <el-image :src="lineThumbSrc(line)" :alt="line.title" :class="[
+              'od-line-thumb',
+              'bgfff',
+              { 'od-line-thumb--tas': line.regionPath === 'tasmania' && !(typeof line.img === 'string' && line.img.trim()) }
+            ]" :fit="lineThumbFit(line)" />
             <div class="od-line-info">
               <span class="od-line-title" :title="line.title">{{ line.title }}</span>
               <div v-if="line.wineOrigin || line.wineVintage" class="od-line-wine-meta">
@@ -246,7 +226,6 @@ const formatMoney = (value) => {
         <el-button type="primary" @click="goBackCart">继续购物</el-button>
       </footer>
       <footer v-else class="od-footer-actions od-footer-actions--from-list">
-        <p class="od-footer-tip">以上为本地会话内的订单快照，可随时在「我的订单」中再次打开本单。</p>
         <div class="od-footer-btns">
           <el-button type="primary" @click="goOrderList">返回我的订单</el-button>
           <el-button @click="goHome">返回首页逛逛</el-button>
@@ -315,14 +294,6 @@ const formatMoney = (value) => {
 }
 
 .back-link:hover {
-  color: #a8163c;
-}
-
-.back-link--minor {
-  color: #94a3b8;
-}
-
-.back-link--minor:hover {
   color: #a8163c;
 }
 
@@ -537,16 +508,6 @@ const formatMoney = (value) => {
   margin-top: 20px;
 }
 
-.od-footer-tip {
-  margin: 0;
-  font-size: 13px;
-  color: #64748b;
-  line-height: 1.55;
-  width: 100%;
-  text-align: left;
-  align-self: stretch;
-}
-
 .od-footer-btns {
   display: flex;
   flex-wrap: wrap;
@@ -694,10 +655,6 @@ const formatMoney = (value) => {
     gap: 10px;
     padding: 12px 0 6px;
     margin-top: 16px;
-  }
-
-  .od-footer-tip {
-    font-size: 12px;
   }
 
   .order-detail-empty {

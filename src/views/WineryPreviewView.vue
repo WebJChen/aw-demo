@@ -13,6 +13,9 @@ import { buildWineryDetailRouteTarget } from '@/utils/wineryDetailPage'
 import { resolveWinerySubNavPath, WINERY_DEFAULT_SUB_NAV } from '@/utils/wineryRouteUtils'
 import { loadItemRegion, fetchWineryCatalogPage, loadNavCatalog } from '@/utils/catalogRepository'
 import { isApiEnabled } from '@/utils/auswineApi'
+import { withLoading } from '@/utils/loadingUtils'
+import { notifyApiError } from '@/utils/apiFeedback'
+import { useLoadingStore } from '@/stores/loadingStore'
 import { resolveItemGridImageUrl } from '@/utils/itemImageResolver'
 import { buildWineryGridDisplay } from '@/utils/wineryGridExtras'
 import {
@@ -53,6 +56,7 @@ const PLACEHOLDER_TAG_RE = /^tag\d+$/i
 const route = useRoute()
 const router = useRouter()
 const deviceStore = useDeviceStore()
+const loadingStore = useLoadingStore()
 const navStore = useNavStore()
 const { isPhone, isPortrait } = storeToRefs(deviceStore)
 const { activeSubNav } = storeToRefs(navStore)
@@ -344,6 +348,11 @@ const hasActiveWineryFilters = computed(() => {
 const filteredDataTotal = computed(() => (
   isApiEnabled() ? apiWineryTotal.value : dataList.value.length
 ))
+const showWineryGrid = computed(() => filteredDataTotal.value > 0 || wineryCatalogLoading.value)
+const wineryGridLoading = computed(() => {
+  if (loadingStore.fullscreenLoading) return false
+  return wineryCatalogLoading.value || localSearchLoading.value
+})
 const visibleDataList = computed(() => {
   if (isApiEnabled()) return dataList.value
   return dataList.value.slice(0, renderLimit.value)
@@ -391,25 +400,35 @@ const syncApiWineryCatalog = async ({ append = false } = {}) => {
     return
   }
   wineryCatalogLoading.value = true
-  try {
-    const pageNum = append ? apiPageNum.value + 1 : 1
-    const result = await fetchWineryCatalogPage({
-      statePath: path,
-      subNavPath,
-      pageNum,
-      pageSize: RENDER_STEP_COUNT,
-    })
-    if (path !== regionPath.value || subNavPath !== currentSubNav.value?.subNavPath) return
-    apiWineryTotal.value = Number(result?.total) || 0
-    apiPageNum.value = Number(result?.pageNum) || pageNum
-    const items = Array.isArray(result?.items) ? result.items : []
-    apiWineryEntries.value = append ? [...apiWineryEntries.value, ...items] : items
-    if (isApiEnabled()) {
-      renderLimit.value = apiWineryEntries.value.length
+  const run = async () => {
+    try {
+      const pageNum = append ? apiPageNum.value + 1 : 1
+      const result = await fetchWineryCatalogPage({
+        statePath: path,
+        subNavPath,
+        pageNum,
+        pageSize: RENDER_STEP_COUNT,
+      })
+      if (path !== regionPath.value || subNavPath !== currentSubNav.value?.subNavPath) return
+      apiWineryTotal.value = Number(result?.total) || 0
+      apiPageNum.value = Number(result?.pageNum) || pageNum
+      const items = Array.isArray(result?.items) ? result.items : []
+      apiWineryEntries.value = append ? [...apiWineryEntries.value, ...items] : items
+      if (isApiEnabled()) {
+        renderLimit.value = apiWineryEntries.value.length
+      }
+    } catch (error) {
+      notifyApiError(error, { action: '加载酒庄列表', dedupeKey: 'winery:list' })
+      if (!append) {
+        apiWineryEntries.value = []
+        apiWineryTotal.value = 0
+      }
+    } finally {
+      wineryCatalogLoading.value = false
     }
-  } finally {
-    wineryCatalogLoading.value = false
   }
+  if (append) return run()
+  return withLoading(run, { text: '酒庄列表加载中...' })
 }
 
 const loadMoreItems = () => {
@@ -641,16 +660,23 @@ const syncRegionData = async () => {
     apiWineryTotal.value = 0
     return
   }
-  if (isApiEnabled()) {
-    const nav = await loadNavCatalog({ catalogType: 'item' })
-    if (path !== regionPath.value) return
-    currentRegionData.value = nav.find((region) => region?.path === path) || findRegionByPath(path) || null
-    await syncApiWineryCatalog()
-    return
+  const run = async () => {
+    try {
+      if (isApiEnabled()) {
+        const nav = await loadNavCatalog({ catalogType: 'item' })
+        if (path !== regionPath.value) return
+        currentRegionData.value = nav.find((region) => region?.path === path) || findRegionByPath(path) || null
+        await syncApiWineryCatalog()
+        return
+      }
+      const loaded = await loadItemRegion(path)
+      if (path !== regionPath.value) return
+      currentRegionData.value = loaded || findRegionByPath(path) || null
+    } catch (error) {
+      notifyApiError(error, { action: '加载酒庄列表', dedupeKey: 'winery:list' })
+    }
   }
-  const loaded = await loadItemRegion(path)
-  if (path !== regionPath.value) return
-  currentRegionData.value = loaded || findRegionByPath(path) || null
+  return withLoading(run, { text: '酒庄列表加载中...' })
 }
 
 const normalizeSubNavRoute = () => {
@@ -886,8 +912,8 @@ onUnmounted(() => {
 <template>
   <CatalogGridShell ref="shellRef" variant="winery" :sub-nav-items="subNavList" :active-sub-nav="activeSubNavLabel"
     :sub-nav-disabled-map="subNavDisabledMap" :toolbar-before-sub-nav="isTasmaniaWineryLayoutTest"
-    :loading="wineryCatalogLoading || localSearchLoading"
-    :show-grid="filteredDataTotal > 0" :has-more="hasMore" :show-pagination="filteredDataTotal > 0"
+    :loading="wineryGridLoading"
+    :show-grid="showWineryGrid" :has-more="hasMore" :show-pagination="filteredDataTotal > 0"
     :scroll-page="scrollPage" :total-pages="totalPages" @sub-nav-select="handleSubNavClick">
     <template #filter>
       <div class="wine-filter-toolbar wine-filter-toolbar--winery">

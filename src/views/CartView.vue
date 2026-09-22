@@ -10,8 +10,6 @@ import { resolveDataImage } from '@/utils/dataImageResolver'
 import { tasGridStyleTestThumbByIndex } from '@/utils/tasmaniaGridStyleTestThumbs'
 import { saveSearchTarget } from '@/utils/searchUtils'
 
-import { withRandomLoading } from '@/utils/loadingUtils'
-
 const cartStore = useCartStore()
 const { cartItems, selectedQuantity, selectedAmount, isAllSelected } = storeToRefs(cartStore)
 const deviceStore = useDeviceStore()
@@ -76,7 +74,6 @@ const pagedItems = computed(() => {
 
 onMounted(() => {
   deviceStore.startListen()
-  void withRandomLoading(undefined, { min: 0, max: 500 })
 })
 
 onUnmounted(() => {

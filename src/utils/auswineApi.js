@@ -90,12 +90,15 @@ async function parseResponse(response) {
 
 async function requestJson(path, { params, method = 'GET', body, token, skipAuth = false } = {}) {
   const resolvedToken = skipAuth ? '' : (token ?? getAuthToken())
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), 20000)
   try {
     const response = await fetch(buildUrl(path, params), {
       method,
       headers: buildHeaders(resolvedToken, body !== undefined),
       credentials: 'include',
       body: body === undefined ? undefined : JSON.stringify(body),
+      signal: controller.signal,
     })
     const refreshedToken = response.headers.get('X-Auth-Token')
     if (refreshedToken && typeof tokenRefreshHandler === 'function') {
@@ -106,11 +109,16 @@ async function requestJson(path, { params, method = 'GET', body, token, skipAuth
     if (error instanceof ApiError) {
       throw error
     }
+    if (error?.name === 'AbortError' || error?.name === 'TimeoutError') {
+      throw new ApiError('请求超时，请稍后重试', { cause: error })
+    }
     const message = String(error?.message || '')
     if (error?.name === 'TypeError' || /failed to fetch|network|load failed/i.test(message)) {
       throw new ApiError('网络异常，请检查网络后重试', { cause: error })
     }
     throw new ApiError(message || '请求失败', { cause: error })
+  } finally {
+    clearTimeout(timeoutId)
   }
 }
 

@@ -11,6 +11,7 @@ import { preloadFallbackNav, setApiNavCache } from '@/utils/navHelpers'
 import { loadNavCatalog } from '@/utils/catalogRepository'
 import { useUserStore } from '@/stores/userStore'
 import { isApiEnabled } from '@/utils/auswineApi'
+import { notifyApiError } from '@/utils/apiFeedback'
 
 const pinia = createPinia()
 pinia.use(piniaPluginPersistedstate)
@@ -27,7 +28,7 @@ void preloadFallbackNav().then(async () => {
       const nav = await loadNavCatalog()
       setApiNavCache(nav)
     } catch (error) {
-      console.error('[auswine] failed to preload nav from API', error)
+      notifyApiError(error, { action: '加载导航', dedupeKey: 'nav:preload' })
     }
     const userStore = useUserStore()
     void userStore.restoreSession()

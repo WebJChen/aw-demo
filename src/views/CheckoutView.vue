@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { ElMessage } from 'element-plus'
@@ -7,11 +7,9 @@ import { ArrowLeft, CircleCheckFilled, CircleCloseFilled, WarningFilled } from '
 import { useCartStore } from '@/stores/cartStore'
 import { useDialogStore } from '@/stores/dialogStore'
 import { useUserStore } from '@/stores/userStore'
-import { useLoadingStore } from '@/stores/loadingStore'
 import { resolveDataImage } from '@/utils/dataImageResolver'
 /** 【样式测试·可删】结算摘要缩略图轮换；正式发布前移除（见 tasmaniaGridStyleTestThumbs.js） */
 import { tasGridStyleTestThumbByIndex } from '@/utils/tasmaniaGridStyleTestThumbs'
-import { withRandomLoading } from '@/utils/loadingUtils'
 import { saveMockOrderDetail } from '@/utils/mockOrderStorage'
 import { isRemoteOrderEnabled, submitRemoteOrder } from '@/utils/orderService'
 
@@ -21,9 +19,6 @@ const dialogStore = useDialogStore()
 const userStore = useUserStore()
 const { selectedItems, selectedQuantity, selectedAmount } = storeToRefs(cartStore)
 const { loggedIn } = storeToRefs(userStore)
-const loadingStore = useLoadingStore()
-const { fullscreenLoading } = storeToRefs(loadingStore)
-const loadingState = computed(() => fullscreenLoading.value)
 
 const checkoutFormRef = ref(null)
 const submitLoading = ref(false)
@@ -236,16 +231,10 @@ const checkoutItemNavMeta = (item) => {
   const parts = [item.regionName, item.subNavName].filter((s) => typeof s === 'string' && s.trim())
   return parts.length ? parts.join(' / ') : ''
 }
-
-onMounted(() => {
-  void withRandomLoading(undefined, { min: 0, max: 500 })
-})
 </script>
 
 <template>
   <div class="checkout-page">
-    <div v-loading.fullscreen="loadingState" element-loading-spinner-color="#a8163c"
-      element-loading-background="rgba(255, 255, 255, 0.8)"></div>
     <div class="checkout-header">
       <h1>订单结算</h1>
       <p>请确认信息后完成支付，当前为模拟支付流程。</p>

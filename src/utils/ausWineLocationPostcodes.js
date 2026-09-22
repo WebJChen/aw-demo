@@ -86,25 +86,43 @@ function buildOrderMap(mode) {
   return map
 }
 
-/**
- * 从 wine 条目中读取 locationLabel
- * 优先从 item 根级读取，其次从 wineData 读取
- */
-function getLocationLabelFromItem(item) {
-  const wineData = item?.wineData && typeof item.wineData === 'object' ? item.wineData : {}
-  return String(item?.locationLabel || wineData.locationLabel || '').trim()
+function isValidLocationLabel(label) {
+  if (!label || label === UNCATEGORIZED_LOCATION) return false
+  const parts = String(label).trim().split(/\s+/)
+  const postcode = parts.length >= 2 ? parts[parts.length - 1] : ''
+  return /^\d{4}$/.test(postcode)
+}
+
+function formatLocationLabel(town, postcode) {
+  const townText = String(town || '').trim()
+  const pc = String(postcode || '').trim()
+  if (!townText || !/^\d{4}$/.test(pc)) return ''
+  return `${townText} ${pc}`
+}
+
+function readTownPostcode(item) {
+  const nested = item?.wineData && typeof item.wineData === 'object'
+    ? item.wineData
+    : (item?.info && typeof item.info === 'object' ? item.info : {})
+  return {
+    town: String(item?.town || nested.town || '').trim(),
+    postcode: String(item?.postcode || nested.postcode || '').trim(),
+    legacyLabel: String(item?.locationLabel || nested.locationLabel || '').trim(),
+  }
 }
 
 /**
- * 解析 wine 条目的地点标签，返回 "地名 邮编" 格式或 "暂未分类"
+ * 解析地点标签。与 TTO 相同：优先 town + postcode，旧 locationLabel 仅作兼容。
  */
 export function resolveLocationLabel(item) {
-  const fromData = getLocationLabelFromItem(item)
-  if (fromData) {
-    const parts = String(fromData).trim().split(/\s+/)
-    const postcode = parts.length >= 2 ? parts[parts.length - 1] : ''
-    if (/^\d{4}$/.test(postcode)) return fromData
-  }
+  const { town, postcode, legacyLabel } = readTownPostcode(item)
+  const derived = formatLocationLabel(town, postcode)
+  if (derived) return derived
+  if (isValidLocationLabel(legacyLabel)) return legacyLabel
+  const fromCatalog = AUS_WINE_LOCATION_POSTCODES.find(
+    (entry) => entry.town === town && entry.postcode === postcode
+  )
+  if (fromCatalog?.label) return fromCatalog.label
   return UNCATEGORIZED_LOCATION
 }
 

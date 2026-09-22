@@ -69,7 +69,6 @@ export function mapApiCatalogDetailToItemData(dto) {
     region: extra.region || detail.region || infoObj.region || '',
     town: extra.town || detail.town || infoObj.town || '',
     postcode: extra.postcode || detail.postcode || infoObj.postcode || '',
-    locationLabel: extra.locationLabel || detail.locationLabel || infoObj.locationLabel || '',
     info,
     wineData: detail.wineData || extra.wineData,
     testPrice: dto.price ?? extra.testPrice,

@@ -5,7 +5,6 @@ import { useRouter } from 'vue-router'
 import { ArrowUp, ArrowDown, Switch, ShoppingCart } from '@element-plus/icons-vue'
 import { useCartStore } from '@/stores/cartStore'
 import { Z_INDEX } from '@/constants/zIndex'
-import { withRandomLoading } from '@/utils/loadingUtils'
 
 const router = useRouter()
 const cartStore = useCartStore()
@@ -53,7 +52,6 @@ const togglePosition = () => {
 }
 
 const goToCart = () => {
-  void withRandomLoading(undefined, { min: 160, max: 300 })
   router.push({ name: 'Cart' })
 }
 

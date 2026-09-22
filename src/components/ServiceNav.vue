@@ -6,7 +6,6 @@ import { storeToRefs } from 'pinia'
 import { useNavStore } from '@/stores/navStore'
 import { buildNavMenuItems, findRegionByPath } from '@/utils/navHelpers'
 import { WINE_GRID_ROUTE_NAME, buildWineGridRoute } from '@/utils/wineGridRoute'
-import { withRandomLoading } from '@/utils/loadingUtils'
 import CategoryDetailPanel from '@/views/CategoryDetailPanel.vue'
 import { Z_INDEX } from '@/constants/zIndex'
 
@@ -43,12 +42,9 @@ const handleTagClick = (item, event) => {
 const openSearchPage = async () => {
   const s = keyword.value.trim()
   if (!s) return
-  await withRandomLoading(() => router.push({
+  await router.push({
     name: 'SearchResults',
     query: { s }
-  }), {
-    min: 80,
-    max: 300
   })
 }
 

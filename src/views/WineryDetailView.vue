@@ -16,12 +16,16 @@ import {
   loadWineryDetailContext,
   resolveWineryDetailImages
 } from '@/utils/wineryDetailPage'
+import { withLoading } from '@/utils/loadingUtils'
+import { getApiErrorMessage, notifyApiError } from '@/utils/apiFeedback'
+import { useLoadingStore } from '@/stores/loadingStore'
 
 const GRID_PRICE_COLOR = '#a8163c'
 
 const route = useRoute()
 const router = useRouter()
 const deviceStore = useDeviceStore()
+const loadingStore = useLoadingStore()
 const { isPhone, isPortrait, isTablet, isPc } = storeToRefs(deviceStore)
 
 const loading = ref(true)
@@ -76,18 +80,25 @@ const syncDetail = async () => {
   bannerImages.value = []
   classicWines.value = []
 
-  const ctx = await loadWineryDetailContext(regionPath.value, subNavPath.value, itemIndex.value)
-  if (!ctx) {
-    loadError.value = '未找到该酒庄，可能链接已失效或数据尚未加载。'
-    loading.value = false
-    return
-  }
+  try {
+    await withLoading(async () => {
+      const ctx = await loadWineryDetailContext(regionPath.value, subNavPath.value, itemIndex.value)
+      if (!ctx) {
+        loadError.value = '未找到该酒庄，可能链接已失效或数据尚未加载。'
+        return
+      }
 
-  detailCtx.value = ctx
-  pageModel.value = buildWineryDetailPageModel(ctx)
-  bannerImages.value = resolveWineryDetailImages(ctx.item)
-  classicWines.value = await loadClassicWinesForWinery(ctx, 0)
-  loading.value = false
+      detailCtx.value = ctx
+      pageModel.value = buildWineryDetailPageModel(ctx)
+      bannerImages.value = resolveWineryDetailImages(ctx.item)
+      classicWines.value = await loadClassicWinesForWinery(ctx, 0)
+    }, { text: '酒庄介绍加载中...' })
+  } catch (error) {
+    notifyApiError(error, { action: '加载酒庄详情', dedupeKey: 'winery:detail' })
+    loadError.value = getApiErrorMessage(error)
+  } finally {
+    loading.value = false
+  }
 }
 
 const goBackToWineryList = () => {
@@ -151,7 +162,7 @@ onUnmounted(() => {
 
 <template>
   <div class="winery-detail-page">
-    <div v-if="loading" class="winery-detail-state">正在加载酒庄介绍…</div>
+    <div v-if="loading && !loadingStore.fullscreenLoading" class="winery-detail-state">正在加载酒庄介绍…</div>
 
     <div v-else-if="loadError" class="winery-detail-state winery-detail-state--error">
       <p>{{ loadError }}</p>
