@@ -1,1 +1,0 @@
-import{ag as e}from"./index-C-6GKot6.js";const r=async(o,n={})=>{const{text:a="加载中..."}=n,t=e();t.startLoading(a);try{return await Promise.resolve(typeof o=="function"?o():void 0)}finally{t.stopLoading()}};export{r as w};
