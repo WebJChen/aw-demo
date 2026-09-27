@@ -27,9 +27,10 @@ import {
 } from '@/utils/searchUtils'
 import { buildCatalogHitKey, findCatalogEntryIndexByHitKey } from '@/utils/catalogHitKey'
 import {
-  AUS_WINE_LOCATION_POSTCODES,
+  SORT_MODES,
   createLocationLazyLoad,
   getLocationDisplayLabel,
+  getLocationNameZhByLabel,
   resolveLocationLabel,
   sortLocationItems,
   splitLocationLabel,
@@ -221,26 +222,47 @@ const matchesWineryLocation = (item, locLabel) => {
   return resolveLocationLabel(item) === locLabel
 }
 
+const LOCATION_SORT_MODE_BY_VALUE = {
+  default: SORT_MODES.POSTCODE,
+  locPostcode: SORT_MODES.POSTCODE,
+  locEn: SORT_MODES.NAME_EN,
+  locCn: SORT_MODES.NAME_ZH,
+}
+
+const isLocationSortMode = (sortBy) => Object.prototype.hasOwnProperty.call(LOCATION_SORT_MODE_BY_VALUE, sortBy)
+
+const resolveLocationSortMode = (sortBy = winerySortBy.value) =>
+  LOCATION_SORT_MODE_BY_VALUE[sortBy] || SORT_MODES.POSTCODE
+
 const locationCascaderProps = computed(() => {
   const currentItems = buildEntryListForSubNav(currentSubNav.value).map((entry) => entry.data)
-  const modeMap = { default: 'postcode', locPostcode: 'postcode', locEn: 'nameEn', locCn: 'nameZh' }
   return {
     lazy: true,
-    lazyLoad: createLocationLazyLoad(currentItems, modeMap[winerySortBy.value] || 'postcode'),
+    lazyLoad: createLocationLazyLoad(currentItems, resolveLocationSortMode()),
     showAllLevels: false,
   }
 })
 
-const compareWineryTitle = (a, b) => {
-  const titleA = String(a?.data?.title || a?.data?.enTitle || '').trim()
-  const titleB = String(b?.data?.title || b?.data?.enTitle || '').trim()
-  return titleA.localeCompare(titleB, 'zh-CN', { sensitivity: 'base' })
+const readWinerySortName = (item, preferEn) => {
+  const title = String(item?.title || '').trim()
+  const enTitle = String(item?.enTitle || '').trim()
+  return preferEn ? (enTitle || title) : (title || enTitle)
+}
+
+const compareWineryName = (left, right, preferEn) => {
+  const locale = preferEn ? 'en' : 'zh-Hans-CN'
+  const nameDiff = readWinerySortName(left?.data, preferEn)
+    .localeCompare(readWinerySortName(right?.data, preferEn), locale, { sensitivity: 'base' })
+  if (nameDiff !== 0) return nameDiff
+  const otherLocale = preferEn ? 'zh-Hans-CN' : 'en'
+  return readWinerySortName(left?.data, !preferEn)
+    .localeCompare(readWinerySortName(right?.data, !preferEn), otherLocale, { sensitivity: 'base' })
 }
 
 const sortWineryEntries = (entries, sortBy) => {
   const rows = [...entries]
-  if (sortBy === 'nameAsc') return rows.sort(compareWineryTitle)
-  if (sortBy === 'nameDesc') return rows.sort((a, b) => compareWineryTitle(b, a))
+  if (sortBy === 'nameAsc') return rows.sort((a, b) => compareWineryName(a, b, true))
+  if (sortBy === 'nameDesc') return rows.sort((a, b) => compareWineryName(b, a, true))
   return rows
 }
 
@@ -289,10 +311,7 @@ const buildHitKeyForEntry = (entry) => {
 }
 
 function getLocationDisplayName(item) {
-  const label = resolveLocationLabel(item)
-  const sortBy = winerySortBy.value
-  const modeMap = { default: 'postcode', locPostcode: 'postcode', locEn: 'nameEn', locCn: 'nameZh' }
-  return getLocationDisplayLabel(label, modeMap[sortBy] || 'postcode')
+  return getLocationDisplayLabel(resolveLocationLabel(item), resolveLocationSortMode())
 }
 
 function getLocationTown(item) {
@@ -302,10 +321,7 @@ function getLocationTown(item) {
 }
 
 function getLocationNameZh(item) {
-  const label = resolveLocationLabel(item)
-  if (!label) return ''
-  const found = AUS_WINE_LOCATION_POSTCODES.find((e) => e.label === label)
-  return found ? found.nameZh || '' : ''
+  return getLocationNameZhByLabel(resolveLocationLabel(item))
 }
 
 function getLocationPostcode(item) {
@@ -313,20 +329,15 @@ function getLocationPostcode(item) {
 }
 
 function sortByLocation(items) {
-  const sortBy = winerySortBy.value
-  const modeMap = { default: 'postcode', locPostcode: 'postcode', locEn: 'nameEn', locCn: 'nameZh' }
-  const mode = modeMap[sortBy] || 'postcode'
-  return sortLocationItems(items, mode, (row) => row.data)
+  return sortLocationItems(items, resolveLocationSortMode(), (row) => row.data)
 }
 
 function shouldShowLocationTitle(list, index) {
+  if (!isLocationSortMode(winerySortBy.value)) return false
   if (!Array.isArray(list) || !list.length) return false
   if (index === 0) return true
   return getLocationDisplayName(list[index].data) !== getLocationDisplayName(list[index - 1].data)
 }
-
-const isLocationSortMode = (sortBy) =>
-  sortBy === 'default' || sortBy === 'locPostcode' || sortBy === 'locEn' || sortBy === 'locCn'
 
 const dataList = computed(() => {
   const subNav = currentSubNav.value

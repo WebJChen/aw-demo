@@ -237,6 +237,9 @@ export function createLocationLazyLoad(items = [], mode = SORT_MODES.POSTCODE) {
     let firstLevelKey
     if (isPostcodeMode) {
       firstLevelKey = postcode
+    } else if (mode === SORT_MODES.NAME_ZH) {
+      const displayName = getLocationDisplayLabel(label, mode)
+      firstLevelKey = String(displayName || '').trim().charAt(0)
     } else {
       const townName = parts.length >= 2 ? parts.slice(0, -1).join(' ') : label
       firstLevelKey = townName.charAt(0).toUpperCase()
@@ -257,6 +260,7 @@ export function createLocationLazyLoad(items = [], mode = SORT_MODES.POSTCODE) {
       const numB = parseInt(b, 10)
       if (!isNaN(numA) && !isNaN(numB)) return numA - numB
     }
+    if (mode === SORT_MODES.NAME_ZH) return a.localeCompare(b, 'zh-Hans-CN')
     return a.localeCompare(b, 'en')
   })
 
@@ -285,6 +289,23 @@ export function createLocationLazyLoad(items = [], mode = SORT_MODES.POSTCODE) {
   }
 }
 
+function findCatalogLocationEntry(label) {
+  const text = String(label || '').trim()
+  if (!text || text === UNCATEGORIZED_LOCATION) return null
+  const exact = AUS_WINE_LOCATION_POSTCODES.find((entry) => entry.label === text)
+  if (exact) return exact
+  const { town, postcode } = splitLocationLabel(text)
+  if (town && postcode) {
+    const both = AUS_WINE_LOCATION_POSTCODES.find(
+      (entry) => entry.town === town && entry.postcode === postcode,
+    )
+    if (both) return both
+  }
+  if (!town) return null
+  const townLower = town.toLowerCase()
+  return AUS_WINE_LOCATION_POSTCODES.find((entry) => entry.town.toLowerCase() === townLower) || null
+}
+
 /**
  * 获取地点显示标签（中文模式时附加中文名）
  * @param {string} label - 原始标签，如 "Hobart 7000"
@@ -294,11 +315,13 @@ export function createLocationLazyLoad(items = [], mode = SORT_MODES.POSTCODE) {
 export function getLocationDisplayLabel(label, mode = SORT_MODES.POSTCODE) {
   if (!label || label === UNCATEGORIZED_LOCATION) return label
   if (mode !== SORT_MODES.NAME_ZH) return label
-  const entry = AUS_WINE_LOCATION_POSTCODES.find((e) => e.label === label)
-  if (entry && entry.nameZh) {
-    return `${entry.nameZh} ${label}`
-  }
+  const nameZh = findCatalogLocationEntry(label)?.nameZh
+  if (nameZh) return `${nameZh} ${label}`
   return label
+}
+
+export function getLocationNameZhByLabel(label) {
+  return String(findCatalogLocationEntry(label)?.nameZh || '').trim()
 }
 
 /**
@@ -306,7 +329,7 @@ export function getLocationDisplayLabel(label, mode = SORT_MODES.POSTCODE) {
  */
 export function getTownByLocationLabel(label) {
   if (!label || label === UNCATEGORIZED_LOCATION) return ''
-  const found = AUS_WINE_LOCATION_POSTCODES.find((item) => item.label === label)
-  if (found) return found.town
+  const found = findCatalogLocationEntry(label)
+  if (found?.town) return found.town
   return splitLocationLabel(label).town
 }
