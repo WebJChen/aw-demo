@@ -322,7 +322,7 @@ export function buildWineryDetailPageModel(ctx) {
     visitGuide: normalizeVisitGuide(info),
     services: normalizeServices(info),
     hasSource: source.length > 0,
-    sourceSummary: source[0]?.desc || 'TasTrips.Online资料整理'
+    sourceSummary: source[0]?.desc || 'AusWine 原创整理'
   }
 }
 

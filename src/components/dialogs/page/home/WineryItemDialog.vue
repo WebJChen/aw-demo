@@ -87,7 +87,7 @@ const wineInfo = computed(() => {
   }
 })
 
-/** 与 ItemDataDialog 一致：仅以 info / wineData / itemData.source 驱动底部免责声明与参考来源表格；无条目则文案「本页信息来源：TasTrips.Online资料整理」 */
+/** 无 source 时页脚自动显示「AusWine 原创整理」，不要在 JSON 里手写官网链接 */
 const wineSourceFoot = computed(() => {
   const info = itemInfo.value
   if (!info || typeof info !== 'object') {
@@ -206,7 +206,7 @@ onUnmounted(() => deviceStore.stopListen())
             本页信息来源：{{ wineSourceFoot.source[0].desc }}
           </template>
           <template v-else>
-            本页信息来源：TasTrips.Online资料整理
+            本页信息来源：AusWine 原创整理
           </template>
         </div>
       </div>
