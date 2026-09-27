@@ -1,4 +1,55 @@
 import { resolveDataImage } from '@/utils/dataImageResolver'
+import { SORT_MODES, sortLocationItems } from '@/utils/ausWineLocationPostcodes'
+
+const LOCATION_CARD_FALLBACKS = [
+  '../assets/img/footer/bgfooter1.jpg',
+  '../assets/img/footer/bgfooter2.jpg',
+]
+
+const WINERY_CARD_FALLBACKS = [
+  '../assets/img/footer/footer1.jpg',
+  '../assets/img/footer/footer2.jpg',
+  '../assets/img/footer/footer3.jpg',
+  '../assets/img/footer/footer4.jpg',
+]
+
+function resolveAssetUrl(path, options = {}) {
+  const variant = options.variant || 'thumb'
+  return resolveDataImage(path, '', { variant }) || resolveDataImage(path) || resolveDataImage('', '', { variant })
+}
+
+function hashSeed(seed) {
+  const text = String(seed || '')
+  let hash = 0
+  for (let i = 0; i < text.length; i += 1) {
+    hash = (hash * 31 + text.charCodeAt(i)) >>> 0
+  }
+  return hash
+}
+
+function wineryFallbackSeed(item) {
+  return [
+    item?.itemKey,
+    item?.enTitle,
+    item?.title,
+  ].map((value) => String(value || '').trim()).filter(Boolean).join('|')
+}
+
+function isSameWineryItem(left, right) {
+  if (!left || !right) return false
+  if (left === right) return true
+  if (left.itemKey && right.itemKey && left.itemKey === right.itemKey) return true
+  return String(left.enTitle || '') === String(right.enTitle || '')
+    && String(left.title || '') === String(right.title || '')
+}
+
+/** 与列表同一套邮编排序后的封面轮换下标，详情页用来对上同一张 footer 图 */
+export function findWineryCoverCycleIndex(item, siblings = []) {
+  if (!item || !Array.isArray(siblings) || !siblings.length) return undefined
+  const sorted = sortLocationItems(siblings, SORT_MODES.POSTCODE)
+  const index = sorted.findIndex((row) => isSameWineryItem(row, item))
+  return index >= 0 ? index : undefined
+}
 
 function readNestedInfo(item) {
   if (!item || typeof item !== 'object') return null
@@ -102,6 +153,27 @@ export function resolveItemCoverImageUrl(item, fallback, options = {}) {
   const coverPath = getItemCoverPath(item)
   if (!coverPath) return resolveDataImage('', fallback, options)
   return resolvePath(coverPath, options) || resolveDataImage('', fallback, options)
+}
+
+/** 地点+邮编标题卡：bgfooter1 / bgfooter2 按出现顺序轮流 */
+export function resolveLocationCardImageUrl(locationIndex = 0, options = {}) {
+  const path = LOCATION_CARD_FALLBACKS[Math.abs(Number(locationIndex) || 0) % LOCATION_CARD_FALLBACKS.length]
+  return resolveAssetUrl(path, options)
+}
+
+/** 酒庄卡无图时 footer1~4；有封面则用封面。详情页用同一套，保证同图。 */
+export function resolveWineryCardImageUrl(item, options = {}) {
+  const coverPath = getItemCoverPath(item)
+  if (coverPath) {
+    const resolved = resolvePath(coverPath, { variant: options.variant || 'thumb' })
+    if (resolved) return resolved
+  }
+  const fallbackIndex = options.fallbackIndex
+  const index = Number.isInteger(fallbackIndex)
+    ? fallbackIndex
+    : hashSeed(wineryFallbackSeed(item))
+  const path = WINERY_CARD_FALLBACKS[Math.abs(index) % WINERY_CARD_FALLBACKS.length]
+  return resolveAssetUrl(path, options)
 }
 
 /** 详情 / 弹窗轮播 URL 列表 */

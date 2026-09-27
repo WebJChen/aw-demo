@@ -60,37 +60,63 @@ export const AUS_WINE_LOCATION_POSTCODES = [
   { label: 'Port Sorell 7307', town: 'Port Sorell', postcode: '7307', nameZh: '索雷尔港' },
 ]
 
-/**
- * 构建排序映射表
- * 邮编模式：按 postcode 数字排序，同邮编按 label 字母排序
- * 英文名/中文名模式：按 town 首字母分组排序
- */
-function buildOrderMap(mode) {
-  const sorted = [...AUS_WINE_LOCATION_POSTCODES].sort((a, b) => {
-    if (mode === SORT_MODES.POSTCODE) {
-      const numA = parseInt(a.postcode, 10)
-      const numB = parseInt(b.postcode, 10)
-      if (numA !== numB) return numA - numB
-    } else if (mode === SORT_MODES.NAME_ZH) {
-      const cmp = (a.nameZh || a.town).localeCompare((b.nameZh || b.town), 'zh-Hans-CN')
-      if (cmp !== 0) return cmp
-    } else {
-      const keyA = (a.town || '').charAt(0).toUpperCase()
-      const keyB = (b.town || '').charAt(0).toUpperCase()
-      if (keyA !== keyB) return keyA.localeCompare(keyB, 'en')
-    }
-    return a.label.localeCompare(b.label, 'en')
-  })
-  const map = new Map()
-  sorted.forEach((item, idx) => map.set(item.label, idx))
-  return map
-}
-
 function isValidLocationLabel(label) {
   if (!label || label === UNCATEGORIZED_LOCATION) return false
-  const parts = String(label).trim().split(/\s+/)
-  const postcode = parts.length >= 2 ? parts[parts.length - 1] : ''
+  const { postcode } = splitLocationLabel(label)
   return /^\d{4}$/.test(postcode)
+}
+
+export function splitLocationLabel(label) {
+  const text = String(label || '').trim()
+  if (!text) return { town: '', postcode: '' }
+  const parts = text.split(/\s+/)
+  const postcode = parts.length >= 2 && /^\d{4}$/.test(parts[parts.length - 1]) ? parts[parts.length - 1] : ''
+  const town = postcode ? parts.slice(0, -1).join(' ') : text
+  return { town, postcode }
+}
+
+function readPostcodeNumber(entry) {
+  const raw = String(entry?.postcode || splitLocationLabel(entry?.label).postcode || '')
+  return /^\d{4}$/.test(raw) ? parseInt(raw, 10) : 9998
+}
+
+/**
+ * 对齐 TTO：邮编从小到大；同邮编按英文地名；再按完整 label。
+ * 中文模式按中文显示名；英文模式按城镇名。
+ */
+export function compareLocationEntries(left, right, mode = SORT_MODES.POSTCODE) {
+  const leftLabel = String(left?.label || '')
+  const rightLabel = String(right?.label || '')
+  const leftUncategorized = !leftLabel || leftLabel === UNCATEGORIZED_LOCATION
+  const rightUncategorized = !rightLabel || rightLabel === UNCATEGORIZED_LOCATION
+  if (leftUncategorized !== rightUncategorized) return leftUncategorized ? 1 : -1
+  if (leftUncategorized && rightUncategorized) return 0
+
+  if (mode === SORT_MODES.POSTCODE) {
+    const leftNum = readPostcodeNumber(left)
+    const rightNum = readPostcodeNumber(right)
+    if (leftNum !== rightNum) return leftNum - rightNum
+
+    const leftTown = String(left?.town || splitLocationLabel(leftLabel).town || leftLabel)
+    const rightTown = String(right?.town || splitLocationLabel(rightLabel).town || rightLabel)
+    const townDiff = leftTown.localeCompare(rightTown, 'en', { sensitivity: 'base' })
+    if (townDiff !== 0) return townDiff
+    return leftLabel.localeCompare(rightLabel, 'en', { sensitivity: 'base' })
+  }
+
+  if (mode === SORT_MODES.NAME_ZH) {
+    const leftZh = getLocationDisplayLabel(leftLabel, SORT_MODES.NAME_ZH)
+    const rightZh = getLocationDisplayLabel(rightLabel, SORT_MODES.NAME_ZH)
+    const zhDiff = leftZh.localeCompare(rightZh, 'zh-Hans-CN', { sensitivity: 'base' })
+    if (zhDiff !== 0) return zhDiff
+    return leftLabel.localeCompare(rightLabel, 'en', { sensitivity: 'base' })
+  }
+
+  const leftName = String(left?.town || splitLocationLabel(leftLabel).town || leftLabel)
+  const rightName = String(right?.town || splitLocationLabel(rightLabel).town || rightLabel)
+  const enDiff = leftName.localeCompare(rightName, 'en', { sensitivity: 'base' })
+  if (enDiff !== 0) return enDiff
+  return leftLabel.localeCompare(rightLabel, 'en', { sensitivity: 'base' })
 }
 
 function formatLocationLabel(town, postcode) {
@@ -127,14 +153,44 @@ export function resolveLocationLabel(item) {
 }
 
 /**
- * 获取排序序号
+ * 获取排序序号。邮编模式用四位数字本身，不再依赖不完整的产区目录下标。
  */
 export function getLocationSortOrder(item, mode = SORT_MODES.POSTCODE) {
   const label = resolveLocationLabel(item)
   if (label === UNCATEGORIZED_LOCATION) return 9999
-  const orderMap = buildOrderMap(mode)
-  if (orderMap.has(label)) return orderMap.get(label)
-  return 9998
+  const { town, postcode } = splitLocationLabel(label)
+  if (mode === SORT_MODES.POSTCODE) {
+    return /^\d{4}$/.test(postcode) ? parseInt(postcode, 10) : 9998
+  }
+  const fallbackLabel = mode === SORT_MODES.NAME_ZH
+    ? String(getLocationDisplayLabel(label, SORT_MODES.NAME_ZH) || label)
+    : String(town || label)
+  const normalized = fallbackLabel.toLowerCase()
+  let score = 0
+  for (const char of normalized.slice(0, 6)) {
+    score = score * 100 + char.charCodeAt(0)
+  }
+  return score || 9998
+}
+
+/**
+ * 对齐 TTO `sortLocationItems`：地点（邮编/地名）后再按中文标题。
+ */
+export function sortLocationItems(items = [], mode = SORT_MODES.POSTCODE, getItem = (row) => row) {
+  const list = Array.isArray(items) ? [...items] : []
+  return list.sort((left, right) => {
+    const leftItem = getItem(left)
+    const rightItem = getItem(right)
+    const leftLabel = resolveLocationLabel(leftItem)
+    const rightLabel = resolveLocationLabel(rightItem)
+    const entryDiff = compareLocationEntries(
+      { ...splitLocationLabel(leftLabel), label: leftLabel },
+      { ...splitLocationLabel(rightLabel), label: rightLabel },
+      mode,
+    )
+    if (entryDiff !== 0) return entryDiff
+    return String(leftItem?.title || '').localeCompare(String(rightItem?.title || ''), 'zh-Hans-CN')
+  })
 }
 
 /**
@@ -163,13 +219,12 @@ export function createLocationLazyLoad(items = [], mode = SORT_MODES.POSTCODE) {
     categorizedLabels.add(label)
   })
 
-  const orderMap = buildOrderMap(mode)
-  const sortedLabels = Array.from(categorizedLabels).sort((left, right) => {
-    const leftOrder = orderMap.has(left) ? orderMap.get(left) : 9998
-    const rightOrder = orderMap.has(right) ? orderMap.get(right) : 9998
-    if (leftOrder !== rightOrder) return leftOrder - rightOrder
-    return left.localeCompare(right, 'en')
-  })
+  const sortedLabels = Array.from(categorizedLabels).sort((left, right) =>
+    compareLocationEntries(
+      { ...splitLocationLabel(left), label: left },
+      { ...splitLocationLabel(right), label: right },
+      mode,
+    ))
 
   const isPostcodeMode = mode === SORT_MODES.POSTCODE
 
@@ -250,7 +305,8 @@ export function getLocationDisplayLabel(label, mode = SORT_MODES.POSTCODE) {
  * 根据 locationLabel 反查 town
  */
 export function getTownByLocationLabel(label) {
-  if (!label) return ''
+  if (!label || label === UNCATEGORIZED_LOCATION) return ''
   const found = AUS_WINE_LOCATION_POSTCODES.find((item) => item.label === label)
-  return found ? found.town : ''
+  if (found) return found.town
+  return splitLocationLabel(label).town
 }

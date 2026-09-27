@@ -16,6 +16,9 @@ import {
   loadWineryDetailContext,
   resolveWineryDetailImages
 } from '@/utils/wineryDetailPage'
+import { fetchWineryCatalogPage } from '@/utils/catalogRepository'
+import { isApiEnabled } from '@/utils/auswineApi'
+import { resolveWineryItemKey } from '@/utils/wineryItemKey'
 import { withLoading } from '@/utils/loadingUtils'
 import { getApiErrorMessage, notifyApiError } from '@/utils/apiFeedback'
 import { useLoadingStore } from '@/stores/loadingStore'
@@ -91,7 +94,38 @@ const syncDetail = async () => {
 
       detailCtx.value = ctx
       pageModel.value = buildWineryDetailPageModel(ctx)
-      bannerImages.value = resolveWineryDetailImages(ctx.item)
+      let siblings = Array.isArray(ctx.subNav?.itemData)
+        ? ctx.subNav.itemData
+        : (Array.isArray(ctx.subNav?.info) ? ctx.subNav.info : [])
+      if ((!siblings.length) && isApiEnabled()) {
+        const page = await fetchWineryCatalogPage({
+          statePath: ctx.regionPath,
+          subNavPath: ctx.subNavPath,
+          pageNum: 1,
+          pageSize: 500,
+        })
+        siblings = (Array.isArray(page?.items) ? page.items : []).map((row) => row.data).filter(Boolean)
+      }
+      const currentKey = ctx.itemKey || resolveWineryItemKey({
+        regionPath: ctx.regionPath,
+        subNavPath: ctx.subNavPath,
+        sourceItemIndex: ctx.itemIndex,
+        itemKey: ctx.item?.itemKey,
+      })
+      const siblingsWithKeys = siblings.map((item, idx) => (
+        item?.itemKey
+          ? item
+          : {
+            ...item,
+            itemKey: resolveWineryItemKey({
+              regionPath: ctx.regionPath,
+              subNavPath: ctx.subNavPath,
+              sourceItemIndex: idx,
+            }),
+          }
+      ))
+      const currentItem = ctx.item?.itemKey ? ctx.item : { ...ctx.item, itemKey: currentKey }
+      bannerImages.value = resolveWineryDetailImages(currentItem, '', siblingsWithKeys)
       classicWines.value = await loadClassicWinesForWinery(ctx, 0)
     }, { text: '酒庄介绍加载中...' })
   } catch (error) {

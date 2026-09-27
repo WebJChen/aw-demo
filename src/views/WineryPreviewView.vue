@@ -18,7 +18,7 @@ import { withLoading } from '@/utils/loadingUtils'
 import { notifyApiError } from '@/utils/apiFeedback'
 import { useLoadingStore } from '@/stores/loadingStore'
 import { applyPageSeo, applyCatalogListJsonLd, clearCatalogListJsonLd, toAbsoluteUrl } from '@/utils/pageSeo'
-import { resolveItemGridImageUrl } from '@/utils/itemImageResolver'
+import { findWineryCoverCycleIndex, resolveLocationCardImageUrl, resolveWineryCardImageUrl } from '@/utils/itemImageResolver'
 import { buildWineryGridDisplay } from '@/utils/wineryGridExtras'
 import {
   matchesCatalogItem,
@@ -30,8 +30,9 @@ import {
   AUS_WINE_LOCATION_POSTCODES,
   createLocationLazyLoad,
   getLocationDisplayLabel,
-  getLocationSortOrder,
   resolveLocationLabel,
+  sortLocationItems,
+  splitLocationLabel,
 } from '@/utils/ausWineLocationPostcodes'
 
 const INITIAL_RENDER_COUNT = 24
@@ -264,19 +265,22 @@ const buildEntryListForSubNav = (subNav) => {
     return apiWineryEntries.value.filter((entry) => !snPath || entry.subNavPath === snPath)
   }
   if (!subNav) return []
-  return getSubNavItems(subNav).map((data, sourceItemIndex) => ({
-    data,
-    regionPath: regionPath.value,
-    regionNavName: currentRegionData.value?.navName || '',
-    subNavPath: subNav.subNavPath,
-    subNavName: subNav.subNavName,
-    sourceItemIndex,
-    itemKey: resolveWineryItemKey({
+  return getSubNavItems(subNav).map((data, sourceItemIndex) => {
+    const itemKey = resolveWineryItemKey({
       regionPath: regionPath.value,
       subNavPath: subNav.subNavPath,
       sourceItemIndex,
-    }),
-  }))
+    })
+    return {
+      data: data?.itemKey ? data : { ...data, itemKey },
+      regionPath: regionPath.value,
+      regionNavName: currentRegionData.value?.navName || '',
+      subNavPath: subNav.subNavPath,
+      subNavName: subNav.subNavName,
+      sourceItemIndex,
+      itemKey,
+    }
+  })
 }
 
 const buildHitKeyForEntry = (entry) => {
@@ -294,8 +298,7 @@ function getLocationDisplayName(item) {
 function getLocationTown(item) {
   const label = resolveLocationLabel(item)
   if (!label) return ''
-  const lastSpace = label.lastIndexOf(' ')
-  return lastSpace > 0 ? label.slice(0, lastSpace) : label
+  return splitLocationLabel(label).town || label
 }
 
 function getLocationNameZh(item) {
@@ -306,22 +309,14 @@ function getLocationNameZh(item) {
 }
 
 function getLocationPostcode(item) {
-  const label = resolveLocationLabel(item)
-  if (!label) return ''
-  const lastSpace = label.lastIndexOf(' ')
-  return lastSpace > 0 ? label.slice(lastSpace + 1) : ''
+  return splitLocationLabel(resolveLocationLabel(item)).postcode
 }
 
 function sortByLocation(items) {
   const sortBy = winerySortBy.value
   const modeMap = { default: 'postcode', locPostcode: 'postcode', locEn: 'nameEn', locCn: 'nameZh' }
   const mode = modeMap[sortBy] || 'postcode'
-  const list = Array.isArray(items) ? [...items] : []
-  return list.sort((a, b) => {
-    const orderDiff = getLocationSortOrder(a.data, mode) - getLocationSortOrder(b.data, mode)
-    if (orderDiff !== 0) return orderDiff
-    return String(a.data?.title || '').localeCompare(String(b.data?.title || ''), 'zh-Hans-CN')
-  })
+  return sortLocationItems(items, mode, (row) => row.data)
 }
 
 function shouldShowLocationTitle(list, index) {
@@ -368,31 +363,53 @@ const hasActiveWineryFilters = computed(() => {
   )
 })
 
-const filteredDataTotal = computed(() => (
-  isApiEnabled() ? apiWineryTotal.value : dataList.value.length
-))
+const coverSiblingItems = computed(() => {
+  const subNav = currentSubNav.value
+  if (!subNav) return []
+  return buildEntryListForSubNav(subNav).map((entry) => entry.data).filter(Boolean)
+})
+
+const filteredDataTotal = computed(() => {
+  if (
+    isApiEnabled()
+    && !hasActiveWineryFilters.value
+    && apiWineryEntries.value.length < apiWineryTotal.value
+  ) {
+    return apiWineryTotal.value
+  }
+  return dataList.value.length
+})
 const showWineryGrid = computed(() => filteredDataTotal.value > 0 || wineryCatalogLoading.value)
 const wineryGridLoading = computed(() => {
   if (loadingStore.fullscreenLoading) return false
   return wineryCatalogLoading.value || localSearchLoading.value
 })
-const visibleDataList = computed(() => {
-  if (isApiEnabled()) return dataList.value
-  return dataList.value.slice(0, renderLimit.value)
-})
+const visibleDataList = computed(() => dataList.value.slice(0, renderLimit.value))
 
-const gridRows = computed(() =>
-  visibleDataList.value.map((entry, idx) => ({
-    entry,
-    data: entry.data,
-    idx,
-    display: buildWineryGridDisplay(entry.data, {
-      subNavPath: entry.subNavPath,
-      sourceItemIndex: entry.sourceItemIndex,
-      idx
-    })
-  }))
-)
+const gridRows = computed(() => {
+  let locationCardIndex = -1
+  let prevLocation = ''
+  const siblings = coverSiblingItems.value
+  return visibleDataList.value.map((entry, idx) => {
+    const locationName = getLocationDisplayName(entry.data)
+    if (idx === 0 || locationName !== prevLocation) {
+      locationCardIndex += 1
+      prevLocation = locationName
+    }
+    return {
+      entry,
+      data: entry.data,
+      idx,
+      locationCardIndex,
+      wineryCoverIndex: findWineryCoverCycleIndex(entry.data, siblings) ?? idx,
+      display: buildWineryGridDisplay(entry.data, {
+        subNavPath: entry.subNavPath,
+        sourceItemIndex: entry.sourceItemIndex,
+        idx
+      })
+    }
+  })
+})
 
 watch(
   [pageSeoHeading, gridRows],
@@ -426,11 +443,11 @@ const resetRenderLimit = () => {
 }
 
 const updateHasMore = () => {
-  if (isApiEnabled()) {
-    hasMore.value = apiWineryEntries.value.length < apiWineryTotal.value
+  if (isApiEnabled() && apiWineryEntries.value.length < apiWineryTotal.value) {
+    hasMore.value = true
     return
   }
-  hasMore.value = renderLimit.value < filteredDataTotal.value
+  hasMore.value = renderLimit.value < dataList.value.length
 }
 
 const syncApiWineryCatalog = async ({ append = false } = {}) => {
@@ -450,15 +467,15 @@ const syncApiWineryCatalog = async ({ append = false } = {}) => {
         statePath: path,
         subNavPath,
         pageNum,
-        pageSize: RENDER_STEP_COUNT,
+        pageSize: 500,
       })
       if (path !== regionPath.value || subNavPath !== currentSubNav.value?.subNavPath) return
       apiWineryTotal.value = Number(result?.total) || 0
       apiPageNum.value = Number(result?.pageNum) || pageNum
       const items = Array.isArray(result?.items) ? result.items : []
       apiWineryEntries.value = append ? [...apiWineryEntries.value, ...items] : items
-      if (isApiEnabled()) {
-        renderLimit.value = apiWineryEntries.value.length
+      if (!append) {
+        renderLimit.value = INITIAL_RENDER_COUNT
       }
     } catch (error) {
       notifyApiError(error, { action: '加载酒庄列表', dedupeKey: 'winery:list' })
@@ -475,15 +492,16 @@ const syncApiWineryCatalog = async ({ append = false } = {}) => {
 }
 
 const loadMoreItems = () => {
-  if (isApiEnabled()) {
-    if (!hasMore.value || wineryCatalogLoading.value) return
+  if (isApiEnabled() && apiWineryEntries.value.length < apiWineryTotal.value) {
+    if (wineryCatalogLoading.value) return
     void syncApiWineryCatalog({ append: true }).then(() => {
+      renderLimit.value = Math.min(dataList.value.length, renderLimit.value + RENDER_STEP_COUNT)
       updateHasMore()
     })
     return
   }
   if (!hasMore.value) return
-  renderLimit.value = Math.min(filteredDataTotal.value, renderLimit.value + RENDER_STEP_COUNT)
+  renderLimit.value = Math.min(dataList.value.length, renderLimit.value + RENDER_STEP_COUNT)
   updateHasMore()
 }
 
@@ -1031,7 +1049,7 @@ onUnmounted(() => {
       <template v-for="(row, i) in gridRows"
         :key="`${row.entry?.regionPath || ''}-${row.entry?.subNavPath || ''}-${row.entry?.sourceItemIndex ?? row.idx}`">
         <div v-if="shouldShowLocationTitle(gridRows, i)" class="info-item location-card">
-          <div class="location-card__bg" :style="`background-image: url(${resolveItemGridImageUrl(row.data)})`"></div>
+          <div class="location-card__bg" :style="`background-image: url(${resolveLocationCardImageUrl(row.locationCardIndex)})`"></div>
           <div class="location-card__overlay">
             <span v-if="winerySortBy === 'locCn'" class="location-card__namezh">{{ getLocationNameZh(row.data) }}</span>
             <span class="location-card__town">{{ getLocationTown(row.data) }}</span>
@@ -1041,7 +1059,7 @@ onUnmounted(() => {
         <div class="info-item pointer" :data-title="row.data.title" :data-hit-key="buildHitKeyForEntry(row.entry)"
           @click="openWineryDetailInNewWindow(row.entry)">
           <div class="info-img-wrap bgfff">
-            <img :src="resolveItemGridImageUrl(row.data)" :alt="`${row.data.title}${row.display?.visitLabel ? `，${row.display.visitLabel}` : ''}`" class="w100"
+            <img :src="resolveWineryCardImageUrl(row.data, { fallbackIndex: row.wineryCoverIndex })" :alt="`${row.data.title}${row.display?.visitLabel ? `，${row.display.visitLabel}` : ''}`" class="w100"
               :loading="getImageLoading(row.idx)" decoding="async" :fetchpriority="getImageFetchPriority(row.idx)">
           </div>
           <div class="info-title fs16" :title="row.data.title">{{ row.data.title }}</div>

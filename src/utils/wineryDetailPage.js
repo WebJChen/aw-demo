@@ -12,7 +12,7 @@ import { buildCatalogHitKey } from '@/utils/catalogHitKey'
 import { buildWineryItemKey, parseCatalogItemKey } from '@/utils/wineryItemKey'
 import { buildWineryGridDisplay } from '@/utils/wineryGridExtras'
 import { buildWineDisplay } from '@/utils/wineGridExtras'
-import { resolveItemDetailImageUrls } from '@/utils/itemImageResolver'
+import { findWineryCoverCycleIndex, resolveItemDetailImageUrls, resolveWineryCardImageUrl } from '@/utils/itemImageResolver'
 
 const UNCATEGORIZED_REGION = '暂未分类分区'
 const UNCATEGORIZED_TOWN = '暂未分类城镇'
@@ -277,8 +277,12 @@ function readItemInfo(item) {
   return item?.info || item?.wineData || item?.itemData || null
 }
 
-export function resolveWineryDetailImages(item, fallbackBanner = '') {
-  return resolveItemDetailImageUrls(item, fallbackBanner, { variant: 'thumb' })
+export function resolveWineryDetailImages(item, fallbackBanner = '', siblings = []) {
+  const urls = resolveItemDetailImageUrls(item, fallbackBanner, { variant: 'thumb' })
+  if (urls.length) return urls
+  const fallbackIndex = findWineryCoverCycleIndex(item, siblings)
+  const cover = resolveWineryCardImageUrl(item, { variant: 'thumb', fallbackIndex })
+  return cover ? [cover] : []
 }
 
 export function buildWineryDetailPageModel(ctx) {
